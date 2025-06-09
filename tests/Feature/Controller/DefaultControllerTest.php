@@ -172,4 +172,13 @@ class DefaultControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseFormatSame('xml');
     }
+
+    public function testAbout(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/about/');
+
+        $this->assertResponseIsSuccessful();
+    }
 }

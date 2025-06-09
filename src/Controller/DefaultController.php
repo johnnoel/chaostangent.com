@@ -16,7 +16,7 @@ class DefaultController extends AbstractController
     #[Route('/', name: 'home', defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
     public function index(): Response
     {
-        return new Response();
+        return $this->render('index.html.twig');
     }
 
     #[Route('/{year}/page/{page}/', name: 'year:paginated', requirements: [
@@ -81,6 +81,32 @@ class DefaultController extends AbstractController
 
     #[Route('/sitemap.xml', name: 'sitemap', defaults: [ '_format' => 'xml' ], methods: [ 'GET' ])]
     public function sitemap(): Response
+    {
+        return new Response();
+    }
+
+    #[Route('/about/', name: 'about', methods: [ 'GET' ])]
+    public function about(): Response
+    {
+        return new Response();
+    }
+
+    public function imageStrip(): Response
+    {
+        return new Response();
+    }
+
+    public function calendar(): Response
+    {
+        return new Response();
+    }
+
+    public function categoryTree(): Response
+    {
+        return new Response();
+    }
+
+    public function tagCloud(): Response
     {
         return new Response();
     }
