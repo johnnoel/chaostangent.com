@@ -2,11 +2,10 @@
 framework:
     esi: true
     secret: '%env(APP_SECRET)%'
-
-    # Note that the session will be started ONLY if you read or write from it.
     session: true
+    assets:
+        json_manifest_path: '%kernel.project_dir%/public/assets/manifest.json'
 
-    #esi: true
     #fragments: true
 
 when@test:

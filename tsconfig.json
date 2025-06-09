@@ -1,0 +1,13 @@
+{
+    "extends": "@tsconfig/recommended/tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./public/assets/",
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
+    },
+    "include": [
+        "./assets/ts/"
+    ]
+}

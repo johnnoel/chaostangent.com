@@ -1,3 +1,7 @@
+/.idea/
+/public/assets/*
+!/public/assets/manifest.json
+/node_modules/
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -8,8 +12,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-/.idea/
 
 ###> phpstan/phpstan ###
 phpstan.neon
