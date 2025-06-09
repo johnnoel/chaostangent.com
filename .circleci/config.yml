@@ -1,0 +1,83 @@
+version: 2.1
+jobs:
+    install:
+        working_directory: /tmp/chaostangent
+        docker:
+            - image: cimg/php:8.4-node
+        steps:
+            - checkout
+            - run: sudo composer self-update
+            - restore_cache:
+                  keys:
+                      - composer-v1-{{ checksum "composer.lock" }}
+                      - composer-v1-
+            - restore_cache:
+                  keys:
+                      - npm-v1-{{ checksum "package-lock.json" }}
+                      - npm-v1-
+            - run: composer install --no-interaction --no-progress --ignore-platform-req=ext-xsl
+            - run: npm install
+            - save_cache:
+                  key: composer-v1-{{ checksum "composer.lock" }}
+                  paths:
+                      - vendor
+            - save_cache:
+                  key: npm-v1-{{ checksum "package-lock.json" }}
+                  paths:
+                      - node_modules
+            - persist_to_workspace:
+                  root: /tmp/
+                  paths:
+                      - chaostangent
+
+    coding-standards:
+        working_directory: /tmp/chaostangent
+        docker:
+            - image: cimg/php:8.4
+        steps:
+            - attach_workspace:
+                  at: /tmp
+            - run: vendor/bin/phpcs -ns --colors
+
+    static-analysis:
+        working_directory: /tmp/chaostangent
+        docker:
+            - image: cimg/php:8.4
+        steps:
+            - attach_workspace:
+                  at: /tmp
+            - run: php -d memory_limit=512M vendor/bin/phpstan analyse -v
+
+    test:
+        working_directory: /tmp/chaostangent
+        docker:
+            - image: johnnoel/php:8.4
+              environment:
+                  APP_ENV: test
+                  DATABASE_URL: postgresql://chaostangent:chaostangent@localhost/chaostangent_test?serverVersion=14&charset=utf8
+            - image: cimg/postgres:17
+              environment:
+                  POSTGRES_USER: chaostangent
+                  POSTGRES_PASSWORD: chaostangent
+                  POSTGRES_DB: chaostangent_test
+        steps:
+            - attach_workspace:
+                  at: /tmp
+            - run: bin/phpunit --stop-on-failure --stop-on-error --log-junit junitreport.xml
+            - store_test_results:
+                  path: /tmp/chaostangent/junitreport.xml
+
+workflows:
+    version: 2
+    install-and-test:
+        jobs:
+            - install
+            - coding-standards:
+                  requires:
+                      - install
+            - static-analysis:
+                  requires:
+                      - install
+            - test:
+                  requires:
+                      - install
