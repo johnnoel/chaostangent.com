@@ -1,0 +1,28 @@
+services:
+    nginx:
+        image: nginx:latest
+        ports:
+            - "2501:80"
+        volumes:
+            - .:/project
+            - ./config/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+
+    php:
+        build: config/docker/php
+        image: chaostangent-php
+        volumes:
+            - .:/project
+
+    pgsql:
+        image: postgres:17
+        environment:
+            POSTGRES_DB: chaostangent
+            POSTGRES_PASSWORD: chaostangent
+            POSTGRES_USER: chaostangent
+        ports:
+            - "2502:5432"
+        volumes:
+            - database_data:/var/lib/postgresql/data:rw
+
+volumes:
+    database_data:
