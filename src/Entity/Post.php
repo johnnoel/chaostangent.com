@@ -98,4 +98,54 @@ class Post
         $this->categories = new ArrayCollection($categories);
         $this->tags = new ArrayCollection($tags);
     }
+
+    public function getId(): Ulid
+    {
+        return $this->id;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getSubtitle(): ?string
+    {
+        return $this->subtitle;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    public function getDate(): ?DateTimeImmutable
+    {
+        return $this->date;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getExtra(): array
+    {
+        return $this->extra;
+    }
+
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @return array<string,string|null>
+     */
+    public function getRouteParams(): array
+    {
+        return [
+            'alias' => $this->alias,
+            'year' => $this->date?->format('Y'),
+            'month' => $this->date?->format('m'),
+        ];
+    }
 }

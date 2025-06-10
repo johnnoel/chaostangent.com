@@ -4,19 +4,32 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class DefaultController extends AbstractController
 {
-    #[Route('/page/{page}/', name: 'home:paginated', requirements: [ 'page' => '\d+' ], methods: [ 'GET' ])]
-    #[Route('/feed/', name: 'home:rss', defaults: [ 'page' => 1, '_format' => 'rss' ], methods: [ 'GET' ])]
-    #[Route('/feed/atom/', name: 'home:atom', defaults: [ 'page' => 1, '_format' => 'atom' ], methods: [ 'GET' ])]
-    #[Route('/', name: 'home', defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
-    public function index(): Response
+    private const PER_PAGE = 5;
+
+    public function __construct(private readonly PostRepository $postRepository)
     {
-        return $this->render('index.html.twig');
+    }
+
+    #[Route('/page/{page}/', name: 'home:paginated', requirements: [ 'page' => '\d+' ], methods: [ 'GET' ])]
+    #[Route('/feed/', name: 'home:rss', defaults: [ '_format' => 'rss' ], methods: [ 'GET' ])]
+    #[Route('/feed/atom/', name: 'home:atom', defaults: [ '_format' => 'atom' ], methods: [ 'GET' ])]
+    #[Route('/', name: 'home', methods: [ 'GET' ])]
+    public function index(int $page = 1): Response
+    {
+        $posts = $this->postRepository->getHomepagePosts($page, self::PER_PAGE);
+
+        return $this->render('index.html.twig', [
+            'posts' => $posts,
+            'page' => $page,
+            'page_count' => 1,
+        ]);
     }
 
     #[Route('/{year}/page/{page}/', name: 'year:paginated', requirements: [

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Feature\Controller;
 
 use App\Controller\DefaultController;
+use App\Factory\PostFactory;
+use App\Repository\PostRepository;
 use App\Tests\WebTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -14,6 +16,7 @@ class DefaultControllerTest extends WebTestCase
     public function testIndex(): void
     {
         $client = static::createClient();
+        PostFactory::new()->published()->many(5)->create();
 
         $client->request('GET', '/');
 
@@ -23,6 +26,7 @@ class DefaultControllerTest extends WebTestCase
     public function testIndexRss(): void
     {
         $client = static::createClient();
+        PostFactory::new()->published()->many(5)->create();
 
         $client->request('GET', '/feed/');
 
@@ -33,6 +37,7 @@ class DefaultControllerTest extends WebTestCase
     public function testIndexAtom(): void
     {
         $client = static::createClient();
+        PostFactory::new()->published()->many(5)->create();
 
         $client->request('GET', '/feed/atom/');
 
@@ -43,8 +48,23 @@ class DefaultControllerTest extends WebTestCase
     public function testIndexPaginated(): void
     {
         $client = static::createClient();
+        PostFactory::new()->published()->many(10)->create();
+
+        /** @var PostRepository $postRepository */
+        $postRepository = static::getContainer()->get(PostRepository::class);
+        $page1Posts = $postRepository->getHomepagePosts(1, 5);
+        $page2Posts = $postRepository->getHomepagePosts(2, 5);
 
         $client->request('GET', '/page/2/');
+        $response = $client->getResponse()->getContent();
+
+        foreach ($page2Posts as $post) {
+            $this->assertStringContainsString($post->getTitle(), $response ?: '');
+        }
+
+        foreach ($page1Posts as $post) {
+            $this->assertStringNotContainsString($post->getTitle(), $response ?: '');
+        }
 
         $this->assertResponseIsSuccessful();
     }

@@ -35,7 +35,7 @@ final class PostFactory extends PersistentProxyObjectFactory
             'title' => self::faker()->text(255),
             'alias' => self::faker()->slug(),
             'subtitle' => null,
-            'content' => self::faker()->text(),
+            'content' => self::faker()->randomHtml(),
             'published' => false,
             'date' => null,
             'extra' => [],

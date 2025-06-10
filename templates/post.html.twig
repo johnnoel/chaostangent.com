@@ -1,0 +1,4 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% include '_post.html.twig' with { 'post': post } only %}
+{% endblock body %}
