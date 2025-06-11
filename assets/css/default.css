@@ -1,0 +1,39 @@
+:root {
+    --brand-orange: #D54000;
+    --brand-beige: #FBFBF9;
+    --brand-dark-beige: #EDEDE4;
+    --brand-darker-beige: #DBD7CE;
+    --brand-grey: #666;
+    --brand-light-grey: #AAA;
+    --brand-lighter-grey: #E6E4DD;
+    --brand-dark-grey: #444;
+    --brand-red: #D50E02;
+    --brand-lighter-red: #FFF4F2;
+
+    --font-body: Arial, Helvetica, sans-serif;
+    --font-title: Vegur, Arial, Helvetica, sans-serif;
+
+    --container-width: 624px;
+}
+
+body {
+    font: 14px/1 var(--font-body);
+    color: var(--brand-dark-grey);
+    background: var(--brand-beige);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-title);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+a {
+    color: var(--brand-orange);
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+}

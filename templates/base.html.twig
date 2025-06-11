@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-gb" class="no-js a11y-show-focus">
+<html lang="en-gb">
 <head>
     <meta charset="utf-8">
     <!--
@@ -15,7 +15,6 @@
     Like what you see? All of the code is available on GitHub for you to peruse
     and use: https://github.com/johnnoel/chaostangent.com.
     -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="More squirrels than sense">
 
@@ -31,9 +30,6 @@
         <meta property="og:title" content="{{ block('title') }}{% if block('title') is not empty %} : {% endif %}chaostangent">
         <meta property="og:description" content="More squirrels than sense">
         <meta property="og:image" content="{{ absolute_url(asset('img/favicon-128x128.png')) }}">
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:site" content="@ceetea_">
-        <meta name="twitter:creator" content="@ceetea_">
     {% endblock %}
 
     {% block feeds %}
@@ -45,33 +41,28 @@
     <link rel="stylesheet" href="{{ asset('main.css') }}">
 </head>
 <body>
-<nav class="a11ynav" role="navigation">
-    <a href="#main" class="vh focusable">Jump to content</a>
-    <a href="#primarynav" class="vh focusable">Jump to menu</a>
-    <a href="#primaryfilter" class="vh focusable">Jump to filter</a>
+<nav class="a11y-nav" role="navigation">
+    <a href="#main">Jump to content</a>
+    <a href="#primarynav">Jump to menu</a>
+    <a href="#primaryfilter">Jump to filter</a>
 </nav>
 
-<header class="sitehead" role="banner">
-    <div class="sitehead-inner">
-        <a href="{{ path('home') }}" title="More squirrels than sense" class="logo">chaos<b>tangent</b></a>
+<header class="site-header" role="banner">
+    <a href="{{ path('home') }}" title="More squirrels than sense" class="logo">chaos<b>tangent</b></a>
 
-        <nav id="primarynav" class="primarynav" role="navigation">
-            <ul>
-                {% if location is not defined %}
-                    {% set location = 'home' %}
-                {% endif %}
-                <li{% if location == 'home' %} class="primarynav-active"{% endif %}><a href="{{ path('home') }}">Home</a></li>
-                <li{% if location == 'about' %} class="primarynav-active"{% endif %}><a href="{{ path('about') }}">About</a></li>
-                <li><a href="http://chaostangent.tumblr.com">Tumblr</a></li>
-                <li class="primarynav-feed"><a href="{{ path('home:rss') }}"><svg><use xlink:href="/img/icons.svg#rss"></use></svg> RSS feed</a></li>
-            </ul>
-        </nav>
+    <nav id="primarynav" class="nav" role="navigation">
+        <ul>
+            <li{% if location|default('home') == 'home' %} class="active"{% endif %}><a href="{{ path('home') }}">Home</a></li>
+            <li{% if location|default('home') == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>
+            <li><a href="http://chaostangent.tumblr.com" target="_blank">Tumblr</a></li>
+            <li class="primarynav-feed"><a href="{{ path('home:rss') }}"><svg><use xlink:href="/img/icons.svg#rss"></use></svg> RSS feed</a></li>
+        </ul>
+    </nav>
 
-        <form method="get" action="{{ path('search') }}" class="search">
-            <input type="search" name="q" placeholder="Search..." class="search-q" value="{{ search_query|default('') }}">
-            <button type="submit" class="search-search"><svg><use xlink:href="/img/icons.svg#search"></use></svg> Search</button>
-        </form>
-    </div>
+    <form method="get" action="{{ path('search') }}" class="search-form">
+        <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}">
+        <button type="submit" class="search"><svg><use xlink:href="/img/icons.svg#search"></use></svg> Search</button>
+    </form>
 </header>
 
 <main id="main" role="main">
@@ -99,13 +90,14 @@
 <footer class="sitefooter">
     <nav class="socialmedia" role="navigation">
         <ul>
-            <li><a href="https://www.twitter.com/ceetea_/"><svg><use xlink:href="/img/icons.svg#twitter"></use></svg> My tweets on Twitter</a></li>
+            <li><a href="https://bsky.app/profile/johnnoel.uk"><svg><use xlink:href="/img/icons.svg#twitter"></use></svg> My posts on Bluesky</a></li>
+            <li><a href="https://mastodon.social/@ceetea"><svg><use xlink:href="/img/icons.svg#twitter"></use></svg> My toots on Mastodon</a></li>
             <li><a href="https://github.com/johnnoel"><svg><use xlink:href="/img/icons.svg#github"></use></svg> My code on GitHub</a></li>
             <li><a href="https://www.last.fm/user/chaostangent"><svg><use xlink:href="/img/icons.svg#lastfm"></use></svg> My scrobbles on last.fm</a></li>
             <li><a href="https://www.flickr.com/photos/chaostangent/"><svg><use xlink:href="/img/icons.svg#flickr"></use></svg> My photos on Flickr</a></li>
             <li><a href="https://www.youtube.com/ChaosTangent"><svg><use xlink:href="/img/icons.svg#youtube"></use></svg> My videos on YouTube</a></li>
-            <li><a href="skype://chaostangent?chat"><svg><use xlink:href="/img/icons.svg#skype"></use></svg> Contact me through internet telephony</a></li>
-            <li><a href="http://wordpress.org/extend/plugins/profile/chaostangent"><svg><use xlink:href="/img/icons.svg#wordpress"></use></svg> My Wordpress plugins</a></li>
+            <li><a href="https://chaostangent.tumblr.com/"><svg><use xlink:href="/img/icons.svg#youtube"></use></svg> My posts on Tumblr</a></li>
+            <li><a href="https://www.twitch.tv/ceetea_"><svg><use xlink:href="/img/icons.svg#youtube"></use></svg> My videos on Twitch</a></li>
             <li><a href="{{ path('home:rss') }}"><svg><use xlink:href="/img/icons.svg#rss"></use></svg> RSS feed for chaostangent.com</a></li>
         </ul>
     </nav>

@@ -1,3 +1,9 @@
-body {
-    background: silver;
-}
+@import "reset.css" layer(reset);
+@import "fonts.css" layer(theme);
+@import "default.css" layer(theme);
+
+@import "components/a11y-nav.css" layer(components);
+@import "components/site-header.css" layer(components);
+@import "components/search-form.css" layer(components);
+
+@layer reset, theme, components, helpers;
