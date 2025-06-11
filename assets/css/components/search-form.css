@@ -25,13 +25,13 @@
         font-size: 0;
         color: rgba(255, 255, 255, 0);
         transition: background-color .15s ease-in-out;
+        cursor: pointer;
 
         svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             stroke-width: 0;
-            stroke: #FFF;
-            fill: #FFF;
+            fill: var(--brand-beige);
         }
 
         &:focus, &:hover {

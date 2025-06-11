@@ -55,13 +55,13 @@
             <li{% if location|default('home') == 'home' %} class="active"{% endif %}><a href="{{ path('home') }}">Home</a></li>
             <li{% if location|default('home') == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>
             <li><a href="http://chaostangent.tumblr.com" target="_blank">Tumblr</a></li>
-            <li class="primarynav-feed"><a href="{{ path('home:rss') }}"><svg><use xlink:href="/img/icons.svg#rss"></use></svg> RSS feed</a></li>
+            <li><a href="{{ path('home:rss') }}" class="rss"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-rss"></use></svg> RSS feed</a></li>
         </ul>
     </nav>
 
     <form method="get" action="{{ path('search') }}" class="search-form">
         <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}">
-        <button type="submit" class="search"><svg><use xlink:href="/img/icons.svg#search"></use></svg> Search</button>
+        <button type="submit" class="search"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-search"></use></svg> Search</button>
     </form>
 </header>
 
