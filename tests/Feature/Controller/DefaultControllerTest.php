@@ -6,6 +6,7 @@ namespace App\Tests\Feature\Controller;
 
 use App\Controller\DefaultController;
 use App\Factory\PostFactory;
+use App\Factory\TagFactory;
 use App\Repository\PostRepository;
 use App\Tests\WebTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -148,37 +149,57 @@ class DefaultControllerTest extends WebTestCase
     public function testTag(): void
     {
         $client = static::createClient();
+        $tags = TagFactory::createMany(2);
+        $posts = PostFactory::new()->published()->many(2)->create(static function (int $i) use ($tags) {
+            return [ 'tags' => [ $tags[$i - 1] ] ];
+        });
 
-        $client->request('GET', '/tag/test-tag/');
+        $client->request('GET', '/tag/' . $tags[0]->getAlias() . '/');
 
         $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
+        $this->assertStringNotContainsString($posts[1]->getTitle(), strval($client->getResponse()->getContent()));
     }
 
     public function testTagRss(): void
     {
         $client = static::createClient();
+        $tag = TagFactory::createOne();
+        $post = PostFactory::new()->published()->create([
+            'tags' => [ $tag ],
+        ]);
 
-        $client->request('GET', '/tag/test-tag/feed/');
+        $client->request('GET', '/tag/' . $tag->getAlias() . '/feed/');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseFormatSame('rss');
+        $this->assertStringContainsString($post->getTitle(), strval($client->getResponse()->getContent()));
     }
 
     public function testTagAtom(): void
     {
         $client = static::createClient();
+        $tag = TagFactory::createOne();
+        $post = PostFactory::new()->published()->create([
+            'tags' => [ $tag ],
+        ]);
 
-        $client->request('GET', '/tag/test-tag/feed/atom/');
+        $client->request('GET', '/tag/' . $tag->getAlias() . '/feed/atom/');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseFormatSame('atom');
+        $this->assertStringContainsString($post->getTitle(), strval($client->getResponse()->getContent()));
     }
 
     public function testTagPaginated(): void
     {
         $client = static::createClient();
+        $tag = TagFactory::createOne();
+        PostFactory::new()->published()->many(6)->create([
+            'tags' => [ $tag ],
+        ]);
 
-        $client->request('GET', '/tag/test-tag/page/2/');
+        $client->request('GET', '/tag/' . $tag->getAlias() . '/page/2/');
 
         $this->assertResponseIsSuccessful();
     }

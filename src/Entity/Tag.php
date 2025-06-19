@@ -37,4 +37,14 @@ class Tag
 
         $this->posts = new ArrayCollection();
     }
+
+    public function getId(): Ulid
+    {
+        return $this->id;
+    }
+
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
 }

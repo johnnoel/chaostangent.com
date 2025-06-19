@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Tag;
 use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,15 +82,26 @@ class DefaultController extends AbstractController
         return new Response();
     }
 
-    #[Route('/tag/{alias}/', name: 'tag', defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
-    #[Route('/tag/{alias}/page/{page}/', name: 'tag:paginated', requirements: [ 'page' => '\d+' ], methods: [ 'GET' ])]
-    #[Route('/tag/{alias}/feed/', name: 'tag:rss', defaults: [ 'page' => 1, '_format' => 'rss' ], methods: [ 'GET' ])]
-    #[Route('/tag/{alias}/feed/atom/', name: 'tag:atom', defaults: [
+    #[Route('/tag/{alias:tag}/', name: 'tag', defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
+    #[Route('/tag/{alias:tag}/page/{page}/', name: 'tag:paginated', requirements: [
+        'page' => '\d+',
+    ], methods: [ 'GET' ])]
+    #[Route('/tag/{alias:tag}/feed/', name: 'tag:rss', defaults: [
+        'page' => 1, '_format' => 'rss',
+    ], methods: [ 'GET' ])]
+    #[Route('/tag/{alias:tag}/feed/atom/', name: 'tag:atom', defaults: [
         'page' => 1, '_format' => 'atom',
     ], methods: [ 'GET' ])]
-    public function tag(): Response
+    public function tag(Tag $tag, int $page = 1): Response
     {
-        return new Response();
+        $posts = $this->postRepository->getPostsForTag($tag, $page, self::PER_PAGE);
+        $pageCount = ceil($this->postRepository->getPostCountForTag($tag) / self::PER_PAGE);
+
+        return $this->render('tag.html.twig', [
+            'posts' => $posts,
+            'page' => $page,
+            'page_count' => $pageCount,
+        ]);
     }
 
     #[Route('/sitemap.xml', name: 'sitemap', defaults: [ '_format' => 'xml' ], methods: [ 'GET' ])]
