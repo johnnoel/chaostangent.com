@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -77,6 +78,46 @@ class PostRepository extends ServiceEntityRepository
 
         $query = $this->getEntityManager()->createQuery($dql);
         $query->setParameter('tag', $tag->getId(), UlidType::NAME)
+            ->setParameter('published', true)
+        ;
+
+        return intval($query->getSingleScalarResult());
+    }
+
+    /**
+     * @return Collection<int,Post>
+     */
+    public function getPostsForCategory(Category $category, int $page, int $perPage): Collection
+    {
+        $dql = <<<DQL
+            SELECT p FROM App\Entity\Post p
+            JOIN p.categories c
+            WHERE (c = :category) AND (p.published = :published)
+            ORDER BY p.date DESC, p.id DESC
+        DQL;
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        /** @var array<Post> $result */
+        $result = $query->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->setParameter('category', $category->getId(), UlidType::NAME)
+            ->setParameter('published', true)
+            ->getResult()
+        ;
+
+        return new Collection($result);
+    }
+
+    public function getPostCountForCategory(Category $category): int
+    {
+        $dql = <<<DQL
+            SELECT COUNT(p) FROM App\Entity\Post p
+            JOIN p.categories c
+            WHERE (c = :category) AND (p.published = :published)
+        DQL;
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameter('category', $category->getId(), UlidType::NAME)
             ->setParameter('published', true)
         ;
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Tag;
 use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -67,19 +68,26 @@ class DefaultController extends AbstractController
         return new Response();
     }
 
-    #[Route('/category/{alias}/page/{page}/', name: 'category:paginated', requirements: [
+    #[Route('/category/{alias:category}/page/{page}/', name: 'category:paginated', requirements: [
         'page' => '\d+', 'alias' => '.+',
     ], methods: [ 'GET' ])]
-    #[Route('/category/{alias}/feed/', name: 'category:rss', requirements: [ 'alias' => '.+' ], defaults: [
+    #[Route('/category/{alias:category}/feed/', name: 'category:rss', requirements: [ 'alias' => '.+' ], defaults: [
         'page' => 1, '_format' => 'rss',
     ], methods: [ 'GET' ])]
-    #[Route('/category/{alias}/feed/atom/', name: 'category:atom', requirements: [ 'alias' => '.+' ], defaults: [
-        'page' => 1, '_format' => 'atom',
-    ], methods: [ 'GET' ])]
-    #[Route('/category/{alias}/', name: 'category', requirements: [ 'alias' => '.+' ], methods: [ 'GET' ])]
-    public function category(): Response
+    #[Route('/category/{alias:category}/feed/atom/', name: 'category:atom', requirements: [
+        'alias' => '.+',
+    ], defaults: [ 'page' => 1, '_format' => 'atom' ], methods: [ 'GET' ])]
+    #[Route('/category/{alias:category}/', name: 'category', requirements: [ 'alias' => '.+' ], methods: [ 'GET' ])]
+    public function category(Category $category, int $page = 1): Response
     {
-        return new Response();
+        $posts = $this->postRepository->getPostsForCategory($category, $page, self::PER_PAGE);
+        $pageCount = ceil($this->postRepository->getPostCountForCategory($category) / self::PER_PAGE);
+
+        return $this->render('category.html.twig', [
+            'posts' => $posts,
+            'page' => $page,
+            'page_count' => $pageCount,
+        ]);
     }
 
     #[Route('/tag/{alias:tag}/', name: 'tag', defaults: [ 'page' => 1 ], methods: [ 'GET' ])]

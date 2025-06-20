@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Feature\Controller;
 
 use App\Controller\DefaultController;
+use App\Factory\CategoryFactory;
 use App\Factory\PostFactory;
 use App\Factory\TagFactory;
 use App\Repository\PostRepository;
@@ -142,6 +143,64 @@ class DefaultControllerTest extends WebTestCase
         $client = static::createClient();
 
         $client->request('GET', '/2025/06/page/2/');
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testCategory(): void
+    {
+        $client = static::createClient();
+        $categories = CategoryFactory::createMany(2);
+        $posts = PostFactory::new()->published()->many(2)->create(static function (int $i) use ($categories) {
+            return [ 'categories' => [ $categories[$i - 1] ] ];
+        });
+
+        $client->request('GET', '/category/' . $categories[0]->getAlias() . '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
+        $this->assertStringNotContainsString($posts[1]->getTitle(), strval($client->getResponse()->getContent()));
+    }
+
+    public function testCategoryRss(): void
+    {
+        $client = static::createClient();
+        $category = CategoryFactory::createOne();
+        $post = PostFactory::new()->published()->create([
+            'categories' => [ $category ],
+        ]);
+
+        $client->request('GET', '/category/' . $category->getAlias() . '/feed/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseFormatSame('rss');
+        $this->assertStringContainsString($post->getTitle(), strval($client->getResponse()->getContent()));
+    }
+
+    public function testCategoryAtom(): void
+    {
+        $client = static::createClient();
+        $category = CategoryFactory::createOne();
+        $post = PostFactory::new()->published()->create([
+            'categories' => [ $category ],
+        ]);
+
+        $client->request('GET', '/category/' . $category->getAlias() . '/feed/atom/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseFormatSame('atom');
+        $this->assertStringContainsString($post->getTitle(), strval($client->getResponse()->getContent()));
+    }
+
+    public function testCategoryPaginated(): void
+    {
+        $client = static::createClient();
+        $category = CategoryFactory::createOne();
+        PostFactory::new()->published()->many(6)->create([
+            'categories' => [ $category ],
+        ]);
+
+        $client->request('GET', '/category/' . $category->getAlias() . '/page/2/');
 
         $this->assertResponseIsSuccessful();
     }

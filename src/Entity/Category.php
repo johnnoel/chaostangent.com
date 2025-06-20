@@ -47,4 +47,14 @@ class Category
         $this->children = new ArrayCollection();
         $this->posts = new ArrayCollection();
     }
+
+    public function getId(): Ulid
+    {
+        return $this->id;
+    }
+
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
 }
