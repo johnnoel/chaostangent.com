@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<files version="1">
+ <file path="vendor/symfony/var-exporter/ProxyHelper.php">
+  <line number="152" hash="f9a4c66cdf9462ff4d2c4116e10c2275546c89b9">
+   <issue><![CDATA[Since symfony/var-exporter 7.3: Generating lazy proxy for class "App\Entity\Post" is deprecated; leverage native lazy objects instead.]]></issue>
+   <issue><![CDATA[Since symfony/var-exporter 7.3: Generating lazy proxy for class "App\Entity\Category" is deprecated; leverage native lazy objects instead.]]></issue>
+   <issue><![CDATA[Since symfony/var-exporter 7.3: Generating lazy proxy for class "App\Entity\Tag" is deprecated; leverage native lazy objects instead.]]></issue>
+  </line>
+ </file>
+ <file path="vendor/eko/feedbundle/Formatter/Formatter.php">
+  <line number="329" hash="1718054f00ecdbc2318851058c8e2a96ebcd014f">
+   <issue><![CDATA[Eko\FeedBundle\Formatter\Formatter::addAttributes(): Implicitly marking parameter $item as nullable is deprecated, the explicit nullable type must be used instead]]></issue>
+  </line>
+ </file>
+</files>

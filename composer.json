@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^2.14",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+        "eko/feedbundle": "^2.2",
         "illuminate/collections": "^12.18",
         "martin-georgiev/postgresql-for-doctrine": "^3.2",
         "symfony/asset": "7.3.*",

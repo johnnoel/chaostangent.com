@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Eko\FeedBundle\Item\Writer\RoutedItemInterface;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\Table(name: 'posts')]
-#[ORM\Index(columns: [ 'alias' ], name: 'post_alias_index')]
-#[ORM\Index(columns: [ 'date' ], name: 'post_alias_date')]
-class Post
+#[ORM\Index(name: 'post_alias_index', columns: [ 'alias' ])]
+#[ORM\Index(name: 'post_alias_date', columns: [ 'date' ])]
+class Post implements RoutedItemInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME)]
@@ -138,7 +140,7 @@ class Post
     }
 
     /**
-     * @return array<string,string|null>
+     * @return array{year: string|null, month: string|null, alias: string}
      */
     public function getRouteParams(): array
     {
@@ -147,5 +149,39 @@ class Post
             'year' => $this->date?->format('Y'),
             'month' => $this->date?->format('m'),
         ];
+    }
+
+    public function getFeedItemTitle(): string
+    {
+        return trim(sprintf('%s - %s', $this->title, $this->subtitle), ' -');
+    }
+
+    public function getFeedItemDescription(): string
+    {
+        // TODO need to trim this
+        return $this->getContent();
+    }
+
+    public function getFeedItemRouteName(): string
+    {
+        return 'post';
+    }
+
+    /**
+     * @return array{year: string|null, month: string|null, alias: string}
+     */
+    public function getFeedItemRouteParameters(): array
+    {
+        return $this->getRouteParams();
+    }
+
+    public function getFeedItemUrlAnchor(): string
+    {
+        return '';
+    }
+
+    public function getFeedItemPubDate(): DateTime
+    {
+        return DateTime::createFromImmutable($this->date ?? new DateTimeImmutable('now'));
     }
 }

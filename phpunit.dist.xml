@@ -27,6 +27,7 @@
             ignoreIndirectDeprecations="true"
             restrictNotices="true"
             restrictWarnings="true"
+            baseline="phpunit.baseline.xml"
     >
         <include>
             <directory>src</directory>

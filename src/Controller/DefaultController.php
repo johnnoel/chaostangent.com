@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Tag;
 use App\Repository\PostRepository;
+use Eko\FeedBundle\Feed\FeedManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -15,7 +17,7 @@ class DefaultController extends AbstractController
 {
     private const PER_PAGE = 5;
 
-    public function __construct(private readonly PostRepository $postRepository)
+    public function __construct(private readonly PostRepository $postRepository, private FeedManager $feedManager)
     {
     }
 
@@ -23,9 +25,16 @@ class DefaultController extends AbstractController
     #[Route('/feed/', name: 'home:rss', defaults: [ '_format' => 'rss' ], methods: [ 'GET' ])]
     #[Route('/feed/atom/', name: 'home:atom', defaults: [ '_format' => 'atom' ], methods: [ 'GET' ])]
     #[Route('/', name: 'home', methods: [ 'GET' ])]
-    public function index(int $page = 1): Response
+    public function index(Request $request, int $page = 1): Response
     {
         $posts = $this->postRepository->getHomepagePosts($page, self::PER_PAGE);
+        $requestFormat = $request->getRequestFormat();
+
+        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
+            return new Response(
+                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
+            );
+        }
 
         return $this->render('index.html.twig', [
             'posts' => $posts,
@@ -78,9 +87,17 @@ class DefaultController extends AbstractController
         'alias' => '.+',
     ], defaults: [ 'page' => 1, '_format' => 'atom' ], methods: [ 'GET' ])]
     #[Route('/category/{alias:category}/', name: 'category', requirements: [ 'alias' => '.+' ], methods: [ 'GET' ])]
-    public function category(Category $category, int $page = 1): Response
+    public function category(Category $category, Request $request, int $page = 1): Response
     {
         $posts = $this->postRepository->getPostsForCategory($category, $page, self::PER_PAGE);
+        $requestFormat = $request->getRequestFormat();
+
+        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
+            return new Response(
+                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
+            );
+        }
+
         $pageCount = ceil($this->postRepository->getPostCountForCategory($category) / self::PER_PAGE);
 
         return $this->render('category.html.twig', [
@@ -100,9 +117,17 @@ class DefaultController extends AbstractController
     #[Route('/tag/{alias:tag}/feed/atom/', name: 'tag:atom', defaults: [
         'page' => 1, '_format' => 'atom',
     ], methods: [ 'GET' ])]
-    public function tag(Tag $tag, int $page = 1): Response
+    public function tag(Tag $tag, Request $request, int $page = 1): Response
     {
         $posts = $this->postRepository->getPostsForTag($tag, $page, self::PER_PAGE);
+        $requestFormat = $request->getRequestFormat();
+
+        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
+            return new Response(
+                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
+            );
+        }
+
         $pageCount = ceil($this->postRepository->getPostCountForTag($tag) / self::PER_PAGE);
 
         return $this->render('tag.html.twig', [
