@@ -266,8 +266,14 @@ class DefaultControllerTest extends WebTestCase
     public function testSitemap(): void
     {
         $client = static::createClient();
+        PostFactory::new()->published()->many(5)->create();
 
         $client->request('GET', '/sitemap.xml');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseFormatSame('xml');
+
+        $client->request('GET', '/sitemap.default.xml');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseFormatSame('xml');

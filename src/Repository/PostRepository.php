@@ -7,8 +7,13 @@ namespace App\Repository;
 use App\Entity\Category;
 use App\Entity\Post;
 use App\Entity\Tag;
+use App\Repository\DTO\PostDTO;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Generator;
 use Illuminate\Support\Collection;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 
@@ -144,5 +149,51 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('year', $year)
             ->getSingleResult()
         ;
+    }
+
+    /**
+     * @return Generator<PostDTO>
+     */
+    public function getSitemapPosts(): Generator
+    {
+        $dql = <<<DQL
+            SELECT COUNT(p)
+            FROM App\Entity\Post p
+            WHERE p.published = true
+        DQL;
+
+        $postCount = intval($this->getEntityManager()->createQuery($dql)->getSingleScalarResult());
+
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
+        $rsm->addScalarResult('last_modified', 'last_modified', Types::DATETIME_IMMUTABLE);
+        $selectClause = $rsm->generateSelectClause([ 'p' => 'p' ]);
+
+        $batchSize = 100;
+        $sql = <<<SQL
+            WITH last_modified AS (
+                SELECT p.id, GREATEST(p.date, p.updated, MAX(c.created)) AS last_modified
+                FROM posts p
+                LEFT JOIN comments c ON (c.post_id = p.id) AND (c.approved = true)
+                WHERE (p.published = true)
+                GROUP BY p.id
+            )
+            SELECT $selectClause, last_modified.last_modified
+            FROM posts p
+            JOIN last_modified ON last_modified.id = p.id
+            WHERE (p.published = true)
+            ORDER BY p.date DESC, p.id DESC
+            LIMIT $batchSize OFFSET :offset
+        SQL;
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+
+        for ($i = 0; $i < $postCount; $i += $batchSize) {
+            /** @var array<array{0: Post, last_modified: DateTimeImmutable}> $result */
+            $result = $query->setParameter('offset', $i)
+                ->getResult();
+
+            yield from array_map(fn (array $row): PostDTO => new PostDTO($row[0], $row['last_modified']), $result);
+        }
     }
 }

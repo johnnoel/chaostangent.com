@@ -31,6 +31,7 @@ doctrine:
                 dql:
                     string_functions:
                         DATE_EXTRACT: MartinGeorgiev\Doctrine\ORM\Query\AST\Functions\DateExtract
+                        GREATEST: MartinGeorgiev\Doctrine\ORM\Query\AST\Functions\Greatest
 
 when@test:
     doctrine:

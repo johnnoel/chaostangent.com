@@ -8,6 +8,7 @@ use App\Entity\Category;
 use App\Entity\Tag;
 use App\Repository\PostRepository;
 use Eko\FeedBundle\Feed\FeedManager;
+use Presta\SitemapBundle\Sitemap\Url\UrlConcrete as Sitemap;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class DefaultController extends AbstractController
 {
-    private const PER_PAGE = 5;
+    public const PER_PAGE = 5;
 
     public function __construct(private readonly PostRepository $postRepository, private FeedManager $feedManager)
     {
@@ -24,7 +25,9 @@ class DefaultController extends AbstractController
     #[Route('/page/{page}/', name: 'home:paginated', requirements: [ 'page' => '\d+' ], methods: [ 'GET' ])]
     #[Route('/feed/', name: 'home:rss', defaults: [ '_format' => 'rss' ], methods: [ 'GET' ])]
     #[Route('/feed/atom/', name: 'home:atom', defaults: [ '_format' => 'atom' ], methods: [ 'GET' ])]
-    #[Route('/', name: 'home', methods: [ 'GET' ])]
+    #[Route('/', name: 'home', options: [
+        'sitemap' => [ 'priority' => 1.0, 'changefreq' => Sitemap::CHANGEFREQ_WEEKLY ],
+    ], methods: [ 'GET' ])]
     public function index(Request $request, int $page = 1): Response
     {
         $posts = $this->postRepository->getHomepagePosts($page, self::PER_PAGE);
@@ -137,13 +140,9 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    #[Route('/sitemap.xml', name: 'sitemap', defaults: [ '_format' => 'xml' ], methods: [ 'GET' ])]
-    public function sitemap(): Response
-    {
-        return new Response();
-    }
-
-    #[Route('/about/', name: 'about', methods: [ 'GET' ])]
+    #[Route('/about/', name: 'about', options: [
+        'sitemap' => [ 'priority' => 0.1, 'changefreq' => Sitemap::CHANGEFREQ_WEEKLY ],
+    ], methods: [ 'GET' ])]
     public function about(): Response
     {
         return new Response();
