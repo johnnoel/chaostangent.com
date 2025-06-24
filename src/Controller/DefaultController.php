@@ -12,6 +12,7 @@ use Presta\SitemapBundle\Sitemap\Url\UrlConcrete as Sitemap;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 class DefaultController extends AbstractController
@@ -75,9 +76,28 @@ class DefaultController extends AbstractController
     #[Route('/{year}/{month}/', name: 'month', requirements: [
         'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])',
     ], defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
-    public function month(): Response
+    public function month(int $year, int $month, Request $request, int $page = 1): Response
     {
-        return new Response();
+        $posts = $this->postRepository->getPostsForYearAndMonth($year, $month, $page, self::PER_PAGE);
+        if ($posts->isEmpty()) {
+            throw new NotFoundHttpException();
+        }
+
+        $requestFormat = $request->getRequestFormat();
+
+        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
+            return new Response(
+                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
+            );
+        }
+
+        $pageCount = ceil($this->postRepository->getPostCountForYearAndMonth($year, $month) / self::PER_PAGE);
+
+        return $this->render('year-month.html.twig', [
+            'posts' => $posts,
+            'page' => $page,
+            'page_count' => $pageCount,
+        ]);
     }
 
     #[Route('/category/{alias:category}/page/{page}/', name: 'category:paginated', requirements: [

@@ -129,6 +129,48 @@ class PostRepository extends ServiceEntityRepository
         return intval($query->getSingleScalarResult());
     }
 
+    /**
+     * @return Collection<int,Post>
+     */
+    public function getPostsForYearAndMonth(int $year, int $month, int $page, int $perPage): Collection
+    {
+        $dql = <<<DQL
+            SELECT p FROM App\Entity\Post p
+            WHERE (p.published = true)
+                AND (DATE_EXTRACT('YEAR', p.date) = :year)
+                AND (DATE_EXTRACT('MONTH', p.date) = :month)
+            ORDER BY p.date DESC, p.id DESC
+        DQL;
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        /** @var array<Post> $result */
+        $result = $query->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage)
+            ->setParameter('year', $year)
+            ->setParameter('month', $month)
+            ->getResult()
+        ;
+
+        return new Collection($result);
+    }
+
+    public function getPostCountForYearAndMonth(int $year, int $month): int
+    {
+        $dql = <<<DQL
+            SELECT COUNT(p) FROM App\Entity\Post p
+            WHERE (p.published = true)
+                AND (DATE_EXTRACT('YEAR', p.date) = :year)
+                AND (DATE_EXTRACT('MONTH', p.date) = :month)
+        DQL;
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameter('year', $year)
+            ->setParameter('month', $month)
+        ;
+
+        return intval($query->getSingleScalarResult());
+    }
+
     public function getPost(string $alias, int $year, int $month): ?Post
     {
         $dql = <<<DQL
