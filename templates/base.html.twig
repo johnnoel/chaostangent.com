@@ -39,6 +39,8 @@
 
     <link rel="search" type="application/opensearchdescription+xml" href="{{ url('opensearch') }}" title="chaostangent.com search">
     <link rel="stylesheet" href="{{ asset('main.css') }}">
+
+    <script src="{{ asset('main.js') }}" async defer></script>
 </head>
 <body>
 <nav class="a11y-nav" role="navigation">
@@ -87,26 +89,24 @@
     </div>
 </nav>
 
-<footer class="sitefooter">
+<footer class="site-footer">
     <nav class="socialmedia" role="navigation">
         <ul>
-            <li><a href="https://bsky.app/profile/johnnoel.uk"><svg><use xlink:href="/img/icons.svg#twitter"></use></svg> My posts on Bluesky</a></li>
-            <li><a href="https://mastodon.social/@ceetea"><svg><use xlink:href="/img/icons.svg#twitter"></use></svg> My toots on Mastodon</a></li>
-            <li><a href="https://github.com/johnnoel"><svg><use xlink:href="/img/icons.svg#github"></use></svg> My code on GitHub</a></li>
-            <li><a href="https://www.last.fm/user/chaostangent"><svg><use xlink:href="/img/icons.svg#lastfm"></use></svg> My scrobbles on last.fm</a></li>
-            <li><a href="https://www.flickr.com/photos/chaostangent/"><svg><use xlink:href="/img/icons.svg#flickr"></use></svg> My photos on Flickr</a></li>
-            <li><a href="https://www.youtube.com/ChaosTangent"><svg><use xlink:href="/img/icons.svg#youtube"></use></svg> My videos on YouTube</a></li>
-            <li><a href="https://chaostangent.tumblr.com/"><svg><use xlink:href="/img/icons.svg#youtube"></use></svg> My posts on Tumblr</a></li>
-            <li><a href="https://www.twitch.tv/ceetea_"><svg><use xlink:href="/img/icons.svg#youtube"></use></svg> My videos on Twitch</a></li>
-            <li><a href="{{ path('home:rss') }}"><svg><use xlink:href="/img/icons.svg#rss"></use></svg> RSS feed for chaostangent.com</a></li>
+            <li><a href="https://bsky.app/profile/johnnoel.uk" target="_blank" rel="noreferrer"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-bluesky"></use></svg> My posts on Bluesky</a></li>
+            <li><a href="https://mastodon.social/@ceetea" target="_blank" rel="noreferrer"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-mastodon"></use></svg> My toots on Mastodon</a></li>
+            <li><a href="https://github.com/johnnoel" target="_blank" rel="noreferrer"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-github"></use></svg> My code on GitHub</a></li>
+            <li><a href="https://www.last.fm/user/chaostangent" target="_blank" rel="noreferrer"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-lastfm"></use></svg> My scrobbles on last.fm</a></li>
+            <li><a href="https://www.flickr.com/photos/chaostangent/" target="_blank" rel="noreferrer"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-flickr"></use></svg> My photos on Flickr</a></li>
+            <li><a href="https://www.youtube.com/ChaosTangent" target="_blank" rel="noreferrer"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-youtube"></use></svg> My videos on YouTube</a></li>
+            <li><a href="https://chaostangent.tumblr.com/" target="_blank" rel="noreferrer"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-tumblr"></use></svg> My posts on Tumblr</a></li>
+            <li><a href="https://www.twitch.tv/ceetea_" target="_blank" rel="noreferrer"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-twitch"></use></svg> My videos on Twitch</a></li>
+            <li><a href="{{ path('home:rss') }}"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-rss"></use></svg> RSS feed for chaostangent.com</a></li>
         </ul>
     </nav>
 
-    <div class="sitefooter-copyright">
-        <a href="{{ path('home') }}" class="logo logo-small">chaos<b>tangent</b></a> is John Noel &copy; {{ 'now'|date('Y') }}
+    <div class="copyright">
+        <a href="{{ path('home') }}" class="logo">chaos<b>tangent</b></a> is John Noel &copy; {{ 'now'|date('Y') }}
     </div>
 </footer>
-
-<script src="{{ asset('main.js') }}"></script>
 </body>
 </html>

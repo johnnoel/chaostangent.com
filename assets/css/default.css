@@ -37,3 +37,9 @@ a {
 img {
     max-width: 100%;
 }
+
+main {
+    margin: 0 auto;
+    padding: 0 12px;
+    max-width: var(--container-width);
+}

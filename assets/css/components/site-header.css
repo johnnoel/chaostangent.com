@@ -1,7 +1,7 @@
 .site-header {
-    margin: 0 12px 24px;
+    margin: 0 auto 24px;
     max-width: var(--container-width);
-    padding: 8px 0 4px;
+    padding: 8px 12px 4px;
     border-bottom: 1px solid var(--brand-darker-beige);
     display: flex;
     flex-flow: row wrap;
@@ -21,10 +21,6 @@
         b {
             color: var(--brand-dark-grey);
             transition: color .15s;
-        }
-
-        &.logo-small {
-            font-size: 18px;
         }
     }
 

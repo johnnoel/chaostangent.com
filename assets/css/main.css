@@ -5,5 +5,6 @@
 @import "components/a11y-nav.css" layer(components);
 @import "components/site-header.css" layer(components);
 @import "components/search-form.css" layer(components);
+@import "components/site-footer.css" layer(components);
 
 @layer reset, theme, components, helpers;
