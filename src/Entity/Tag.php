@@ -47,4 +47,9 @@ class Tag
     {
         return $this->alias;
     }
+
+    public function getTag(): string
+    {
+        return $this->tag;
+    }
 }

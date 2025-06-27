@@ -1,0 +1,10 @@
+<ul>
+    {% for category in categories %}
+        <li>
+            <a href="{{ path('category', { 'alias': category.alias }) }}" title="View all posts filed under {{ category.title|e('html_attr') }}">{{ category.title }}</a>
+            {% if category.children|length > 0 %}
+                {% include '_category-tree.html.twig' with { 'categories': category.children } %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

@@ -130,6 +130,30 @@ class PostRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return array<int,array<int>>
+     */
+    public function getPostCalendar(): array
+    {
+        $dql = <<<DQL
+            SELECT DISTINCT DATE_EXTRACT('YEAR', p.date) AS year, DATE_EXTRACT('MONTH', p.date) AS month
+            FROM App\Entity\Post p
+            WHERE p.published = true
+            ORDER BY year DESC, month DESC
+        DQL;
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        /** @var array<array{year: string, month: string}> $result */
+        $result = $query->getResult();
+        $ret = [];
+
+        foreach ($result as $row) {
+            $ret[intval($row['year'])][] = intval($row['month']);
+        }
+
+        return $ret;
+    }
+
     private function applyCriteria(FilterPostsCriteria $criteria, QueryBuilder $qb): void
     {
         if ($criteria->category !== null) {

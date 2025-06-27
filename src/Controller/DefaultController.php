@@ -6,8 +6,11 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Tag;
+use App\Repository\CategoryRepository;
 use App\Repository\Criteria\FilterPostsCriteria;
+use App\Repository\DTO\TagDTO;
 use App\Repository\PostRepository;
+use App\Repository\TagRepository;
 use Eko\FeedBundle\Feed\FeedManager;
 use Presta\SitemapBundle\Sitemap\Url\UrlConcrete as Sitemap;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -122,19 +125,19 @@ class DefaultController extends AbstractController
         return new Response();
     }
 
-    public function calendar(): Response
+    public function filter(CategoryRepository $categoryRepository, TagRepository $tagRepository): Response
     {
-        return new Response();
-    }
+        $calendar = $this->postRepository->getPostCalendar();
+        $categories = $categoryRepository->getTree();
+        $tags = $tagRepository->getTagsWithMostPosts();
+        $maxPostCount = $tags->map(fn (TagDTO $t): int => $t->postCount ?? 0)->max();
 
-    public function categoryTree(): Response
-    {
-        return new Response();
-    }
-
-    public function tagCloud(): Response
-    {
-        return new Response();
+        return $this->render('filter.html.twig', [
+            'calendar' => $calendar,
+            'categories' => $categories,
+            'tags' => $tags,
+            'max_post_count' => $maxPostCount,
+        ]);
     }
 
     private function posts(FilterPostsCriteria $criteria, string $template, Request $request): Response

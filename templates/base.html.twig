@@ -46,7 +46,7 @@
 <nav class="a11y-nav" role="navigation">
     <a href="#main">Jump to content</a>
     <a href="#primarynav">Jump to menu</a>
-    <a href="#primaryfilter">Jump to filter</a>
+    <a href="#filter">Jump to filter</a>
 </nav>
 
 <header class="site-header" role="banner">
@@ -71,22 +71,8 @@
     {% block body %}{% endblock %}
 </main>
 
-<nav id="primaryfilter" class="primaryfilter" role="navigation">
-    <h5 class="primaryfilter-title">Filter posts by:</h5>
-    <div class="primaryfilter-filter primaryfilter-calendar">
-        <h6 class="primaryfilter-subtitle">Date</h6>
-        {{ render_esi(controller('App\\Controller\\DefaultController::calendar')) }}
-    </div>
-
-    <div class="primaryfilter-filter primaryfilter-categories">
-        <h6 class="primaryfilter-subtitle">Categories</h6>
-        {{ render_esi(controller('App\\Controller\\DefaultController::categoryTree')) }}
-    </div>
-
-    <div class="primaryfilter-filter primaryfilter-tags">
-        <h6 class="primaryfilter-subtitle">Most used tags</h6>
-        {{ render_esi(controller('App\\Controller\\DefaultController::tagCloud')) }}
-    </div>
+<nav id="filter" class="posts-filter" role="navigation">
+    {{ render_esi(controller('App\\Controller\\DefaultController::filter')) }}
 </nav>
 
 <footer class="site-footer">

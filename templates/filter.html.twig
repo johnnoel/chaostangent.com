@@ -1,0 +1,44 @@
+{% if calendar|length > 0 or categories|length > 0 or tags|length > 0 %}
+    <h5>Filter posts by:</h5>
+    {% if calendar|length > 0 %}
+        <div class="calendar">
+            <h6>Date</h6>
+            <ul>
+                {% for year, months in calendar %}
+                    <li>
+                        <a href="{{ path('year', { 'year': year }) }}">{{ year }}</a>
+                        <ul>
+                            {% for month in months %}
+                                <li><a href="{{ path('month', { 'year': year, 'month': month|format_number({ 'min_integer_digit': 2 }) }) }}">{{ (year ~ '-' ~ month ~ '-1 00:00:00')|date('M') }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if categories|length > 0 %}
+        <div class="categories">
+            <h6>Categories</h6>
+            {% include '_category-tree.html.twig' with { 'categories': categories } only %}
+        </div>
+    {% endif %}
+
+    {% if tags|length > 0 %}
+        <div class="tags">
+            <h6>Most used tags</h6>
+            <ul>
+                {% set max_font_size = 28 %}
+                {% set min_font_size = 11 %}
+
+                {% for tag in tags %}
+                    {% set font_size = (min_font_size + ((max_font_size - min_font_size) * (tag.postCount / max_post_count))) %}
+                    <li style="font-size: {{ font_size|number_format(2) }}px;">
+                        <a href="{{ path('tag', { 'alias': tag.tag.alias }) }}">{{ tag.tag.tag }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endif %}

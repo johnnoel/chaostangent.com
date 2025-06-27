@@ -25,7 +25,7 @@ class Category
     /**
      * @var Collection<int,Category>
      */
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Category::class)]
+    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'parent')]
     private Collection $children;
     #[ORM\Column(type: 'string', length: 255)]
     private string $title;
@@ -56,5 +56,23 @@ class Category
     public function getAlias(): string
     {
         return $this->alias;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getParent(): ?Category
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @return Collection<int,Category>
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
     }
 }
