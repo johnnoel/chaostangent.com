@@ -8,6 +8,7 @@ use App\Controller\DefaultController;
 use App\Factory\CategoryFactory;
 use App\Factory\PostFactory;
 use App\Factory\TagFactory;
+use App\Repository\Criteria\FilterPostsCriteria;
 use App\Repository\PostRepository;
 use App\Tests\WebTestCase;
 use DateTimeImmutable;
@@ -55,8 +56,8 @@ class DefaultControllerTest extends WebTestCase
 
         /** @var PostRepository $postRepository */
         $postRepository = static::getContainer()->get(PostRepository::class);
-        $page1Posts = $postRepository->getHomepagePosts(1, 5);
-        $page2Posts = $postRepository->getHomepagePosts(2, 5);
+        $page1Posts = $postRepository->filterPosts(new FilterPostsCriteria(page: 1, perPage: 5));
+        $page2Posts = $postRepository->filterPosts(new FilterPostsCriteria(page: 2, perPage: 5));
 
         $client->request('GET', '/page/2/');
         $response = $client->getResponse()->getContent();
@@ -75,39 +76,75 @@ class DefaultControllerTest extends WebTestCase
     public function testYear(): void
     {
         $client = static::createClient();
+        $posts = PostFactory::new()->published()->many(2)->create([
+            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-27'),
+        ]);
+
+        $otherPosts = PostFactory::new()->published()->many(2)->create([
+            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2024-06-27'),
+        ]);
 
         $client->request('GET', '/2025/');
 
         $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
+        $this->assertStringNotContainsString($otherPosts[0]->getTitle(), strval($client->getResponse()->getContent()));
+    }
+
+    public function testYearNotFound(): void
+    {
+        $client = static::createClient();
+        PostFactory::new()->published()->many(2)->create([
+            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-27'),
+        ]);
+
+        $client->request('GET', '/2024/');
+
+        $this->assertResponseStatusCodeSame(404);
     }
 
     public function testYearRss(): void
     {
         $client = static::createClient();
+        $posts = PostFactory::new()->published()->many(2)->create([
+            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-27'),
+        ]);
 
         $client->request('GET', '/2025/feed/');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseFormatSame('rss');
+        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
     }
 
     public function testYearAtom(): void
     {
         $client = static::createClient();
+        $posts = PostFactory::new()->published()->many(2)->create([
+            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-27'),
+        ]);
 
         $client->request('GET', '/2025/feed/atom/');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseFormatSame('atom');
+        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
     }
 
     public function testYearPaginated(): void
     {
         $client = static::createClient();
+        PostFactory::new()->published()->many(6)->create([
+            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-27'),
+        ]);
 
         $client->request('GET', '/2025/page/2/');
 
         $this->assertResponseIsSuccessful();
+
+        $client->request('GET', '/2025/page/3/');
+
+        $this->assertResponseStatusCodeSame(404);
     }
 
     public function testMonth(): void

@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Tag;
+use App\Repository\Criteria\FilterPostsCriteria;
 use App\Repository\PostRepository;
 use Eko\FeedBundle\Feed\FeedManager;
 use Presta\SitemapBundle\Sitemap\Url\UrlConcrete as Sitemap;
@@ -31,20 +32,9 @@ class DefaultController extends AbstractController
     ], methods: [ 'GET' ])]
     public function index(Request $request, int $page = 1): Response
     {
-        $posts = $this->postRepository->getHomepagePosts($page, self::PER_PAGE);
-        $requestFormat = $request->getRequestFormat();
+        $criteria = new FilterPostsCriteria(page: $page, perPage: self::PER_PAGE);
 
-        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
-            return new Response(
-                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
-            );
-        }
-
-        return $this->render('index.html.twig', [
-            'posts' => $posts,
-            'page' => $page,
-            'page_count' => 1,
-        ]);
+        return $this->posts($criteria, 'index.html.twig', $request);
     }
 
     #[Route('/{year}/page/{page}/', name: 'year:paginated', requirements: [
@@ -59,9 +49,11 @@ class DefaultController extends AbstractController
     #[Route('/{year}/', name: 'year', requirements: [ 'year' => '\d{4}' ], defaults: [
         'page' => 1,
     ], methods: [ 'GET' ])]
-    public function year(): Response
+    public function year(int $year, Request $request, int $page = 1): Response
     {
-        return new Response();
+        $criteria = new FilterPostsCriteria(year: $year, page: $page, perPage: self::PER_PAGE);
+
+        return $this->posts($criteria, 'year.html.twig', $request);
     }
 
     #[Route('/{year}/{month}/page/{page}/', name: 'month:paginated', requirements: [
@@ -78,26 +70,9 @@ class DefaultController extends AbstractController
     ], defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
     public function month(int $year, int $month, Request $request, int $page = 1): Response
     {
-        $posts = $this->postRepository->getPostsForYearAndMonth($year, $month, $page, self::PER_PAGE);
-        if ($posts->isEmpty()) {
-            throw new NotFoundHttpException();
-        }
+        $criteria = new FilterPostsCriteria(month: $month, year: $year, page: $page, perPage: self::PER_PAGE);
 
-        $requestFormat = $request->getRequestFormat();
-
-        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
-            return new Response(
-                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
-            );
-        }
-
-        $pageCount = ceil($this->postRepository->getPostCountForYearAndMonth($year, $month) / self::PER_PAGE);
-
-        return $this->render('year-month.html.twig', [
-            'posts' => $posts,
-            'page' => $page,
-            'page_count' => $pageCount,
-        ]);
+        return $this->posts($criteria, 'year-month.html.twig', $request);
     }
 
     #[Route('/category/{alias:category}/page/{page}/', name: 'category:paginated', requirements: [
@@ -112,22 +87,9 @@ class DefaultController extends AbstractController
     #[Route('/category/{alias:category}/', name: 'category', requirements: [ 'alias' => '.+' ], methods: [ 'GET' ])]
     public function category(Category $category, Request $request, int $page = 1): Response
     {
-        $posts = $this->postRepository->getPostsForCategory($category, $page, self::PER_PAGE);
-        $requestFormat = $request->getRequestFormat();
+        $criteria = new FilterPostsCriteria(category: $category, page: $page, perPage: self::PER_PAGE);
 
-        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
-            return new Response(
-                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
-            );
-        }
-
-        $pageCount = ceil($this->postRepository->getPostCountForCategory($category) / self::PER_PAGE);
-
-        return $this->render('category.html.twig', [
-            'posts' => $posts,
-            'page' => $page,
-            'page_count' => $pageCount,
-        ]);
+        return $this->posts($criteria, 'category.html.twig', $request);
     }
 
     #[Route('/tag/{alias:tag}/', name: 'tag', defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
@@ -142,22 +104,9 @@ class DefaultController extends AbstractController
     ], methods: [ 'GET' ])]
     public function tag(Tag $tag, Request $request, int $page = 1): Response
     {
-        $posts = $this->postRepository->getPostsForTag($tag, $page, self::PER_PAGE);
-        $requestFormat = $request->getRequestFormat();
+        $criteria = new FilterPostsCriteria(tag: $tag, page: $page, perPage: self::PER_PAGE);
 
-        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
-            return new Response(
-                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
-            );
-        }
-
-        $pageCount = ceil($this->postRepository->getPostCountForTag($tag) / self::PER_PAGE);
-
-        return $this->render('tag.html.twig', [
-            'posts' => $posts,
-            'page' => $page,
-            'page_count' => $pageCount,
-        ]);
+        return $this->posts($criteria, 'tag.html.twig', $request);
     }
 
     #[Route('/about/', name: 'about', options: [
@@ -186,5 +135,30 @@ class DefaultController extends AbstractController
     public function tagCloud(): Response
     {
         return new Response();
+    }
+
+    private function posts(FilterPostsCriteria $criteria, string $template, Request $request): Response
+    {
+        $posts = $this->postRepository->filterPosts($criteria);
+
+        if ($posts->isEmpty()) {
+            throw new NotFoundHttpException();
+        }
+
+        $requestFormat = $request->getRequestFormat();
+
+        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
+            return new Response(
+                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
+            );
+        }
+
+        $pageCount = ceil($this->postRepository->countFilteredPosts($criteria) / self::PER_PAGE);
+
+        return $this->render($template, [
+            'posts' => $posts,
+            'page' => $criteria->page,
+            'page_count' => $pageCount,
+        ]);
     }
 }

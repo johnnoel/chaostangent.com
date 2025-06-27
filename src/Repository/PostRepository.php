@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\Category;
 use App\Entity\Post;
-use App\Entity\Tag;
+use App\Repository\Criteria\FilterPostsCriteria;
 use App\Repository\DTO\PostDTO;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Generator;
 use Illuminate\Support\Collection;
@@ -30,145 +30,36 @@ class PostRepository extends ServiceEntityRepository
     /**
      * @return Collection<int,Post>
      */
-    public function getHomepagePosts(int $page, int $perPage): Collection
+    public function filterPosts(FilterPostsCriteria $criteria): Collection
     {
-        $dql = <<<DQL
-            SELECT p FROM  App\Entity\Post p
-            WHERE (p.published = :published)
-            ORDER BY p.date DESC, p.id DESC
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-        /** @var array<Post> $result */
-        $result = $query->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
+        $qb = $this->createQueryBuilder('p');
+        $qb->where($qb->expr()->eq('p.published', ':published'))
+            ->orderBy('p.date', 'DESC')
+            ->addOrderBy('p.id', 'DESC')
+            ->setMaxResults($criteria->perPage)
+            ->setFirstResult(($criteria->page - 1) * $criteria->perPage)
             ->setParameter('published', true)
-            ->getResult()
         ;
+
+        $this->applyCriteria($criteria, $qb);
+
+        /** @var array<Post> $result */
+        $result = $qb->getQuery()->getResult();
 
         return new Collection($result);
     }
 
-    /**
-     * @return Collection<int,Post>
-     */
-    public function getPostsForTag(Tag $tag, int $page, int $perPage): Collection
+    public function countFilteredPosts(FilterPostsCriteria $criteria): int
     {
-        $dql = <<<DQL
-            SELECT p FROM App\Entity\Post p
-            JOIN p.tags t
-            WHERE (t = :tag) AND (p.published = :published)
-            ORDER BY p.date DESC, p.id DESC
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-        /** @var array<Post> $result */
-        $result = $query->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->setParameter('tag', $tag->getId(), UlidType::NAME)
-            ->setParameter('published', true)
-            ->getResult()
-        ;
-
-        return new Collection($result);
-    }
-
-    public function getPostCountForTag(Tag $tag): int
-    {
-        $dql = <<<DQL
-            SELECT COUNT(p) FROM App\Entity\Post p
-            JOIN p.tags t
-            WHERE (t = :tag) AND (p.published = :published)
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-        $query->setParameter('tag', $tag->getId(), UlidType::NAME)
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('COUNT(p)')
+            ->where($qb->expr()->eq('p.published', ':published'))
             ->setParameter('published', true)
         ;
 
-        return intval($query->getSingleScalarResult());
-    }
+        $this->applyCriteria($criteria, $qb);
 
-    /**
-     * @return Collection<int,Post>
-     */
-    public function getPostsForCategory(Category $category, int $page, int $perPage): Collection
-    {
-        $dql = <<<DQL
-            SELECT p FROM App\Entity\Post p
-            JOIN p.categories c
-            WHERE (c = :category) AND (p.published = :published)
-            ORDER BY p.date DESC, p.id DESC
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-        /** @var array<Post> $result */
-        $result = $query->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->setParameter('category', $category->getId(), UlidType::NAME)
-            ->setParameter('published', true)
-            ->getResult()
-        ;
-
-        return new Collection($result);
-    }
-
-    public function getPostCountForCategory(Category $category): int
-    {
-        $dql = <<<DQL
-            SELECT COUNT(p) FROM App\Entity\Post p
-            JOIN p.categories c
-            WHERE (c = :category) AND (p.published = :published)
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-        $query->setParameter('category', $category->getId(), UlidType::NAME)
-            ->setParameter('published', true)
-        ;
-
-        return intval($query->getSingleScalarResult());
-    }
-
-    /**
-     * @return Collection<int,Post>
-     */
-    public function getPostsForYearAndMonth(int $year, int $month, int $page, int $perPage): Collection
-    {
-        $dql = <<<DQL
-            SELECT p FROM App\Entity\Post p
-            WHERE (p.published = true)
-                AND (DATE_EXTRACT('YEAR', p.date) = :year)
-                AND (DATE_EXTRACT('MONTH', p.date) = :month)
-            ORDER BY p.date DESC, p.id DESC
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-        /** @var array<Post> $result */
-        $result = $query->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
-            ->setParameter('year', $year)
-            ->setParameter('month', $month)
-            ->getResult()
-        ;
-
-        return new Collection($result);
-    }
-
-    public function getPostCountForYearAndMonth(int $year, int $month): int
-    {
-        $dql = <<<DQL
-            SELECT COUNT(p) FROM App\Entity\Post p
-            WHERE (p.published = true)
-                AND (DATE_EXTRACT('YEAR', p.date) = :year)
-                AND (DATE_EXTRACT('MONTH', p.date) = :month)
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-        $query->setParameter('year', $year)
-            ->setParameter('month', $month)
-        ;
-
-        return intval($query->getSingleScalarResult());
+        return intval($qb->getQuery()->getSingleScalarResult());
     }
 
     public function getPost(string $alias, int $year, int $month): ?Post
@@ -236,6 +127,35 @@ class PostRepository extends ServiceEntityRepository
                 ->getResult();
 
             yield from array_map(fn (array $row): PostDTO => new PostDTO($row[0], $row['last_modified']), $result);
+        }
+    }
+
+    private function applyCriteria(FilterPostsCriteria $criteria, QueryBuilder $qb): void
+    {
+        if ($criteria->category !== null) {
+            $qb->join('p.categories', 'c')
+                ->andWhere($qb->expr()->eq('c', ':category'))
+                ->setParameter('category', $criteria->category->getId(), UlidType::NAME)
+            ;
+        }
+
+        if ($criteria->tag !== null) {
+            $qb->join('p.tags', 't')
+                ->andWhere($qb->expr()->eq('t', ':tag'))
+                ->setParameter('tag', $criteria->tag->getId(), UlidType::NAME)
+            ;
+        }
+
+        if ($criteria->month !== null) {
+            $qb->andWhere($qb->expr()->eq("DATE_EXTRACT('MONTH', p.date)", ':month'))
+                ->setParameter('month', $criteria->month)
+            ;
+        }
+
+        if ($criteria->year !== null) {
+            $qb->andWhere($qb->expr()->eq("DATE_EXTRACT('YEAR', p.date)", ':year'))
+                ->setParameter('year', $criteria->year)
+            ;
         }
     }
 }
