@@ -75,4 +75,14 @@ class Category
     {
         return $this->children;
     }
+
+    public function resetChildren(): void
+    {
+        $this->children = new ArrayCollection();
+    }
+
+    public function addChild(Category $child): void
+    {
+        $this->children->add($child);
+    }
 }

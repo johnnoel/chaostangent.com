@@ -41,6 +41,8 @@ class TagRepository extends ServiceEntityRepository
         $result = $qb->getQuery()->getResult();
         $dtos = array_map(fn (array $r): TagDTO => new TagDTO($r[0], intval($r['post_count'])), $result);
 
+        usort($dtos, fn (TagDTO $a, TagDTO $b): int => $a->tag->getTag() <=> $b->tag->getTag());
+
         return new Collection($dtos);
     }
 }

@@ -24,6 +24,33 @@ class CategoryRepository extends ServiceEntityRepository
      */
     public function getTree(): Collection
     {
-        return (new Collection($this->findAll()))->filter(fn (Category $c): bool => $c->getParent() === null);
+        $qb = $this->createQueryBuilder('c');
+        $qb->leftJoin('c.posts', 'p', 'WITH', 'p.published = :published')
+            ->groupBy('c.id')
+            ->having($qb->expr()->gt('COUNT(p.id)', ':post_count'))
+            ->orderBy('c.title', 'ASC')
+            ->setParameter('published', true)
+            ->setParameter('post_count', 0)
+        ;
+
+        /** @var array<Category> $result */
+        $categories = $qb->getQuery()->getResult();
+        // change the category's PersistentCollection to an ArrayCollection so that when doing getChildren(), Doctrine
+        // doesn't try to fetch them from the database
+        array_walk($categories, fn (Category $c) => $c->resetChildren());
+
+        foreach ($categories as $category) {
+            if ($category->getParent() === null) {
+                continue;
+            }
+
+            $category->getParent()->addChild($category);
+        }
+
+        $topLevelCategories = (new Collection(
+            array_filter($categories, fn (Category $c): bool => $c->getParent() === null)
+        ))->sort(fn (Category $a, Category $b): int => $a->getTitle() <=> $b->getTitle());
+
+        return $topLevelCategories;
     }
 }
