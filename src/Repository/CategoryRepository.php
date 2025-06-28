@@ -33,7 +33,7 @@ class CategoryRepository extends ServiceEntityRepository
             ->setParameter('post_count', 0)
         ;
 
-        /** @var array<Category> $result */
+        /** @var array<Category> $categories */
         $categories = $qb->getQuery()->getResult();
         // change the category's PersistentCollection to an ArrayCollection so that when doing getChildren(), Doctrine
         // doesn't try to fetch them from the database
