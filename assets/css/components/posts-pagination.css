@@ -1,0 +1,32 @@
+.posts-pagination {
+    font-size: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 36px 0 18px;
+
+    .prev, .next {
+        padding: 3px 0 0;
+    }
+
+    .next {
+        text-align: right;
+    }
+
+    .pages {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-flow: row nowrap;
+
+        a {
+            padding: 4px;
+        }
+
+        .active {
+            background: var(--brand-orange);
+            color: #FFF;
+            text-decoration: none;
+        }
+    }
+}
