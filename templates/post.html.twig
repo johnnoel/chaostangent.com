@@ -1,24 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <article id="post-{{ post.id }}" role="article">
+    <article id="post-{{ post.id }}" class="blog-post" role="article">
         {% set post_link = path('post', post.routeParams) %}
-        <header class="post-title">
+        <header>
             <h1><a href="{{ post_link }}" title="Permanent Link to {{ post.title|e('html_attr') }}" rel="bookmark">{{ post.title }}</a></h1>
             {% if post.subtitle is not empty %}<h2>{{ post.subtitle }}</h2>{% endif %}
         </header>
 
-        <aside class="post-datetime">
+        <aside>
             <time datetime="{{ post.date|date('Y-m-d\\TH:i:sP') }}">
-                <span class="post-datetime-day">{{ post.date|date('d') }}</span><span class="post-datetime-month">{{ post.date|date('M') }}</span><span class="post-datetime-year">{{ post.date|date('Y') }}</span><span class="post-datetime-time">{{ post.date|date('H:i') }}</span>
+                <span class="day">{{ post.date|date('d') }}</span><span class="month">{{ post.date|date('M') }}</span><span class="year">{{ post.date|date('Y') }}</span><span class="post-datetime-time">{{ post.date|date('H:i') }}</span>
             </time>
         </aside>
 
-        <div class="post-content">
-            {{ post.content|pullquote(post.extra)|full|raw }}
+        <div class="full _content">
+            {{ post.content|raw }}
         </div>
 
-        <aside class="post-appreciate">
+        <section class="post-appreciate">
             <h5>Support chaostangent.com</h5>
 
             <div class="post-appreciate-inner" id="#appreciate">
@@ -38,7 +38,7 @@
                     <a href="https://www.reddit.com/submit?url={{ post_url|e('url') }}&amp;title={{ post.fullTitle|e('url') }}" title="Share this post on Reddit"><svg><use xlink:href="/img/icons.svg#reddit"></use></svg> Share on Reddit</a>
                 </div>
             </div>
-        </aside>
+        </section>
 
         {#{{ render(controller('App\\Controller\\PostsController::similar', { 'post': post })) }}#}
 
