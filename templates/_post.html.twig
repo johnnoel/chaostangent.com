@@ -1,20 +1,20 @@
 <article id="post-{{ post.id }}" class="post" role="region">
-    {% set post_link = path('post', post.getRouteParams()) %}
-    {% set responseCount = 0 %}
+    {% set post_link = path('post', post.routeParams) %}
+    {% set response_count = 0 %}
 
-    <header class="post-title">
+    <header>
         <h1><a href="{{ post_link }}" title="Permanent link to {{ post.title|e('html_attr') }}" rel="bookmark">{{ post.title }}</a></h1>
         {% if post.subtitle is not empty %}<h2>{{ post.subtitle }}</h2>{% endif %}
     </header>
 
-    <aside class="post-datetime">
+    <aside>
         <time datetime="{{ post.date|date('Y-m-d\\TH:i:sP') }}">
-            <span class="post-datetime-day">{{ post.date|date('d') }}</span><span class="post-datetime-month">{{ post.date|date('M') }}</span><span class="post-datetime-year">{{ post.date|date('Y') }}</span><span class="post-datetime-time">{{ post.date|date('H:i') }}</span>
+            <span class="day">{{ post.date|date('d') }}</span><span class="month">{{ post.date|date('M') }}</span><span class="year">{{ post.date|date('Y') }}</span><span class="post-datetime-time">{{ post.date|date('H:i') }}</span>
         </time>
-        {% if responseCount > 0 %}<p class="post-responselink"><a href="{{ post_link }}#responses" title="Respond to {{ post.title|e('html_attr') }}">{{ responseCount }} response{% if responseCount > 1 %}s{% endif %}</a></p>{% endif %}
+        {% if response_count > 0 %}<p class="responses"><a href="{{ post_link }}#responses" title="Respond to {{ post.title|e('html_attr') }}">{{ response_count }} response{% if response_count > 1 %}s{% endif %}</a></p>{% endif %}
     </aside>
 
-    <div class="post-content">
+    <div class="summary _content">
         {{ (post.summary is null ? post.content : post.summary)|raw }}
         <p><a href="{{ post_link }}#more-{{ post.id }}">Read the rest of this entry</a></p>
     </div>

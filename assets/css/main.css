@@ -5,8 +5,11 @@
 @import "components/a11y-nav.css" layer(components);
 @import "components/site-header.css" layer(components);
 @import "components/search-form.css" layer(components);
+@import "components/posts-list.css" layer(components);
 @import "components/posts-pagination.css" layer(components);
 @import "components/posts-filter.css" layer(components);
 @import "components/site-footer.css" layer(components);
+
+@import "helpers.css" layer(helpers);
 
 @layer reset, theme, components, helpers;
