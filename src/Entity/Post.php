@@ -29,6 +29,8 @@ class Post implements RoutedItemInterface
     private ?string $subtitle;
     #[ORM\Column(type: 'string', length: 255)]
     private string $alias;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $summary;
     #[ORM\Column(type: 'text')]
     private string $content;
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
@@ -82,6 +84,7 @@ class Post implements RoutedItemInterface
         ?DateTimeImmutable $date,
         bool $published,
         array $extra,
+        ?string $summary = null,
         array $categories = [],
         array $tags = []
     ) {
@@ -93,12 +96,31 @@ class Post implements RoutedItemInterface
         $this->date = $date;
         $this->published = $published;
         $this->extra = $extra;
+        $this->summary = $summary;
 
         $this->created = new DateTimeImmutable('now');
         $this->updated = new DateTimeImmutable('now');
         $this->comments = new ArrayCollection();
         $this->categories = new ArrayCollection($categories);
         $this->tags = new ArrayCollection($tags);
+    }
+
+    public function setSummary(?string $summary): void
+    {
+        $this->summary = $summary;
+    }
+
+    public function setContent(string $content): void
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @param array<string,mixed> $extra
+     */
+    public function setExtra(array $extra): void
+    {
+        $this->extra = $extra;
     }
 
     public function getId(): Ulid
@@ -119,6 +141,11 @@ class Post implements RoutedItemInterface
     public function getFullTitle(): string
     {
         return trim(sprintf('%s - %s', $this->title, $this->subtitle), '- ');
+    }
+
+    public function getSummary(): ?string
+    {
+        return $this->summary;
     }
 
     public function getContent(): string
