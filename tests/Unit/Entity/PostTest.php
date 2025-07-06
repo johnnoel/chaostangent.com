@@ -10,8 +10,8 @@ use PHPUnit\Framework\TestCase;
 
 class PostTest extends TestCase
 {
-    #[DataProvider('getFeedItemTitleProvider')]
-    public function testGetFeedItemTitle(string $title, ?string $subtitle, string $expectedFeedItemTitle): void
+    #[DataProvider('getFullTitleProvider')]
+    public function testGetFullTitle(string $title, ?string $subtitle, string $expectedFeedItemTitle): void
     {
         $post = new Post($title, $subtitle, 'test-post', '', null, false, []);
         $this->assertSame($expectedFeedItemTitle, $post->getFeedItemTitle());
@@ -20,7 +20,7 @@ class PostTest extends TestCase
     /**
      * @return array<string,array<mixed>>
      */
-    public static function getFeedItemTitleProvider(): array
+    public static function getFullTitleProvider(): array
     {
         return [
             'no subtitle' => [ 'Test title', null, 'Test title' ],

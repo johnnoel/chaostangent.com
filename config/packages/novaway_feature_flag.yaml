@@ -1,0 +1,11 @@
+parameters:
+    fallback_false: false
+
+novaway_feature_flag:
+    default_manager: default
+    managers:
+        default:
+            factory: 'novaway_feature_flag.factory.array'
+            options:
+                features:
+                    comments: '%env(default:fallback_false:bool:FEATURE_COMMENTS)%'

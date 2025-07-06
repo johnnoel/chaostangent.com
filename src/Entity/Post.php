@@ -116,6 +116,11 @@ class Post implements RoutedItemInterface
         return $this->subtitle;
     }
 
+    public function getFullTitle(): string
+    {
+        return trim(sprintf('%s - %s', $this->title, $this->subtitle), '- ');
+    }
+
     public function getContent(): string
     {
         return $this->content;
@@ -140,6 +145,22 @@ class Post implements RoutedItemInterface
     }
 
     /**
+     * @return Collection<int,Category>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @return Collection<int,Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    /**
      * @return array{year: string|null, month: string|null, alias: string}
      */
     public function getRouteParams(): array
@@ -153,7 +174,7 @@ class Post implements RoutedItemInterface
 
     public function getFeedItemTitle(): string
     {
-        return trim(sprintf('%s - %s', $this->title, $this->subtitle), ' -');
+        return $this->getFullTitle();
     }
 
     public function getFeedItemDescription(): string

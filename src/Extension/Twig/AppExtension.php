@@ -15,6 +15,7 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFilter('pullquote', [ $this, 'pullquote' ]),
             new TwigFilter('teaser', [ $this, 'teaser' ]),
+            new TwigFilter('full', [ $this, 'full' ]),
         ];
     }
 
@@ -24,6 +25,11 @@ class AppExtension extends AbstractExtension
     }
 
     public function teaser(string $input): string
+    {
+        return $input;
+    }
+
+    public function full(string $input): string
     {
         return $input;
     }

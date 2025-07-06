@@ -24,13 +24,20 @@ final class CommentFactory extends PersistentProxyObjectFactory
         ]);
     }
 
+    public function unapproved(): self
+    {
+        return $this->with([
+            'approved' => false,
+        ]);
+    }
+
     /**
      * @return array<mixed>
      */
     protected function defaults(): array
     {
         return [
-            'approved' => self::faker()->boolean(),
+            'approved' => true,
             'authorEmail' => self::faker()->email(),
             'authorIp' => self::faker()->ipv4(),
             'authorName' => self::faker()->text(255),

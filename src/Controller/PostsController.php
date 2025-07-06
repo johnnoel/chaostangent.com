@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\Type\CommentType;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,8 +26,11 @@ class PostsController extends AbstractController
         #[MapEntity(expr: 'repository.getPost(alias, year, month)')]
         Post $post
     ): Response {
+        $commentForm = $this->createForm(CommentType::class);
+
         return $this->render('post.html.twig', [
             'post' => $post,
+            'comment_form' => $commentForm,
         ]);
     }
 }
