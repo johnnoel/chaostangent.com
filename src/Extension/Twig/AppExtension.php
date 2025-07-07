@@ -19,9 +19,7 @@ class AppExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('pullquote', [ $this, 'pullquote' ]),
-            new TwigFilter('teaser', [ $this, 'teaser' ]),
-            new TwigFilter('full', [ $this, 'full' ]),
+            new TwigFilter('gravatar', [ $this, 'gravatar' ]),
         ];
     }
 
@@ -33,19 +31,23 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function pullquote(string $input): string
-    {
-        return $input;
-    }
+    public function gravatar(
+        string $email,
+        string $default = 'indenticon',
+        int $size = 64,
+        string $rating = 'r'
+    ): string {
+        $email = trim(mb_strtolower($email));
 
-    public function teaser(string $input): string
-    {
-        return $input;
-    }
-
-    public function full(string $input): string
-    {
-        return $input;
+        return sprintf(
+            '//www.gravatar.com/avatar/%s?%s',
+            hash('md5', $email),
+            http_build_query([
+                'd' => $default,
+                's' => $size,
+                'r' => $rating,
+            ])
+        );
     }
 
     public function isFeatureEnabled(string $key): bool

@@ -69,7 +69,7 @@
         <section class="responses" id="responses">
             {% if post.comments|length > 0 %}
                 <h1 class="responses-title">Responses to &ldquo;{{ post.title }}&rdquo;</h1>
-                {% include 'comments.html.twig' with { 'comments': post.commentsTree, 'post': post, 'depth': 1 } %}
+                {% include '_comments.html.twig' with { 'comments': post.comments, 'post': post, 'depth': 1 } %}
             {% endif %}
 
             {% if isFeatureEnabled('comments') %}

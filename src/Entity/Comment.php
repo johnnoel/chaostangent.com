@@ -72,4 +72,42 @@ class Comment
         $this->created = new DateTimeImmutable('now');
         $this->children = new ArrayCollection();
     }
+
+    public function getId(): Ulid
+    {
+        return $this->id;
+    }
+
+    public function getAuthorName(): string
+    {
+        return $this->authorName;
+    }
+
+    public function getAuthorEmail(): string
+    {
+        return $this->authorEmail;
+    }
+
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
+
+    public function getCreated(): DateTimeImmutable
+    {
+        return $this->created;
+    }
+
+    /**
+     * @return Collection<int,Comment>
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function getAuthorUrl(): ?string
+    {
+        return $this->authorUrl;
+    }
 }
