@@ -34,12 +34,15 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Collection<int,Post>
+     * @return Collection<int,PostDTO>
      */
     public function filterPosts(FilterPostsCriteria $criteria): Collection
     {
         $qb = $this->createQueryBuilder('p');
-        $qb->where($qb->expr()->eq('p.published', ':published'))
+        $qb->select([ 'p', 'COUNT(c.id)' ])
+            ->leftJoin('p.comments', 'c')
+            ->where($qb->expr()->eq('p.published', ':published'))
+            ->groupBy('p.id')
             ->orderBy('p.date', 'DESC')
             ->addOrderBy('p.id', 'DESC')
             ->setMaxResults($criteria->perPage)
@@ -49,8 +52,11 @@ class PostRepository extends ServiceEntityRepository
 
         $this->applyCriteria($criteria, $qb);
 
-        /** @var array<Post> $result */
-        $result = $qb->getQuery()->getResult();
+        /** @var array<array{0: Post, 1: int}> $result */
+        $result = array_map(
+            fn(array $r): PostDTO => new PostDTO(post: $r[0], commentCount: $r[1]),
+            $qb->getQuery()->getResult()
+        );
 
         return new Collection($result);
     }

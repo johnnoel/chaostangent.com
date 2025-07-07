@@ -59,8 +59,7 @@ class ProcessPostsCommand extends Command
             fn (Processor $p): bool => in_array($p->getSlug(), $processors)
         );
 
-        $criteria = new FilterPostsCriteria();
-        $postCount = $this->postRepository->countFilteredPosts($criteria);
+        $postCount = $this->postRepository->countFilteredPosts(new FilterPostsCriteria());
         $pages = ceil($postCount / self::PER_PAGE);
 
         $dryRun = boolval($input->getOption('dry-run'));
@@ -68,16 +67,16 @@ class ProcessPostsCommand extends Command
         $progressBar->start();
 
         for ($page = 1; $page <= $pages; $page++) {
-            $posts = $this->postRepository->filterPosts($criteria);
+            $posts = $this->postRepository->filterPosts(new FilterPostsCriteria(page: $page, perPage: self::PER_PAGE));
 
             // devtodo parallelise
-            foreach ($posts as $post) {
-                foreach ($toApply as $p) {
-                    $p->process($post);
+            foreach ($posts as $p) {
+                foreach ($toApply as $a) {
+                    $a->process($p->post);
                 }
 
                 if (!$dryRun) {
-                    $this->postRepository->update($post);
+                    $this->postRepository->update($p->post);
                 }
 
                 $progressBar->advance();
