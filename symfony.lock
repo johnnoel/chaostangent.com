@@ -71,9 +71,6 @@
             "config/packages/eko_feed.yaml"
         ]
     },
-    "novaway/feature-flag-bundle": {
-        "version": "2.7.1"
-    },
     "phpstan/phpstan": {
         "version": "2.1",
         "recipe": {
