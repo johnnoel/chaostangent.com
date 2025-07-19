@@ -152,7 +152,7 @@ class DefaultController extends AbstractController
 
         if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
             return new Response(
-                $this->feedManager->get('posts')->addFromArray($posts->all())->render($requestFormat)
+                $this->feedManager->get('posts')->addFromArray($posts->pluck('post')->all())->render($requestFormat)
             );
         }
 

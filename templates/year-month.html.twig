@@ -16,8 +16,8 @@
             </header>
         {% endif %}
 
-        {% for post in posts %}
-            {% include '_post.html.twig' with { 'post': post } %}
+        {% for p in posts %}
+            {% include '_post.html.twig' with { 'p': p } %}
         {% endfor %}
 
         {% include '_pagination.html.twig' with {

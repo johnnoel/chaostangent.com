@@ -39,8 +39,8 @@ class PostRepository extends ServiceEntityRepository
     public function filterPosts(FilterPostsCriteria $criteria): Collection
     {
         $qb = $this->createQueryBuilder('p');
-        $qb->select([ 'p', 'COUNT(c.id)' ])
-            ->leftJoin('p.comments', 'c')
+        $qb->select([ 'p', 'COUNT(co.id)' ])
+            ->leftJoin('p.comments', 'co')
             ->where($qb->expr()->eq('p.published', ':published'))
             ->groupBy('p.id')
             ->orderBy('p.date', 'DESC')
@@ -51,11 +51,13 @@ class PostRepository extends ServiceEntityRepository
         ;
 
         $this->applyCriteria($criteria, $qb);
+        /** @var array<array{0: Post, 1: int}> $dbResult */
+        $dbResult = $qb->getQuery()->getResult();
 
-        /** @var array<array{0: Post, 1: int}> $result */
+        /** @var array<PostDTO> $result */
         $result = array_map(
-            fn(array $r): PostDTO => new PostDTO(post: $r[0], commentCount: $r[1]),
-            $qb->getQuery()->getResult()
+            fn (array $r): PostDTO => new PostDTO(post: $r[0], commentCount: $r[1]),
+            $dbResult
         );
 
         return new Collection($result);
@@ -169,8 +171,8 @@ class PostRepository extends ServiceEntityRepository
     private function applyCriteria(FilterPostsCriteria $criteria, QueryBuilder $qb): void
     {
         if ($criteria->category !== null) {
-            $qb->join('p.categories', 'c')
-                ->andWhere($qb->expr()->eq('c', ':category'))
+            $qb->join('p.categories', 'ca')
+                ->andWhere($qb->expr()->eq('ca', ':category'))
                 ->setParameter('category', $criteria->category->getId(), UlidType::NAME)
             ;
         }

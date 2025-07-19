@@ -63,11 +63,11 @@ class DefaultControllerTest extends WebTestCase
         $response = $client->getResponse()->getContent();
 
         foreach ($page2Posts as $post) {
-            $this->assertStringContainsString($post->getTitle(), $response ?: '');
+            $this->assertStringContainsString($post->post->getTitle(), $response ?: '');
         }
 
         foreach ($page1Posts as $post) {
-            $this->assertStringNotContainsString($post->getTitle(), $response ?: '');
+            $this->assertStringNotContainsString($post->post->getTitle(), $response ?: '');
         }
 
         $this->assertResponseIsSuccessful();
