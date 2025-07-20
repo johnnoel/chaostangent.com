@@ -98,6 +98,16 @@ class Comment
         return $this->created;
     }
 
+    public function getAuthorUrl(): ?string
+    {
+        return $this->authorUrl;
+    }
+
+    public function getParent(): ?Comment
+    {
+        return $this->parent;
+    }
+
     /**
      * @return Collection<int,Comment>
      */
@@ -106,8 +116,13 @@ class Comment
         return $this->children;
     }
 
-    public function getAuthorUrl(): ?string
+    public function resetChildren(): void
     {
-        return $this->authorUrl;
+        $this->children = new ArrayCollection();
+    }
+
+    public function addChild(Comment $child): void
+    {
+        $this->children->add($child);
     }
 }

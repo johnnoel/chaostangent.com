@@ -1,25 +1,22 @@
 {% for comment in comments %}
-    <article id="comment-{{ comment.id }}" class="response response-depth{{ depth }} t__comment">
-        <header class="response-author">
-            <div class="response-author-details">
-                <h2 class="response-author-name">
-                    {% if comment.authorUrl is not empty %}
-                        <a href="{{ comment.authorUrl }}" rel="external nofollow" class="url">{{ comment.authorName }} <svg><use xlink:href="/img/icons.svg#external-link"></use></svg></a>
-                    {% else %}
-                        {{ comment.authorName }}
-                    {% endif %}
-                </h2>
-                <a href="{{ path('post', post.routeParams) }}#comment-{{ comment.id }}" class="response-author-datetime">
-                    <time datetime="{{ comment.created|date('Y-m-d\\TH:i:sP') }}">{{ comment.created|date('d F Y, H:i') }}</time>
-                </a>
-            </div>
-            <img src="{{ comment.authorEmail|gravatar('identicon', 128) }}" alt="" class="response-author-avatar">
+    <article id="comment-{{ comment.id }}" class="response depth{{ depth }}">
+        <header class="author">
+            <h2 class="name">
+                {% if comment.authorUrl is not empty %}
+                    <a href="{{ comment.authorUrl }}" rel="external nofollow" class="url">{{ comment.authorName }} <svg><use xlink:href="{{ asset('icons.svg') }}#icon-external-link"></use></svg></a>
+                {% else %}
+                    {{ comment.authorName }}
+                {% endif %}
+            </h2>
+            <a href="{{ path('post', post.routeParams) }}#comment-{{ comment.id }}" class="datetime" title="Permalink to this comment">
+                <time datetime="{{ comment.created|date('Y-m-d\\TH:i:sP') }}">{{ comment.created|date('d F Y, H:i') }}</time>
+            </a>
+            <img src="{{ comment.authorEmail|gravatar('identicon', 128) }}" alt="" class="avatar">
         </header>
 
-        <div class="response-content t__comment-content">
+        <div class="content">
             {{ comment.comment|raw|nl2br }}
         </div>
-        {#<p class="reply"><a href="#response-form" data-id="{{ comment.id }}">Reply to {{ comment.authorName }}</a></p>#}
     </article>
     {% if comment.children|length > 0 %}
         {% include '_comments.html.twig' with { 'comments': comment.children, 'post': post, 'depth': depth + 1 } %}

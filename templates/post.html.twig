@@ -51,9 +51,11 @@
         </footer>
 
         <section id="responses">
-            {% if post.comments|length > 0 %}
-                <h1 class="responses-title">Responses to &ldquo;{{ post.title }}&rdquo;</h1>
-                {% include '_comments.html.twig' with { 'comments': post.comments, 'post': post, 'depth': 1 } %}
+            {% if comments|length > 0 %}
+                <div class="responses-list">
+                    <h1>Responses to &ldquo;{{ post.title }}&rdquo;</h1>
+                    {% include '_comments.html.twig' with { 'comments': comments, 'post': post, 'depth': 1 } %}
+                </div>
             {% endif %}
 
             {% if isFeatureEnabled('comments') %}
