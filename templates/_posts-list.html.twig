@@ -1,0 +1,27 @@
+<div class="posts-list">
+    {% if title is defined and title is not empty %}
+        <header class="title">
+            <h1>{{ title }}</h1>
+
+            {% include '_pagination.html.twig' with {
+                'route': route,
+                'page_1_route': page_1_route,
+                'route_params': route_params,
+                'page': page,
+                'pages': page_count
+            } only %}
+        </header>
+    {% endif %}
+
+    {% for p in posts %}
+        {% include '_post.html.twig' with { 'p': p } %}
+    {% endfor %}
+
+    {% include '_pagination.html.twig' with {
+        'route': route,
+        'page_1_route': page_1_route,
+        'route_params': route_params,
+        'page': page,
+        'pages': page_count
+    } only %}
+</div>

@@ -1,31 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="posts">
-        {% if hide_filter|default(false) %}
-            <header class="postsfilter">
-                <h1>{{ title }}</h1>
-
-                {% include '_pagination.html.twig' with {
-                    'route': pagination_route,
-                    'page_1_route': route,
-                    'route_params': route_params,
-                    'page': page,
-                    'pages': page_count
-                } only %}
-            </header>
-        {% endif %}
-
-        {% for p in posts %}
-            {% include '_post.html.twig' with { 'p': p } %}
-        {% endfor %}
-
-        {% include '_pagination.html.twig' with {
-            'route': 'home:paginated',
-            'page_1_route': 'home',
-            'route_params': [],
-            'page': page,
-            'pages': page_count
-        } only %}
-    </div>
+    {% include '_posts-list.html.twig' with {
+        'posts': posts,
+        'route': 'category:paginated',
+        'page_1_route': 'category',
+        'route_params': { 'alias': category.alias },
+        'page': page,
+        'pages': page_count,
+        'title': 'Posts categorised “' ~ category.title ~ '”',
+    } %}
 {% endblock %}

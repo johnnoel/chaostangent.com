@@ -1,6 +1,20 @@
 .posts-list {
     margin: 0 auto 12px;
 
+    > .title {
+        border-bottom: 1px solid var(--brand-lighter-grey);
+        margin: 0 0 36px;
+
+        > h1 {
+            padding: 0 0 24px;
+        }
+
+        > .posts-pagination {
+            border-top: 1px solid var(--brand-lighter-grey);
+            padding: 12px 0;
+        }
+    }
+
     .blog-post + .blog-post {
         margin-top: 36px;
     }

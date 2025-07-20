@@ -56,7 +56,7 @@ class DefaultController extends AbstractController
     {
         $criteria = new FilterPostsCriteria(year: $year, page: $page, perPage: self::PER_PAGE);
 
-        return $this->posts($criteria, 'year.html.twig', $request);
+        return $this->posts($criteria, 'year.html.twig', $request, [ 'year' => $year ]);
     }
 
     #[Route('/{year}/{month}/page/{page}/', name: 'month:paginated', requirements: [
@@ -75,7 +75,10 @@ class DefaultController extends AbstractController
     {
         $criteria = new FilterPostsCriteria(month: $month, year: $year, page: $page, perPage: self::PER_PAGE);
 
-        return $this->posts($criteria, 'year-month.html.twig', $request);
+        return $this->posts($criteria, 'year-month.html.twig', $request, [
+            'year' => $year,
+            'month' => $month,
+        ]);
     }
 
     #[Route('/category/{alias:category}/page/{page}/', name: 'category:paginated', requirements: [
@@ -92,7 +95,9 @@ class DefaultController extends AbstractController
     {
         $criteria = new FilterPostsCriteria(category: $category, page: $page, perPage: self::PER_PAGE);
 
-        return $this->posts($criteria, 'category.html.twig', $request);
+        return $this->posts($criteria, 'category.html.twig', $request, [
+            'category' => $category,
+        ]);
     }
 
     #[Route('/tag/{alias:tag}/', name: 'tag', defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
@@ -109,7 +114,9 @@ class DefaultController extends AbstractController
     {
         $criteria = new FilterPostsCriteria(tag: $tag, page: $page, perPage: self::PER_PAGE);
 
-        return $this->posts($criteria, 'tag.html.twig', $request);
+        return $this->posts($criteria, 'tag.html.twig', $request, [
+            'tag' => $tag,
+        ]);
     }
 
     #[Route('/about/', name: 'about', options: [
@@ -140,8 +147,12 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    private function posts(FilterPostsCriteria $criteria, string $template, Request $request): Response
-    {
+    private function posts(
+        FilterPostsCriteria $criteria,
+        string $template,
+        Request $request,
+        array $templateParams = []
+    ): Response {
         $posts = $this->postRepository->filterPosts($criteria);
 
         if ($posts->isEmpty()) {
@@ -158,10 +169,10 @@ class DefaultController extends AbstractController
 
         $pageCount = ceil($this->postRepository->countFilteredPosts($criteria) / self::PER_PAGE);
 
-        return $this->render($template, [
+        return $this->render($template, array_merge([
             'posts' => $posts,
             'page' => $criteria->page,
             'page_count' => $pageCount,
-        ]);
+        ], $templateParams));
     }
 }

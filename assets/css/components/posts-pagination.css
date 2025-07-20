@@ -4,10 +4,6 @@
     grid-template-columns: repeat(3, 1fr);
     padding: 36px 0 18px;
 
-    .prev, .next {
-        padding: 3px 0 0;
-    }
-
     .next {
         text-align: right;
     }
@@ -18,6 +14,7 @@
         padding: 0;
         display: flex;
         flex-flow: row nowrap;
+        justify-self: center;
 
         a {
             padding: 4px;
