@@ -50,25 +50,25 @@
             {% endif %}
         </footer>
 
-        <section class="responses" id="responses">
+        <section id="responses">
             {% if post.comments|length > 0 %}
                 <h1 class="responses-title">Responses to &ldquo;{{ post.title }}&rdquo;</h1>
                 {% include '_comments.html.twig' with { 'comments': post.comments, 'post': post, 'depth': 1 } %}
             {% endif %}
 
             {% if isFeatureEnabled('comments') %}
-                {{ form_start(comment_form, { 'attr': { 'id': 'respond', 'class': 'respond t__respond' }}) }}
+                {{ form_start(comment_form, { 'attr': { 'id': 'respond', 'class': 'response-form' }}) }}
                 <fieldset>
-                    <legend class="respond-title">Respond to &ldquo;{{ post.title }}&rdquo;</legend>
-                    <h2 class="respond-subtitle">Community rules:</h2>
-                    <ol class="respond-rules">
+                    <legend>Respond to &ldquo;{{ post.title }}&rdquo;</legend>
+                    <h2>Community rules:</h2>
+                    <ol class="rules">
                         <li><b>Keep it civil</b>: no personal attacks, slurs, harassment, hate speech, or threats</li>
                         <li><b>No spam</b>: includes marketing, pyramid schemes, scams etc.</li>
                         <li><b>Notify of any spoilers</b>: even if it's for something the post isn't about</li>
                         <li><b>Your response may be edited or removed</b>: if your response was in good faith, you may be contacted via email explaining why</li>
                     </ol>
                     {% if not comment_form.vars.valid %}
-                        <div class="respond-haserrors">There was an issue with adding your response. Please correct the errors detailed next to each field to continue.</div>
+                        <div class="errors">There was an issue with adding your response. Please correct the errors detailed next to each field to continue.</div>
                     {% endif %}
                     {{ form_row(comment_form.authorName, { 'label': 'Your name' }) }}
                     {{ form_row(comment_form.authorEmail, { 'label': 'Your email address', 'help': 'Your address will never be shared' }) }}
@@ -76,7 +76,7 @@
                     {{ form_row(comment_form.comment, { 'label': 'Response', 'help': 'The following HTML tags are allowed: <b> <strong> <i> <em> <a href>' }) }}
                     {{ form_row(comment_form.honeypot, { 'label': 'Spam bot honeypot, please do not check this box' }) }}
                     {{ form_rest(comment_form) }}
-                    <button type="submit" class="respond-submit">Add response</button>
+                    <button type="submit">Add response</button>
                 </fieldset>
                 {{ form_end(comment_form) }}
             {% endif %}

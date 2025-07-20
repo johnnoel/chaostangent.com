@@ -1,0 +1,97 @@
+.response-form {
+    padding: 0 0 36px;
+
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+
+    legend {
+        font: bold 26px var(--font-title);
+        line-height: 1;
+        letter-spacing: -1px;
+        margin: 0 0 18px;
+    }
+
+    input, textarea {
+        border: 1px solid var(--brand-darker-beige);
+        background: #FFF;
+        display: block;
+        padding: 6px 8px;
+        margin: 0;
+        font: 14px var(--font-body);
+        line-height: 1.2;
+        width: 100%;
+        box-sizing: border-box;
+
+        &:read-only {
+            background: var(--brand-lighter-grey);
+            color: var(--brand-grey);
+            cursor: not-allowed;
+        }
+    }
+
+    textarea {
+        min-height: 8em;
+        resize: vertical;
+    }
+
+    label {
+        font-size: 16px;
+        display: block;
+        margin: 0 0 4px;
+
+        &.required::after {
+            content: '*';
+            font-weight: bold;
+            color: var(--brand-red);
+            display: inline-block;
+            margin: 0 0 0 .3em;
+        }
+    }
+
+    h2 {
+        font-size: 20px;
+        margin: 0 0 8px;
+    }
+
+    button {
+        border: none;
+        font: 16px var(--font-body);
+        line-height: 1;
+        padding: 12px 24px;
+        margin: 0;
+        background: var(--brand-orange);
+        color: #FFF;
+        cursor: pointer;
+        transition: background-color .15s ease;
+
+        &:focus, &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .rules {
+        list-style: decimal outside;
+        line-height: 1.2;
+        padding: 0 0 0 24px;
+        margin: 0 0 24px;
+
+        li {
+            margin: 0 0 6px;
+        }
+    }
+
+    .row {
+        margin: 0 0 1em;
+    }
+
+    .help {
+        margin: 6px 0 0;
+    }
+
+    .honeypot {
+        display: none;
+    }
+}
