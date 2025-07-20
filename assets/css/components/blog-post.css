@@ -38,9 +38,15 @@
         color: var(--brand-light-grey);
         margin: 0 0 12px;
         font-size: 12px;
+        display: flex;
+        flex-flow: row nowrap;
 
-        &::before {
-            content: 'Posted on: ';
+        time {
+            flex: 1 0 auto;
+
+            &::before {
+                content: 'Posted on: ';
+            }
         }
 
         .day, .month, .year {
