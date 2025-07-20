@@ -9,6 +9,7 @@
 @import "components/blog-post.css" layer(components);
 @import "components/posts-pagination.css" layer(components);
 @import "components/posts-filter.css" layer(components);
+@import "components/post-meta.css" layer(components);
 @import "components/site-footer.css" layer(components);
 
 @import "helpers.css" layer(helpers);

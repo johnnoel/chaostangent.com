@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Form\Type\CommentType;
+use App\Repository\TagRepository;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PostsController extends AbstractController
 {
+    public function __construct(private readonly TagRepository $tagRepository)
+    {
+    }
+
     #[Route('/{year}/{month}/{alias}/', name: 'post', requirements: [
         'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])',
     ], methods: [ 'GET' ])]
@@ -27,9 +32,11 @@ class PostsController extends AbstractController
         Post $post
     ): Response {
         $commentForm = $this->createForm(CommentType::class);
+        $tags = $this->tagRepository->getTagsForPost($post);
 
         return $this->render('post.html.twig', [
             'post' => $post,
+            'tags' => $tags,
             'comment_form' => $commentForm,
         ]);
     }

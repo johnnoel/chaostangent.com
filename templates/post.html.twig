@@ -18,46 +18,30 @@
             {{ post.content|raw }}
         </div>
 
-        <section class="post-appreciate">
-            <h5>Support chaostangent.com</h5>
-
-            <div class="post-appreciate-inner" id="#appreciate">
-                <div class="post-appreciate-kudos">
-                    <p>Appreciate the post? Let me&nbsp;know!</p>
-                    {#<form action="{{ path('kudo', post.routeParams) }}" method="post">
-                        <button type="submit" id="kudos" data-post-id="{{ post.id }}"><svg><use xlink:href="/img/icons.svg#checkmark"></use></svg> Appreciate this post</button>
-                    </form>#}
-                </div>
-
-                {% set post_url = url('post', post.routeParams) %}
-                <div class="post-appreciate-share">
-                    <p>Share this post with others:</p>
-                    <a href="https://twitter.com/intent/tweet?url={{ post_url|e('url') }}&amp;text={{ post.fullTitle|e('url') }}" title="Share this post on Twitter"><svg><use xlink:href="/img/icons.svg#twitter"></use></svg> Share on Twitter</a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ post_url|e('url') }}" title="Share this post on Facebook"><svg><use xlink:href="/img/icons.svg#facebook"></use></svg> Share on Facebook</a>
-                    <a href="https://www.tumblr.com/widgets/share/tool?canonicalUrl={{ post_url|e('url') }}&amp;content={{ post_url|e('url') }}&amp;title={{ post.fullTitle|e('url') }}" title="Share this post on Tumblr"><svg><use xlink:href="/img/icons.svg#tumblr"></use></svg> Share on Tumblr</a>
-                    <a href="https://www.reddit.com/submit?url={{ post_url|e('url') }}&amp;title={{ post.fullTitle|e('url') }}" title="Share this post on Reddit"><svg><use xlink:href="/img/icons.svg#reddit"></use></svg> Share on Reddit</a>
-                </div>
-            </div>
-        </section>
-
-        {#{{ render(controller('App\\Controller\\PostsController::similar', { 'post': post })) }}#}
-
         <footer class="post-meta">
-            <div class="post-meta-categories">
-                <h5 class="post-meta-title">Categorised and filed neatly under:</h5>
-                <ul>{% for category in post.categories %}<li><a href="{{ path('category', { 'alias': category.alias }) }}" title="View all posts in {{ category.title|e('html_attr') }}">{{ category.title }}</a></li>{% endfor %}</ul>
+            <div class="categories">
+                <h5>Categorised and filed neatly under:</h5>
+                <ul>
+                    {% for category in post.categories %}
+                        <li>
+                            <a href="{{ path('category', { 'alias': category.alias }) }}" title="View all posts in {{ category.title|e('html_attr') }}">
+                                {{ category.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
 
-            {% if tags|default([])|length > 0 %}
-                <div class="post-meta-tags">
-                    <h5 class="post-meta-title">Meticulously tagged with:</h5>
+            {% if tags|length > 0 %}
+                <div class="tags">
+                    <h5>Meticulously tagged with:</h5>
                     <ul>
-                        {% for tag in tags|default([]) %}
+                        {% for t in tags %}
                             <li>
-                                {% if tag.postCount > 1 %}
-                                    <a href="{{ path('tag', { 'alias': tag.alias }) }}">{{ tag.tag }}</a>
+                                {% if t.postCount > 1 %}
+                                    <a href="{{ path('tag', { 'alias': t.tag.alias }) }}">{{ t.tag.tag }}</a>
                                 {% else %}
-                                    {{ tag.tag }}
+                                    {{ t.tag.tag }}
                                 {% endif %}
                             </li>
                         {% endfor %}
