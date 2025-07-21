@@ -13,3 +13,4 @@ services:
         arguments:
             $features:
                 comments: '%env(default:fallback_false:bool:FEATURE_COMMENTS)%'
+                search: '%env(default:fallback_false:bool:FEATURE_SEARCH)%'

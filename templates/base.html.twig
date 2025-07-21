@@ -37,7 +37,9 @@
         <link rel="alternate" type="application/atom+xml" title="chaostangent Atom feed" href="{{ url('home:atom') }}">
     {% endblock %}
 
-    <link rel="search" type="application/opensearchdescription+xml" href="{{ url('opensearch') }}" title="chaostangent.com search">
+    {% if isFeatureEnabled('search') %}
+        <link rel="search" type="application/opensearchdescription+xml" href="{{ url('opensearch') }}" title="chaostangent.com search">
+    {% endif %}
     <link rel="stylesheet" href="{{ asset('main.css') }}">
 
     <script src="{{ asset('main.js') }}" async defer></script>
@@ -60,11 +62,13 @@
             <li><a href="{{ path('home:rss') }}" class="rss"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-rss"></use></svg> RSS feed</a></li>
         </ul>
     </nav>
-
-    <form method="get" action="{{ path('search') }}" class="search-form">
-        <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}">
-        <button type="submit" class="search"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-search"></use></svg> Search</button>
-    </form>
+    {% if isFeatureEnabled('search') %}
+        <form method="get" action="{{ path('search') }}" class="search-form">
+            <label for="search-query">Search query</label>
+            <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}" id="search-query">
+            <button type="submit" class="search"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-search"></use></svg> Search</button>
+        </form>
+    {% endif %}
 </header>
 
 <main id="main" role="main">
