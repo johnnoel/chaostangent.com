@@ -15,7 +15,7 @@ jobs:
                   keys:
                       - npm-v1-{{ checksum "package-lock.json" }}
                       - npm-v1-
-            - run: composer install --no-interaction --no-progress --ignore-platform-req=ext-xsl
+            - run: composer install --no-interaction --no-progress --ignore-platform-req=ext-xsl --ignore-platform-req=ext-ffi
             - run: npm install
             - save_cache:
                   key: composer-v1-{{ checksum "composer.lock" }}

@@ -3,6 +3,7 @@
 !/public/assets/manifest.json
 /node_modules/
 /content/
+/media/
 *.pgsql
 
 ###> symfony/framework-bundle ###

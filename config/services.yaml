@@ -1,5 +1,10 @@
 parameters:
     fallback_false: false
+    resize_aliases:
+        thumb: { w: 268, h: 117 }
+        lead: { w: 540, h: 231 }
+        poster: { w: 544, h: 306 }
+        square: { w: 320, h: 320 }
 
 services:
     _defaults:
@@ -9,12 +14,36 @@ services:
     App\:
         resource: '../src/'
 
+    App\Extension\Twig\ImageExtension:
+        arguments:
+            $imageRepository: '@App\Image\CoreImageRepository'
+
+    App\Image\ActionFactory:
+        arguments:
+            $resizeAliases: '%resize_aliases%'
+
+    App\Image\FileHandler:
+        arguments:
+            $mediaDirectory: '%kernel.project_dir%/media'
+            $mediaUrl: '/media/'
+
+    App\Image\ProcessingImageRepository:
+        arguments:
+            $decoratedImageRepository: '@App\Image\CoreImageRepository'
+
+    App\Post\ExportProcessor:
+        arguments:
+            $outputDirectory: '%kernel.project_dir%/content'
+
     App\Repository\FeatureRepository:
         arguments:
             $features:
                 comments: '%env(default:fallback_false:bool:FEATURE_COMMENTS)%'
                 search: '%env(default:fallback_false:bool:FEATURE_SEARCH)%'
 
-    App\Post\ExportProcessor:
+    Intervention\Image\Interfaces\ImageManagerInterface:
+        factory: [ 'Intervention\Image\ImageManager', 'withDriver' ]
         arguments:
-            $outputDirectory: '%kernel.project_dir%/content'
+            - 'Intervention\Image\Drivers\Vips\Driver'
+
+    Twig\Extension\StringLoaderExtension: ~
