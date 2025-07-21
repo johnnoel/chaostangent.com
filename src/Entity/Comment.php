@@ -49,14 +49,14 @@ class Comment
 
     public function __construct(
         Post $post,
-        ?Comment $parent,
         string $comment,
         string $authorName,
         string $authorEmail,
-        ?string $authorUrl,
         string $authorIp,
         bool $approved,
-        bool $spam
+        bool $spam,
+        ?Comment $parent = null,
+        ?string $authorUrl = null
     ) {
         $this->id = new Ulid();
         $this->post = $post;

@@ -5,7 +5,7 @@
         'posts': posts,
         'route': 'month:paginated',
         'page_1_route': 'month',
-        'route_params': { 'year': year, 'month': month },
+        'route_params': { 'year': year, 'month': '%02d'|format(month) },
         'page': page,
         'pages': page_count,
         'title': 'Posts from ' ~ ((year ~ '-' ~ month ~ '-01')|date('F Y')),

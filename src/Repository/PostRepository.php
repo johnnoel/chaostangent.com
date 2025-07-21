@@ -40,7 +40,10 @@ class PostRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p');
         $qb->select([ 'p', 'COUNT(co.id)' ])
-            ->leftJoin('p.comments', 'co')
+            ->leftJoin('p.comments', 'co', 'WITH', $qb->expr()->andX(
+                $qb->expr()->eq('co.approved', ':approved'),
+                $qb->expr()->eq('co.spam', ':spam')
+            ))
             ->where($qb->expr()->eq('p.published', ':published'))
             ->groupBy('p.id')
             ->orderBy('p.date', 'DESC')
@@ -48,6 +51,8 @@ class PostRepository extends ServiceEntityRepository
             ->setMaxResults($criteria->perPage)
             ->setFirstResult(($criteria->page - 1) * $criteria->perPage)
             ->setParameter('published', true)
+            ->setParameter('approved', true)
+            ->setParameter('spam', false)
         ;
 
         $this->applyCriteria($criteria, $qb);

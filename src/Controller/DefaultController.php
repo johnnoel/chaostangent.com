@@ -147,6 +147,9 @@ class DefaultController extends AbstractController
         ]);
     }
 
+    /**
+     * @param array<string,mixed> $templateParams
+     */
     private function posts(
         FilterPostsCriteria $criteria,
         string $template,
