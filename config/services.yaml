@@ -14,3 +14,7 @@ services:
             $features:
                 comments: '%env(default:fallback_false:bool:FEATURE_COMMENTS)%'
                 search: '%env(default:fallback_false:bool:FEATURE_SEARCH)%'
+
+    App\Post\ExportProcessor:
+        arguments:
+            $outputDirectory: '%kernel.project_dir%/content'

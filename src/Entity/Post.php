@@ -12,6 +12,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Eko\FeedBundle\Item\Writer\RoutedItemInterface;
 use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Component\Serializer\Attribute as Serializer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -23,48 +25,63 @@ class Post implements RoutedItemInterface
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME)]
     private Ulid $id;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'string', length: 255)]
     private string $title;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $subtitle;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'string', length: 255)]
     private string $alias;
+
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $summary;
+
     #[ORM\Column(type: 'text')]
     private string $content;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
+    #[Serializer\Context([ DateTimeNormalizer::FORMAT_KEY => 'Y-m-d\\TH:i:sP' ])]
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $date;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
+    #[Serializer\Context([ DateTimeNormalizer::FORMAT_KEY => 'Y-m-d\\TH:i:sP' ])]
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $created;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
+    #[Serializer\Context([ DateTimeNormalizer::FORMAT_KEY => 'Y-m-d\\TH:i:sP' ])]
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $updated;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'boolean', options: [ 'default' => false ])]
     private bool $published = false;
-    /**
-     * @var array<string,mixed>
-     */
+
+    /** @var array<string,mixed> */
     #[ORM\Column(type: 'json', options: [ 'jsonb' => true ])]
     private array $extra;
     #[ORM\Column(type: 'text', nullable: true, name: 'commonmark')]
     private ?string $commonMark = null;
-    /**
-     * @var Collection<int,Comment>
-     */
+
+    /** @var Collection<int,Comment> */
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class)]
     #[ORM\OrderBy([ 'created' => 'DESC' ])]
     private Collection $comments;
-    /**
-     * @var Collection<int,Category>
-     */
+
+    /** @var Collection<int,Category> */
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'posts', cascade: [ 'persist' ])]
     #[ORM\JoinTable(name: 'posts2categories')]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'category_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $categories;
-    /**
-     * @var Collection<int,Tag>
-     */
+
+    /** @var Collection<int,Tag> */
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts', cascade: [ 'persist' ])]
     #[ORM\JoinTable(name: 'posts2tags')]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -197,6 +214,30 @@ class Post implements RoutedItemInterface
             'year' => $this->date?->format('Y'),
             'month' => $this->date?->format('m'),
         ];
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->published;
+    }
+
+    public function getCreated(): DateTimeImmutable
+    {
+        return $this->created;
+    }
+
+    public function getUpdated(): DateTimeImmutable
+    {
+        return $this->updated;
+    }
+
+    #[Serializer\Groups([ 'frontmatter' ])]
+    public function getImage(): ?string
+    {
+        return (array_key_exists('image', $this->extra) && is_string($this->extra['image'])) ?
+            $this->extra['image'] :
+            null
+        ;
     }
 
     public function getFeedItemTitle(): string
