@@ -108,6 +108,21 @@ class Comment
         return $this->parent;
     }
 
+    public function getPost(): Post
+    {
+        return $this->post;
+    }
+
+    public function isSpam(): bool
+    {
+        return $this->spam;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->approved;
+    }
+
     /**
      * @return Collection<int,Comment>
      */
@@ -124,5 +139,15 @@ class Comment
     public function addChild(Comment $child): void
     {
         $this->children->add($child);
+    }
+
+    public function markAsSpam(): void
+    {
+        $this->spam = true;
+    }
+
+    public function markAsUnapproved(): void
+    {
+        $this->approved = false;
     }
 }

@@ -59,6 +59,7 @@
             {% endif %}
 
             {% if isFeatureEnabled('comments') %}
+                {# If you change the ID here, be sure to update the _fragment route parameter in CommentsController #}
                 {{ form_start(comment_form, {
                     'action': path('post', post.routeParams) ~ '#respond',
                     'attr': { 'id': 'respond', 'class': 'response-form' }
