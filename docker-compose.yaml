@@ -25,5 +25,10 @@ services:
             - database_data:/var/lib/postgresql/data:rw
             - ./config/docker/pgsql:/docker-entrypoint-initdb.d
 
+    mailpit:
+        image: axllent/mailpit:latest
+        ports:
+            - "2503:8025"
+
 volumes:
     database_data:

@@ -30,6 +30,10 @@ class CommentModel
     #[Assert\Length(max: 1024, maxMessage: 'Please enter at most {{ limit }} characters for your URL')]
     public ?string $authorUrl = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Ip]
+    public string $authorIp;
+
     #[Assert\NotBlank(message: 'Please enter a comment')]
     #[Assert\Length(
         min: 10,
@@ -40,4 +44,9 @@ class CommentModel
     public string $comment;
 
     public ?string $honeypot = null;
+
+    public function __construct(string $authorIp)
+    {
+        $this->authorIp = $authorIp;
+    }
 }

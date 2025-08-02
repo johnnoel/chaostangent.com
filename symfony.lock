@@ -170,6 +170,18 @@
             ".editorconfig"
         ]
     },
+    "symfony/mailer": {
+        "version": "7.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.3",
+            "ref": "09051cfde49476e3c12cd3a0e44289ace1c75a4f"
+        },
+        "files": [
+            "config/packages/mailer.yaml"
+        ]
+    },
     "symfony/maker-bundle": {
         "version": "1.63",
         "recipe": {
@@ -226,6 +238,15 @@
         "files": [
             "config/packages/property_info.yaml"
         ]
+    },
+    "symfony/pushover-notifier": {
+        "version": "7.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.3",
+            "ref": "b9dc3c716eb686c267d767eb3c78ad47c11c34cb"
+        }
     },
     "symfony/routing": {
         "version": "7.3",

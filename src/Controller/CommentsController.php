@@ -44,7 +44,8 @@ class CommentsController extends AbstractController
         Post $post,
         Request $request
     ): Response {
-        $form = $this->createForm(CommentType::class);
+        $commentModel = new CommentModel(strval($request->getClientIp()));
+        $form = $this->createForm(CommentType::class, $commentModel);
         $form->handleRequest($request);
 
         if (!$form->isSubmitted() || !$form->isValid()) {
@@ -60,11 +61,13 @@ class CommentsController extends AbstractController
             ]);
         }
 
-        /** @var CommentModel $commentModel */
-        $commentModel = $form->getData();
         $this->handle(new PostComment($post, $commentModel));
 
-        return $this->redirectToRoute('post', array_merge($post->getRouteParams(), [ '_fragment' => 'respond' ]));
+        return $this->redirectToRoute(
+            'post',
+            array_merge($post->getRouteParams(), [ '_fragment' => 'respond' ]),
+            Response::HTTP_SEE_OTHER
+        );
     }
 
     #[Route('/comment/{id}/spam', name: 'comment:spam', requirements: [
@@ -78,7 +81,7 @@ class CommentsController extends AbstractController
 
         $this->handle(new MarkCommentAsSpam($comment));
 
-        return $this->redirectToRoute('post', $comment->getPost()->getRouteParams());
+        return $this->redirectToRoute('post', $comment->getPost()->getRouteParams(), Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/comment/{id}/unapprove', name: 'comment:unapprove', requirements: [
@@ -92,6 +95,6 @@ class CommentsController extends AbstractController
 
         $this->handle(new MarkCommentAsUnapproved($comment));
 
-        return $this->redirectToRoute('post', $comment->getPost()->getRouteParams());
+        return $this->redirectToRoute('post', $comment->getPost()->getRouteParams(), Response::HTTP_SEE_OTHER);
     }
 }

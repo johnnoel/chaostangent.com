@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Form\Model\CommentModel;
 use App\Repository\CommentRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -71,6 +72,20 @@ class Comment
 
         $this->created = new DateTimeImmutable('now');
         $this->children = new ArrayCollection();
+    }
+
+    public static function createFromCommentModel(CommentModel $model, Post $post): self
+    {
+        return new self(
+            post: $post,
+            comment: $model->comment,
+            authorName: $model->authorName,
+            authorEmail: $model->authorEmail,
+            authorIp: $model->authorIp,
+            approved: true,
+            spam: false,
+            authorUrl: $model->authorUrl
+        );
     }
 
     public function getId(): Ulid

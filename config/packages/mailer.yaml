@@ -1,0 +1,7 @@
+framework:
+    mailer:
+        dsn: '%env(MAILER_DSN)%'
+        envelope:
+            sender: 'chaostangent-dot-com@ceetea.uk'
+            recipients:
+                - '%env(MAILER_DEFAULT_RECIPIENT)%'
