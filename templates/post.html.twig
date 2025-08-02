@@ -59,7 +59,10 @@
             {% endif %}
 
             {% if isFeatureEnabled('comments') %}
-                {{ form_start(comment_form, { 'attr': { 'id': 'respond', 'class': 'response-form' }}) }}
+                {{ form_start(comment_form, {
+                    'action': path('post', post.routeParams) ~ '#respond',
+                    'attr': { 'id': 'respond', 'class': 'response-form' }
+                }) }}
                 <fieldset>
                     <legend>Respond to &ldquo;{{ post.title }}&rdquo;</legend>
                     <h2>Community rules:</h2>
