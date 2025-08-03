@@ -14,7 +14,8 @@ readonly final class PostDTO
     public function __construct(
         public Post $post,
         ?DateTimeImmutable $lastModified = null,
-        public int $commentCount = 0
+        public int $commentCount = 0,
+        public int $kudoCount = 0
     ) {
         $this->lastModified = $lastModified ?? new DateTimeImmutable('now');
     }

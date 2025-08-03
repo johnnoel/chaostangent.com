@@ -173,6 +173,129 @@ class PostRepository extends ServiceEntityRepository
         return $ret;
     }
 
+    /**
+     * @return array<numeric-string,non-empty-array<int,int>>
+     */
+    public function getPostCountByWeek(): array
+    {
+        // use generate series to create a complete week-by-week count of posts
+        // cribbed from https://www.citusdata.com/blog/2018/03/14/fun-with-sql-generate-sql/
+        $sql = <<<SQL
+            WITH range_values AS (
+                SELECT date_trunc('week', min(date)) AS min_val, date_trunc('week', max(date)) AS max_val
+                FROM posts
+                WHERE published = true
+            ), week_range AS (
+                SELECT generate_series(min_val, max_val, 'P1W'::interval) AS week
+                FROM range_values
+            ), weekly_counts AS (
+                SELECT date_trunc('week', date) AS week, COUNT(*) AS pc
+                FROM posts
+                GROUP BY 1
+            )
+            SELECT week_range.week, COALESCE(weekly_counts.pc, 0) AS post_count
+            FROM week_range
+            LEFT OUTER JOIN weekly_counts ON week_range.week = weekly_counts.week
+            ORDER BY week_range.week ASC
+        SQL;
+
+        /** @var array<array{week: string, post_count: int}> $rows */
+        $rows = $this->getEntityManager()->getConnection()->executeQuery($sql)->fetchAllAssociative();
+
+        if (count($rows) === 0) {
+            return [];
+        }
+
+        $format = $this->getEntityManager()->getConnection()->getDatabasePlatform()->getDateTimeFormatString();
+        $min = DateTimeImmutable::createFromFormat($format, $rows[0]['week']);
+        $max = DateTimeImmutable::createFromFormat($format, end($rows)['week']);
+
+        if ($min === false || $max === false) {
+            return [];
+        }
+
+        $calendar = [];
+
+        // create a [ year => [ week => post count ] ] array
+        foreach ($rows as $row) {
+            $date = DateTimeImmutable::createFromFormat($format, $row['week']);
+
+            if ($date === false) {
+                continue;
+            }
+
+            $calendar[$date->format('o')][intval($date->format('W'))] = intval($row['post_count']);
+        }
+
+        // todo get postgres to do this busy work
+        // prepend weeks to fill out the first year
+        for ($week = 1; $week < intval($min->format('W')); $week++) {
+            $calendar[$min->format('o')][$week] = 0;
+        }
+
+        // append weeks to fill out the last year
+        $lastMaxWeek = $max->setDate(intval($max->format('Y')), 12, 28)->format('W');
+        for ($week = intval($max->format('W')); $week <= $lastMaxWeek; $week++) {
+            $calendar[$max->format('o')][$week] = 0;
+        }
+
+        // ensure keys are in order for correct iteration
+        array_walk($calendar, fn (array &$counts) => ksort($counts, SORT_NUMERIC));
+        ksort($calendar, SORT_NUMERIC);
+
+        return $calendar;
+    }
+
+    /**
+     * @return Collection<int,PostDTO>
+     */
+    public function findTopPosts(int $count = 20): Collection
+    {
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
+        $rsm->addScalarResult('comment_count', 'comment_count');
+        $rsm->addScalarResult('kudo_count', 'kudo_count');
+        $rsm->addScalarResult('score', 'score');
+        $selectClause = $rsm->generateSelectClause([ 'p' => 'p' ]);
+
+        $sql = <<<SQL
+            WITH cc AS (
+                SELECT p.id, COUNT(c.id) AS comment_count FROM posts p
+                    LEFT JOIN comments c ON c.post_id = p.id
+                    WHERE c.approved = :approved AND c.spam = :spam
+                    GROUP BY p.id
+            ), kc AS (
+                SELECT p.id, COUNT(k.id) AS kudo_count FROM posts p
+                    LEFT JOIN kudos k ON k.post_id = p.id
+                    GROUP BY p.id
+            ) SELECT $selectClause,
+                cc.comment_count,
+                kc.kudo_count,
+                COALESCE(((cc.comment_count * 2) + kc.kudo_count), 0) AS score
+            FROM posts p
+            LEFT JOIN cc ON cc.id = p.id
+            LEFT JOIN kc ON kc.id = p.id
+            WHERE (p.published = :published)
+            ORDER BY score DESC
+            LIMIT :limit
+        SQL;
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameter('approved', true)
+            ->setParameter('spam', false)
+            ->setParameter('published', true)
+            ->setParameter('limit', $count)
+        ;
+
+        /** @var array<array{0: Post, comment_count: int, kudo_count: int, score: int}> $res */
+        $res = $query->getResult();
+        $dtos = array_map(function (array $r): PostDTO {
+            return new PostDTO($r[0], commentCount: $r['comment_count'], kudoCount: $r['kudo_count']);
+        }, $res);
+
+        return new Collection($dtos);
+    }
+
     private function applyCriteria(FilterPostsCriteria $criteria, QueryBuilder $qb): void
     {
         if ($criteria->category !== null) {

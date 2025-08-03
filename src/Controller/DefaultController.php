@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Tag;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\Criteria\FilterPostsCriteria;
 use App\Repository\DTO\TagDTO;
 use App\Repository\PostRepository;
@@ -122,9 +123,40 @@ class DefaultController extends AbstractController
     #[Route('/about/', name: 'about', options: [
         'sitemap' => [ 'priority' => 0.1, 'changefreq' => Sitemap::CHANGEFREQ_WEEKLY ],
     ], methods: [ 'GET' ])]
-    public function about(): Response
+    public function about(CommentRepository $commentRepository): Response
     {
-        return new Response();
+        $postCount = $this->postRepository->countFilteredPosts(new FilterPostsCriteria());
+        $popularPosts = $this->postRepository->findTopPosts(8);
+        $postCalendar = $this->postRepository->getPostCountByWeek();
+        $postCalendarMax = (count($postCalendar) === 0) ?
+            0 : max(array_map(fn (array $counts): int => max($counts) ?: 0, $postCalendar));
+
+        $wordCount = 0;
+        foreach ($this->postRepository->getSitemapPosts() as $p) {
+            $wordCount += str_word_count(trim(strip_tags($p->post->getContent())));
+        }
+
+        $commentCount = $commentRepository->countComments();
+        $participantCount = $commentRepository->countParticipants();
+        $mostParticipated = $commentRepository->findMostParticipated(10);
+        $longestComments = $commentRepository->findLongestComments(10);
+        $commentCalendar = $commentRepository->getCommentCountByWeek();
+        $commentCalendarMax = (count($commentCalendar) === 0) ?
+            0 : max(array_map(fn (array $counts): int => max($counts) ?: 0, $commentCalendar));
+
+        return $this->render('about.html.twig', [
+            'post_count' => $postCount,
+            'word_count' => $wordCount,
+            'popular_posts' => $popularPosts,
+            'post_calendar' => $postCalendar,
+            'post_calendar_max' => $postCalendarMax,
+            'comment_count' => $commentCount,
+            'participant_count' => $participantCount,
+            'most_participated' => $mostParticipated,
+            'longest_comments' => $longestComments,
+            'comment_calendar' => $commentCalendar,
+            'comment_calendar_max' => $commentCalendarMax,
+        ]);
     }
 
     public function imageStrip(): Response
