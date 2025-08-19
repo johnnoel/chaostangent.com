@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Post;
 use App\Repository\Criteria\FilterPostsCriteria;
 use App\Repository\DTO\PostDTO;
+use App\Repository\DTO\SearchResultDTO;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Types\Types;
@@ -101,6 +102,44 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('year', $year)
             ->getSingleResult()
         ;
+    }
+
+    /**
+     * @return Collection<int,SearchResultDTO>
+     */
+    public function searchPosts(string $q): Collection
+    {
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
+        $rsm->addScalarResult('headline', 'headline');
+        $rsm->addScalarResult('rank', 'rank', 'float');
+        $selectClause = $rsm->generateSelectClause([ 'p' => 'p' ]);
+
+        $sql = <<<SQL
+            SELECT $selectClause,
+                ts_headline(
+                    'english',
+                    p.searchable,
+                    to_tsquery('english', :query),
+                    'StartSel=<mark>, StopSel=</mark>, MaxFragments=2'
+                ) AS headline,
+                ts_rank(to_tsvector('english', p.searchable), to_tsquery('english', :query)) AS rank
+            FROM posts p
+            WHERE (to_tsvector('english', p.searchable) @@ to_tsquery('english', :query))
+                AND (p.published = true)
+            ORDER BY rank DESC
+        SQL;
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        /** @var array<array{0: Post, headline: string, rank: float}> $result */
+        $result = $query->setParameter('query', $q)
+            ->getResult()
+        ;
+
+        return new Collection(array_map(
+            fn (array $r): SearchResultDTO => new SearchResultDTO($r[0], $r['headline'], $r['rank']),
+            $result
+        ));
     }
 
     /**

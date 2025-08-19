@@ -44,6 +44,9 @@ class Post implements RoutedItemInterface
     #[ORM\Column(type: 'text')]
     private string $content;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $searchable = null;
+
     #[Serializer\Groups([ 'frontmatter' ])]
     #[Serializer\Context([ DateTimeNormalizer::FORMAT_KEY => 'Y-m-d\\TH:i:sP' ])]
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
@@ -125,11 +128,13 @@ class Post implements RoutedItemInterface
     public function setSummary(?string $summary): void
     {
         $this->summary = $summary;
+        $this->updated = new DateTimeImmutable('now');
     }
 
     public function setContent(string $content): void
     {
         $this->content = $content;
+        $this->updated = new DateTimeImmutable('now');
     }
 
     /**
@@ -138,6 +143,12 @@ class Post implements RoutedItemInterface
     public function setExtra(array $extra): void
     {
         $this->extra = $extra;
+        $this->updated = new DateTimeImmutable('now');
+    }
+
+    public function setSearchable(?string $searchable): void
+    {
+        $this->searchable = $searchable;
     }
 
     public function getId(): Ulid

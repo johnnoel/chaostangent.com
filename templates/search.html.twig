@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Search results</h1>
+
+    <form method="get" action="{{ path('search') }}">
+        <label for="search-query">Query</label>
+        <input type="search" value="{{ search_query|default('') }}" id="search-query">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if search_results|length == 0 and search_query is not empty %}
+        <p>Your query did not return any results, please try broadening your search or use different terms.</p>
+    {% else %}
+        <ul class="search-results">
+            {% for r in search_results %}
+                <li>
+                    <a href="{{ path('post', r.post.routeParams) }}">{{ r.post.fullTitle }}</a>
+                    <p>{{ r.headline|raw }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+<ul>
+</ul>
+{% endblock body %}
