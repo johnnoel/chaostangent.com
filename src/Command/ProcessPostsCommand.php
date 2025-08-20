@@ -6,7 +6,10 @@ namespace App\Command;
 
 use App\Post\Processor;
 use App\Repository\Criteria\FilterPostsCriteria;
+use App\Repository\DTO\PostDTO;
 use App\Repository\PostRepository;
+use Exception;
+use Illuminate\Support\Collection;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -40,6 +43,7 @@ class ProcessPostsCommand extends Command
     {
         $this->addArgument('processors', InputArgument::IS_ARRAY, 'Processors to apply to posts')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Don\'t commit any changes')
+            ->addOption('alias', null, InputOption::VALUE_REQUIRED, 'Alias of a single post to fetch')
         ;
     }
 
@@ -59,7 +63,7 @@ class ProcessPostsCommand extends Command
             fn (Processor $p): bool => in_array($p->getSlug(), $processors)
         );
 
-        $postCount = $this->postRepository->countFilteredPosts(new FilterPostsCriteria());
+        $postCount = $this->getPostCount($input->getOption('alias'));
         $pages = ceil($postCount / self::PER_PAGE);
 
         $dryRun = boolval($input->getOption('dry-run'));
@@ -67,7 +71,7 @@ class ProcessPostsCommand extends Command
         $progressBar->start();
 
         for ($page = 1; $page <= $pages; $page++) {
-            $posts = $this->postRepository->filterPosts(new FilterPostsCriteria(page: $page, perPage: self::PER_PAGE));
+            $posts = $this->getPosts($input->getOption('alias'), $page);
 
             // devtodo parallelise
             foreach ($posts as $p) {
@@ -86,5 +90,32 @@ class ProcessPostsCommand extends Command
         $progressBar->finish();
 
         return Command::SUCCESS;
+    }
+
+    private function getPostCount(mixed $alias): int
+    {
+        if (is_string($alias)) {
+            return 1;
+        }
+
+        return $this->postRepository->countFilteredPosts(new FilterPostsCriteria());
+    }
+
+    /**
+     * @return Collection<int,PostDTO>
+     */
+    private function getPosts(mixed $alias, int $page): Collection
+    {
+        if (is_string($alias)) {
+            $post = $this->postRepository->findOneBy([ 'alias' => $alias ]);
+
+            if ($post === null) {
+                throw new Exception('Unable to find post with alias ' . $alias);
+            }
+
+            return new Collection([ new PostDTO($post) ]);
+        }
+
+        return $this->postRepository->filterPosts(new FilterPostsCriteria(page: $page, perPage: self::PER_PAGE));
     }
 }
