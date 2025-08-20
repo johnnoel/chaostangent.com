@@ -1,0 +1,30 @@
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    justify-items: end;
+    line-height: 0;
+    padding: 0 0 1em;
+
+    > *:nth-child(2n) {
+        justify-self: start;
+    }
+
+    &.-one {
+        display: block;
+        text-align: center;
+        padding: 0 0 8px;
+    }
+
+    picture {
+        display: inline-block;
+        padding: 1px;
+        border: 1px solid var(--brand-lighter-grey);
+        transition: border-color .15s, background-color .15s;
+    }
+
+    a:hover picture, a:focus picture {
+        border-color: var(--brand-orange);
+        background-color: var(--brand-orange);
+    }
+}

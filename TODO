@@ -5,8 +5,12 @@
     - pagination
     - styling
 * About page
+* Commenting
+    - notify on pushover with links to mark as not spam etc.
 
 # Visual
 
 * Desktop styles
-
+* Slideshow functionality
+* Comment parenting
+* Code blocks

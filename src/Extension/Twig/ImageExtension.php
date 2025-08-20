@@ -60,7 +60,7 @@ class ImageExtension extends AbstractExtension
         $images = implode("\n", array_map([ $this, 'picture' ], $s));
 
         return <<<HTML
-            <div class="thumbnails $count">
+            <div class="image-grid -$count">
                 $images
             </div>
         HTML;
