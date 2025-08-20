@@ -1,0 +1,17 @@
+.image-slideshow {
+    width: 540px;
+    padding: 0 0 1em;
+    margin: auto;
+
+    picture {
+        display: inline-block;
+        padding: 1px;
+        border: 1px solid var(--brand-lighter-grey);
+        transition: border-color .15s, background-color .15s;
+    }
+
+    a:hover picture, a:focus picture {
+        border-color: var(--brand-orange);
+        background-color: var(--brand-orange);
+    }
+}

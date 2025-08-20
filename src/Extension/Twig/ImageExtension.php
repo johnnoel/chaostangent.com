@@ -71,11 +71,22 @@ class ImageExtension extends AbstractExtension
      */
     public function slideshow(array $sources): string
     {
-        $images = implode("\n", array_map([ $this, 'picture' ], $sources));
+        $s = [];
+        foreach ($sources as $source) {
+            $actions = array_map([ $this->actionFactory, 'createAction' ], $source['actions']);
+
+            $s[] = new Source($source['src'], $actions);
+        }
+
+        $slides = implode("\n", array_map([ $this, 'slide' ], $s));
 
         return <<<HTML
-            <div class="slideshow">
-                $images
+            <div class="image-slideshow glide">
+                <div class="glide__track" data-glide-el="track">
+                    <div class="glide__slides">
+                        $slides
+                    </div>
+                </div>
             </div>
         HTML;
     }
@@ -86,11 +97,27 @@ class ImageExtension extends AbstractExtension
         $sources = implode("\n", array_map([ $this, 'image' ], $variants));
 
         return <<<HTML
-            <a href="{$this->fileHandler->getSourceUrl($source)}">
+            <a href="{$this->fileHandler->getSourceUrl($source)}" class="glide__slide">
                 <picture>
                     $sources
                 </picture>
             </a>
+        HTML;
+    }
+
+    private function slide(Source $source): string
+    {
+        $variants = $this->imageRepository->getVariants($source);
+        $sources = implode("\n", array_map([ $this, 'image' ], $variants));
+
+        return <<<HTML
+            <div class="glide__slide">
+                <a href="{$this->fileHandler->getSourceUrl($source)}">
+                    <picture>
+                        $sources
+                    </picture>
+                </a>
+            </div>
         HTML;
     }
 
