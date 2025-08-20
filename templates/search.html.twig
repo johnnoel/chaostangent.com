@@ -5,7 +5,7 @@
 
     <form method="get" action="{{ path('search') }}">
         <label for="search-query">Query</label>
-        <input type="search" value="{{ search_query|default('') }}" id="search-query">
+        <input type="search" name="q" value="{{ search_query|default('') }}" id="search-query">
         <button type="submit">Search</button>
     </form>
 
