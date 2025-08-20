@@ -81,7 +81,7 @@ class Comment
             comment: $model->comment,
             authorName: $model->authorName,
             authorEmail: $model->authorEmail,
-            authorIp: $model->authorIp,
+            authorIp: strval($model->authorIp),
             approved: true,
             spam: false,
             authorUrl: $model->authorUrl

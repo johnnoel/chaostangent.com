@@ -37,6 +37,8 @@ class CommentType extends AbstractType
             'attr' => [ 'minlength' => 10 ],
         ])->add('honeypot', CheckboxType::class, [
             'required' => false,
+        ])->add('formRendered', FormRenderedType::class, [
+            'required' => true,
         ]);
 
         $builder->get('comment')->addModelTransformer(new HtmlPurifierTransformer());

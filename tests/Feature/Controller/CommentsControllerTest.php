@@ -7,6 +7,7 @@ namespace App\Tests\Feature\Controller;
 use App\Controller\CommentsController;
 use App\Factory\CommentFactory;
 use App\Factory\PostFactory;
+use App\Form\DataTransformer\SignedDateTransformer;
 use App\Tests\WebTestCase;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -32,6 +33,10 @@ class CommentsControllerTest extends WebTestCase
             $post->getAlias()
         );
         $commentUrl = $postUrl . 'comment/';
+
+        /** @var SignedDateTransformer $transformer */
+        $transformer = $this->getContainer()->get(SignedDateTransformer::class);
+        $postData['formRendered'] = $transformer->transform(new DateTimeImmutable('-10 minutes'));
 
         $client->request('POST', $commentUrl, [ 'comment' => $postData ]);
 
@@ -73,6 +78,10 @@ class CommentsControllerTest extends WebTestCase
             $post->getAlias()
         );
         $commentUrl = $postUrl . 'comment/';
+
+        /** @var SignedDateTransformer $transformer */
+        $transformer = $this->getContainer()->get(SignedDateTransformer::class);
+        $postData['formRendered'] = $transformer->transform(new DateTimeImmutable('-10 minutes'));
 
         $client->request('POST', $commentUrl, [ 'comment' => $postData ]);
 
@@ -146,12 +155,16 @@ class CommentsControllerTest extends WebTestCase
             'alias' => 'test-post-2',
         ]);
 
+        /** @var SignedDateTransformer $transformer */
+        $transformer = $this->getContainer()->get(SignedDateTransformer::class);
+
         $postData = [
             'comment' => [
                 'authorName' => 'Test author',
                 'authorEmail' => 'test@test.test',
                 'authorUrl' => 'https://chaostangent.com',
                 'comment' => 'Test test test test test',
+                'formRendered' => $transformer->transform(new DateTimeImmutable('-10 minutes')),
             ],
         ];
 
@@ -173,6 +186,27 @@ class CommentsControllerTest extends WebTestCase
             'incorrect month' => [ '2025/09/test-post-1/comment/' ],
             'unpublished' => [ '2025/08/test-post-2/comment/' ],
         ];
+    }
+
+    public function testCommentNoFormRenderedValue(): void
+    {
+        $client = static::createClient();
+        PostFactory::new()->published()->create([
+            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-08-20'),
+            'alias' => 'test-post-1',
+        ]);
+
+        $postData = [
+            'comment' => [
+                'authorName' => 'Test author',
+                'authorEmail' => 'test@test.test',
+                'authorUrl' => 'https://chaostangent.com',
+                'comment' => 'Test test test test test',
+            ],
+        ];
+
+        $client->request('POST', '/2025/08/test-post-1/comment/', $postData);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function testMarkCommentAsSpam(): void

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\Model\CommentModel;
 use App\Form\Type\CommentType;
 use App\Repository\CommentRepository;
 use App\Repository\TagRepository;
+use DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +37,8 @@ class PostsController extends AbstractController
         Post $post
     ): Response {
         $comments = $this->commentRepository->getTree($post);
-        $commentForm = $this->createForm(CommentType::class);
+        $commentModel = new CommentModel(formRendered: new DateTimeImmutable('now'));
+        $commentForm = $this->createForm(CommentType::class, $commentModel);
         $tags = $this->tagRepository->getTagsForPost($post);
 
         return $this->render('post.html.twig', [
