@@ -6,7 +6,7 @@ namespace App\Post;
 
 use App\Entity\Post;
 
-readonly final class ThumbnailsProcessor extends ImageBlockProcessor implements Processor
+readonly final class SlideshowProcessor extends ImageBlockProcessor implements Processor
 {
     public function process(Post $post): void
     {
@@ -16,18 +16,18 @@ readonly final class ThumbnailsProcessor extends ImageBlockProcessor implements 
 
     public function getSlug(): string
     {
-        return 'thumbnails';
+        return 'slideshow';
     }
 
     #[\Override]
     protected function getBlockRegex(): string
     {
-        return '#<p class="thumbnails.*?">(.*?)</p>#s';
+        return '#<p class="slideshow">(.*?)</p>#s';
     }
 
     #[\Override]
     protected function getTwigFunctionName(): string
     {
-        return 'thumbnails';
+        return 'slideshow';
     }
 }
