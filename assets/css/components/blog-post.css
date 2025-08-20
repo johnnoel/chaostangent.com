@@ -1,15 +1,24 @@
 .blog-post {
     display: grid;
-    grid-template-columns: 80px 1fr;
+    grid-template-columns: 70px 1fr;
+    column-gap: 10px;
 
     header {
         grid-column: 1 / 3;
+
+        @media (--lg) {
+            grid-column: 2 / 3;
+        }
 
         h1 {
             font-size: 28px;
             border-bottom: 1px solid var(--brand-lighter-grey);
             padding-bottom: 4px;
             margin: 0 0 20px;
+
+            @media (--lg) {
+                font-size: 36px;
+            }
 
             a {
                 color: var(--brand-dark-grey);
@@ -26,6 +35,10 @@
             font-size: 18px;
             font-weight: 400;
             color: var(--brand-grey);
+
+            @media (--lg) {
+                font-size: 22px;
+            }
         }
 
         h1 + h2 {
@@ -56,10 +69,72 @@
         .year::after {
             content: ', ';
         }
+
+        @media (--lg) {
+            grid-column: 1 / 2;
+            display: block;
+
+            time::before {
+                content: '';
+            }
+
+            .day, .month, .year, .time {
+                display: block;
+                text-align: center;
+                letter-spacing: -1px;
+                line-height: 1;
+            }
+
+            .day {
+                font-size: 48px;
+                color: #5E5E5E;
+            }
+
+            .month {
+                font-size: 27px;
+                color: #777;
+            }
+
+            .year {
+                font-size: 22px;
+                color: #919191;
+
+                &::after {
+                    content: '';
+                }
+            }
+
+            .time {
+                color: #AAA;
+                padding: 6px 0 12px;
+            }
+
+            .responses {
+                display: block;
+                font-size: 11px;
+                padding-top: 10px;
+                text-align: center;
+                border-top: 1px solid var(--brand-lighter-grey);
+                color: var(--brand-dark-grey);
+                transition: color .15s;
+                text-decoration: none;
+
+                &:focus, &:hover {
+                    color: var(--brand-orange);
+                }
+            }
+        }
     }
 
     section, footer, .summary, .full {
         grid-column: 1 / 3;
+
+    }
+
+    @media (--lg) {
+        .summary, .full {
+            grid-column: 2 / 3;
+        }
     }
 
     .pullquote {
@@ -74,6 +149,10 @@
 
         p {
             margin: 0;
+        }
+
+        @media (--lg) {
+            margin-left: -80px;
         }
     }
 }

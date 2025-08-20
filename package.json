@@ -24,7 +24,7 @@
         "postcss": "^8.5.4",
         "postcss-import": "^16.1.0",
         "postcss-loader": "^8.1.1",
-        "postcss-preset-env": "^10.2.1",
+        "postcss-preset-env": "^10.2.4",
         "purgecss-webpack-plugin": "^7.0.2",
         "style-loader": "^4.0.0",
         "svg-spritemap-webpack-plugin": "^4.7.0",
@@ -36,5 +36,8 @@
         "webpack-cli": "^6.0.1",
         "webpack-manifest-plugin": "^5.0.1",
         "webpack-merge": "^6.0.1"
-    }
+    },
+    "browserslist": [
+        "defaults"
+    ]
 }

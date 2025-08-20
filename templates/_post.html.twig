@@ -9,9 +9,9 @@
 
     <aside>
         <time datetime="{{ p.post.date|date('Y-m-d\\TH:i:sP') }}">
-            <span class="day">{{ p.post.date|date('d') }}</span><span class="month">{{ p.post.date|date('M') }}</span><span class="year">{{ p.post.date|date('Y') }}</span><span class="post-datetime-time">{{ p.post.date|date('H:i') }}</span>
+            <span class="day">{{ p.post.date|date('d') }}</span><span class="month">{{ p.post.date|date('M') }}</span><span class="year">{{ p.post.date|date('Y') }}</span><span class="time">{{ p.post.date|date('H:i') }}</span>
         </time>
-        {% if p.commentCount > 0 %}<p class="responses"><a href="{{ post_link }}#responses" title="Respond to {{ p.post.title|e('html_attr') }}">{{ p.commentCount }} response{% if p.commentCount > 1 %}s{% endif %}</a></p>{% endif %}
+        {% if p.commentCount > 0 %}<a href="{{ post_link }}#responses" title="Respond to {{ p.post.title|e('html_attr') }}" class="responses">{{ p.commentCount }} response{% if p.commentCount > 1 %}s{% endif %}</a>{% endif %}
     </aside>
 
     <div class="summary _content">

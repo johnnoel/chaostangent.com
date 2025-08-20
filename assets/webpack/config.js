@@ -40,10 +40,8 @@ module.exports = {
                         options: {
                             postcssOptions: {
                                 plugins: [
-                                    [
-                                        'postcss-import',
-                                        'postcss-preset-env',
-                                    ],
+                                    'postcss-import',
+                                    'postcss-preset-env',
                                 ],
                             },
                         },
