@@ -27,7 +27,7 @@ class PostRepositoryTest extends WebTestCase
         ]);
 
         /** @var PostRepository $postRepository */
-        $postRepository = $this->getContainer()->get(PostRepository::class);
+        $postRepository = static::getContainer()->get(PostRepository::class);
         $postDTOs = $postRepository->filterPosts(new FilterPostsCriteria());
 
         $this->assertCount(1, $postDTOs);

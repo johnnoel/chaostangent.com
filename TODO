@@ -5,10 +5,6 @@
     - pagination
     - styling
 * About page
-* Commenting
-    - deny on honeypot
-    - deny on too short since loading the page
-    - deny on akismet
 
 # Visual
 

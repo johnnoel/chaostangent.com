@@ -74,16 +74,20 @@ class Comment
         $this->children = new ArrayCollection();
     }
 
-    public static function createFromCommentModel(CommentModel $model, Post $post): self
-    {
+    public static function createFromCommentModel(
+        CommentModel $model,
+        Post $post,
+        bool $approved = true,
+        bool $spam = false
+    ): self {
         return new self(
             post: $post,
             comment: $model->comment,
             authorName: $model->authorName,
             authorEmail: $model->authorEmail,
             authorIp: strval($model->authorIp),
-            approved: true,
-            spam: false,
+            approved: $approved,
+            spam: $spam,
             authorUrl: $model->authorUrl
         );
     }

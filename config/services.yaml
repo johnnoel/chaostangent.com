@@ -14,6 +14,20 @@ services:
     App\:
         resource: '../src/'
 
+    App\Comment\AkismetClient:
+        arguments:
+            $blog: https://chaostangent.com
+            $apiKey: '%env(AKISMET_API_KEY)%'
+
+    App\Comment\ChainDecider:
+        arguments:
+            $deciders:
+                - '@App\Comment\HoneypotDecider'
+                - '@App\Comment\TimeTakenDecider'
+                - '@App\Comment\AkismetDecider'
+
+    App\Comment\SpamDecider: '@App\Comment\ChainDecider'
+
     App\Extension\Twig\ImageExtension:
         arguments:
             $imageRepository: '@App\Image\CoreImageRepository'
@@ -51,3 +65,14 @@ services:
             - 'Intervention\Image\Drivers\Vips\Driver'
 
     Twig\Extension\StringLoaderExtension: ~
+
+when@test:
+    services:
+        App\Comment\ChainDecider:
+            arguments:
+                $deciders:
+                    - '@App\Comment\StaticDecider'
+
+        App\Comment\StaticDecider:
+            arguments:
+                $isSpam: false

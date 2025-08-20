@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Requirement\Requirement;
 
 class CommentsController extends AbstractController
@@ -44,7 +45,12 @@ class CommentsController extends AbstractController
         Post $post,
         Request $request
     ): Response {
-        $commentModel = new CommentModel(strval($request->getClientIp()));
+        $commentModel = new CommentModel(
+            authorIp: strval($request->getClientIp()),
+            postUrl: $this->generateUrl('post', $post->getRouteParams(), UrlGeneratorInterface::ABSOLUTE_URL),
+            userAgent: $request->headers->get('user-agent'),
+            referrer: $request->headers->get('referer'),
+        );
         $form = $this->createForm(CommentType::class, $commentModel);
         $form->handleRequest($request);
 
@@ -61,7 +67,12 @@ class CommentsController extends AbstractController
             ]);
         }
 
-        $this->handle(new PostComment($post, $commentModel));
+        /** @var Comment $comment */
+        $comment = $this->handle(new PostComment($post, $commentModel));
+
+        if ($comment->isSpam()) {
+            return $this->render('spam.html.twig');
+        }
 
         return $this->redirectToRoute(
             'post',

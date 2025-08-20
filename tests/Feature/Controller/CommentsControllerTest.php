@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Feature\Controller;
 
+use App\Comment\SpamDecider;
+use App\Comment\StaticDecider;
 use App\Controller\CommentsController;
 use App\Factory\CommentFactory;
 use App\Factory\PostFactory;
@@ -19,7 +21,7 @@ use Symfony\Component\HttpFoundation\UriSigner;
 class CommentsControllerTest extends WebTestCase
 {
     /**
-     * @param array<string,mixed> $postData
+     * @param array{authorName: string, authorEmail: string, comment: string, authorUrl?: string} $postData
      */
     #[DataProvider('commentProvider')]
     public function testComment(array $postData): void
@@ -35,7 +37,7 @@ class CommentsControllerTest extends WebTestCase
         $commentUrl = $postUrl . 'comment/';
 
         /** @var SignedDateTransformer $transformer */
-        $transformer = $this->getContainer()->get(SignedDateTransformer::class);
+        $transformer = static::getContainer()->get(SignedDateTransformer::class);
         $postData['formRendered'] = $transformer->transform(new DateTimeImmutable('-10 minutes'));
 
         $client->request('POST', $commentUrl, [ 'comment' => $postData ]);
@@ -43,7 +45,40 @@ class CommentsControllerTest extends WebTestCase
         $this->assertResponseRedirects($postUrl . '#respond');
         $client->followRedirect();
         $this->assertResponseIsSuccessful();
-        //$this->assertStringContainsString($postData['comment'], $client->getResponse()->getContent());
+        $this->assertStringContainsString($postData['comment'], strval($client->getResponse()->getContent()));
+    }
+
+    public function testCommentSpam(): void
+    {
+        $client = static::createClient();
+        $post = PostFactory::new()->published()->create();
+        $postUrl = sprintf(
+            '/%s/%s/%s/',
+            $post->getDate()?->format('Y'),
+            $post->getDate()?->format('m'),
+            $post->getAlias()
+        );
+        $commentUrl = $postUrl . 'comment/';
+
+        $container = static::getContainer();
+
+        $container->set(SpamDecider::class, new StaticDecider(true));
+
+        /** @var SignedDateTransformer $transformer */
+        $transformer = $container->get(SignedDateTransformer::class);
+
+        $client->request('POST', $commentUrl, [ 'comment' => [
+            'authorName' => 'Test author',
+            'authorEmail' => 'test@test.test',
+            'comment' => 'Test test test test test test',
+            'formRendered' => $transformer->transform(new DateTimeImmutable('-10 minutes')),
+        ] ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString(
+            'Your comment has been marked as spam',
+            strval($client->getResponse()->getContent())
+        );
     }
 
     /**
@@ -80,7 +115,7 @@ class CommentsControllerTest extends WebTestCase
         $commentUrl = $postUrl . 'comment/';
 
         /** @var SignedDateTransformer $transformer */
-        $transformer = $this->getContainer()->get(SignedDateTransformer::class);
+        $transformer = static::getContainer()->get(SignedDateTransformer::class);
         $postData['formRendered'] = $transformer->transform(new DateTimeImmutable('-10 minutes'));
 
         $client->request('POST', $commentUrl, [ 'comment' => $postData ]);
@@ -156,7 +191,7 @@ class CommentsControllerTest extends WebTestCase
         ]);
 
         /** @var SignedDateTransformer $transformer */
-        $transformer = $this->getContainer()->get(SignedDateTransformer::class);
+        $transformer = static::getContainer()->get(SignedDateTransformer::class);
 
         $postData = [
             'comment' => [
@@ -216,7 +251,7 @@ class CommentsControllerTest extends WebTestCase
         $comment = CommentFactory::createOne([ 'post' => $post ]);
 
         /** @var UriSigner $uriSigner */
-        $uriSigner = $this->getContainer()->get(UriSigner::class);
+        $uriSigner = static::getContainer()->get(UriSigner::class);
         $signedUri = $uriSigner->sign('http://localhost/comment/' . $comment->getId() . '/spam');
 
         $postUrl = sprintf(
@@ -253,7 +288,7 @@ class CommentsControllerTest extends WebTestCase
         $comment = CommentFactory::createOne([ 'post' => $post ]);
 
         /** @var UriSigner $uriSigner */
-        $uriSigner = $this->getContainer()->get(UriSigner::class);
+        $uriSigner = static::getContainer()->get(UriSigner::class);
         $signedUri = $uriSigner->sign('http://localhost/comment/' . $comment->getId() . '/unapprove');
 
         $postUrl = sprintf(

@@ -47,7 +47,10 @@ class CommentModel
         #[Assert\Ip]
         public ?string $authorIp = null,
         #[Assert\NotBlank(message: 'Form rendered date/time is missing')]
-        public ?DateTimeImmutable $formRendered = null
+        public ?DateTimeImmutable $formRendered = null,
+        public ?string $postUrl = null,
+        public ?string $userAgent = null,
+        public ?string $referrer = null,
     ) {
     }
 }
