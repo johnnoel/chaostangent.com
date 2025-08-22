@@ -77,9 +77,6 @@ class Post implements RoutedItemInterface
     #[ORM\Column(type: 'json', nullable: true, options: [ 'jsonb' => true ])]
     private ?array $image;
 
-    #[ORM\Column(type: 'text', nullable: true, name: 'commonmark')]
-    private ?string $commonMark = null;
-
     /** @var Collection<int,Comment> */
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class)]
     #[ORM\OrderBy([ 'created' => 'DESC' ])]
