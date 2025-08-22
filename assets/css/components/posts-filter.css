@@ -1,7 +1,7 @@
 .posts-filter {
     max-width: var(--container-width);
     margin: 0 auto;
-    padding: 12px;
+    padding: 12px 0;
     border-top: 1px solid var(--brand-lighter-grey);
     display: grid;
     grid-template-columns: repeat(2, 1fr);

@@ -52,24 +52,28 @@
 </nav>
 
 <header class="site-header" role="banner">
-    <a href="{{ path('home') }}" title="More squirrels than sense" class="logo">chaos<b>tangent</b></a>
+    <div class="inner">
+        <a href="{{ path('home') }}" title="More squirrels than sense" class="logo">chaos<b>tangent</b></a>
 
-    <nav id="primarynav" class="nav" role="navigation">
-        <ul>
-            <li{% if location|default('home') == 'home' %} class="active"{% endif %}><a href="{{ path('home') }}">Home</a></li>
-            <li{% if location|default('home') == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>
-            <li><a href="http://chaostangent.tumblr.com" target="_blank">Tumblr</a></li>
-            <li><a href="{{ path('home:rss') }}" class="rss"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-rss"></use></svg> RSS feed</a></li>
-        </ul>
-    </nav>
-    {% if isFeatureEnabled('search') %}
-        <form method="get" action="{{ path('search') }}" class="search-form">
-            <label for="search-query">Search query</label>
-            <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}" id="search-query">
-            <button type="submit" class="search"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-search"></use></svg> Search</button>
-        </form>
-    {% endif %}
+        <nav id="primarynav" class="nav" role="navigation">
+            <ul>
+                <li{% if location|default('home') == 'home' %} class="active"{% endif %}><a href="{{ path('home') }}">Home</a></li>
+                <li{% if location|default('home') == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>
+                <li><a href="http://chaostangent.tumblr.com" target="_blank">Tumblr</a></li>
+                <li><a href="{{ path('home:rss') }}" class="rss"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-rss"></use></svg> RSS feed</a></li>
+            </ul>
+        </nav>
+        {% if isFeatureEnabled('search') %}
+            <form method="get" action="{{ path('search') }}" class="search-form">
+                <label for="search-query">Search query</label>
+                <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}" id="search-query">
+                <button type="submit" class="search"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-search"></use></svg> Search</button>
+            </form>
+        {% endif %}
+    </div>
 </header>
+
+{% block pre_body %}{% endblock pre_body %}
 
 <main id="main" role="main">
     {% block body %}{% endblock %}

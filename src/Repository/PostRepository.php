@@ -10,6 +10,7 @@ use App\Repository\DTO\PostDTO;
 use App\Repository\DTO\SearchResultDTO;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
@@ -17,6 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Generator;
 use Illuminate\Support\Collection;
 use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -286,9 +288,10 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param Collection<int,Ulid> $postIds Find top posts from within these IDs
      * @return Collection<int,PostDTO>
      */
-    public function findTopPosts(int $count = 20): Collection
+    public function findTopPosts(int $count = 20, Collection $postIds = new Collection()): Collection
     {
         $rsm = new ResultSetMappingBuilder($this->getEntityManager());
         $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
@@ -296,6 +299,11 @@ class PostRepository extends ServiceEntityRepository
         $rsm->addScalarResult('kudo_count', 'kudo_count');
         $rsm->addScalarResult('score', 'score');
         $selectClause = $rsm->generateSelectClause([ 'p' => 'p' ]);
+
+        $whereAnd = '';
+        if ($postIds->isNotEmpty()) {
+            $whereAnd = ' AND (p.id IN (:ids))';
+        }
 
         $sql = <<<SQL
             WITH cc AS (
@@ -314,7 +322,7 @@ class PostRepository extends ServiceEntityRepository
             FROM posts p
             LEFT JOIN cc ON cc.id = p.id
             LEFT JOIN kc ON kc.id = p.id
-            WHERE (p.published = :published)
+            WHERE (p.published = :published) $whereAnd
             ORDER BY score DESC
             LIMIT :limit
         SQL;
@@ -326,10 +334,19 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('limit', $count)
         ;
 
+        if ($postIds->isNotEmpty()) {
+            $query->setParameter(
+                'ids',
+                // ULIDs are represented in RFC4122 format when using UlidType's so need to pre-convert them
+                $postIds->map(fn (Ulid $id): string => $id->toRfc4122())->all(),
+                ArrayParameterType::STRING
+            );
+        }
+
         /** @var array<array{0: Post, comment_count: int, kudo_count: int, score: int}> $res */
         $res = $query->getResult();
         $dtos = array_map(function (array $r): PostDTO {
-            return new PostDTO($r[0], commentCount: $r['comment_count'], kudoCount: $r['kudo_count']);
+            return new PostDTO($r[0], commentCount: intval($r['comment_count']), kudoCount: intval($r['kudo_count']));
         }, $res);
 
         return new Collection($dtos);

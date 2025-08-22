@@ -1,11 +1,23 @@
 .site-header {
-    margin: 0 auto 24px;
-    max-width: var(--container-width);
-    padding: 8px 12px 4px;
+    margin: 0 0 24px;
     border-bottom: 1px solid var(--brand-darker-beige);
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
+
+    @media (--lg) {
+        margin-bottom: 36px;
+    }
+
+    &:has(+ .image-strip) {
+        margin-bottom: 2px;
+    }
+
+    .inner {
+        margin: 0 auto;
+        max-width: var(--container-width);
+        padding: 8px 0 4px;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+    }
 
     .logo {
         font: 700 24px/1 var(--font-title);
@@ -39,6 +51,10 @@
             line-height: 1;
             margin: 0 0 0 16px;
             vertical-align: middle;
+
+            @media (--lg) {
+                margin-left: 20px;
+            }
         }
 
         a {

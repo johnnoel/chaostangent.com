@@ -9,6 +9,7 @@ use App\Entity\Tag;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\Criteria\FilterPostsCriteria;
+use App\Repository\DTO\PostDTO;
 use App\Repository\DTO\TagDTO;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Uid\Ulid;
 
 class DefaultController extends AbstractController
 {
@@ -37,8 +39,16 @@ class DefaultController extends AbstractController
     public function index(Request $request, int $page = 1): Response
     {
         $criteria = new FilterPostsCriteria(page: $page, perPage: self::PER_PAGE);
+        $templateParams = [];
 
-        return $this->posts($criteria, 'index.html.twig', $request);
+        if ($page === 1) {
+            $recentPostIds = $this->postRepository->filterPosts(new FilterPostsCriteria(page: 1, perPage: 30))
+                ->map(fn (PostDTO $dto): Ulid => $dto->post->getId())
+            ;
+            $templateParams = [ 'image_strip' => $this->postRepository->findTopPosts(postIds: $recentPostIds) ];
+        }
+
+        return $this->posts($criteria, 'index.html.twig', $request, $templateParams);
     }
 
     #[Route('/{year}/page/{page}/', name: 'year:paginated', requirements: [
