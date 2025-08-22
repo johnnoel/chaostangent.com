@@ -6,13 +6,23 @@ namespace App\Image;
 
 use InvalidArgumentException;
 
-readonly final class ActionFactory
+readonly final class SourceFactory
 {
     /**
      * @param array<string,array{w: int, h: int}> $resizeAliases
      */
     public function __construct(private array $resizeAliases)
     {
+    }
+
+    /**
+     * @param array<string> $actions
+     */
+    public function createSource(string $src, array $actions): Source
+    {
+        $actions = array_map([ $this, 'createAction' ], $actions);
+
+        return new Source($src, $actions);
     }
 
     public function createAction(string $actionString): Action

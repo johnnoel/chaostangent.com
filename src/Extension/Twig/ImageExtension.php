@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Extension\Twig;
 
-use App\Image\ActionFactory;
 use App\Image\FileHandler;
 use App\Image\ImageRepository;
 use App\Image\MimeType;
 use App\Image\Source;
+use App\Image\SourceFactory;
 use App\Image\Variant;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -17,7 +17,7 @@ class ImageExtension extends AbstractExtension
 {
     public function __construct(
         private ImageRepository $imageRepository,
-        private readonly ActionFactory $actionFactory,
+        private readonly SourceFactory $sourceFactory,
         private readonly FileHandler $fileHandler
     ) {
     }
@@ -33,6 +33,7 @@ class ImageExtension extends AbstractExtension
         return [
             new TwigFunction('thumbnails', [ $this, 'thumbnails' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('slideshow', [ $this, 'slideshow' ], [ 'is_safe' => [ 'html' ]]),
+            new TwigFunction('picture', [ $this, 'something' ], [ 'is_safe' => [ 'html' ]]),
         ];
     }
 
@@ -41,12 +42,10 @@ class ImageExtension extends AbstractExtension
      */
     public function thumbnails(array $sources): string
     {
-        $s = [];
-        foreach ($sources as $source) {
-            $actions = array_map([ $this->actionFactory, 'createAction' ], $source['actions']);
-
-            $s[] = new Source($source['src'], $actions);
-        }
+        $s = array_map(
+            fn (array $s): Source => $this->sourceFactory->createSource($s['src'], $s['actions']),
+            $sources
+        );
 
         $map = [
             1 => 'one',
@@ -75,13 +74,10 @@ class ImageExtension extends AbstractExtension
      */
     public function slideshow(array $sources): string
     {
-        $s = [];
-        foreach ($sources as $source) {
-            $actions = array_map([ $this->actionFactory, 'createAction' ], $source['actions']);
-
-            $s[] = new Source($source['src'], $actions);
-        }
-
+        $s = array_map(
+            fn (array $s): Source => $this->sourceFactory->createSource($s['src'], $s['actions']),
+            $sources
+        );
         $slides = implode("\n", array_map([ $this, 'slide' ], $s));
 
         return <<<HTML
@@ -95,13 +91,29 @@ class ImageExtension extends AbstractExtension
         HTML;
     }
 
+    /**
+     * @param array{src: string, actions: array<string>} $source
+     */
+    public function something(array $source): string
+    {
+        $s = $this->sourceFactory->createSource($source['src'], $source['actions']);
+        $variants = $this->imageRepository->getVariants($s);
+        $sources = implode("\n", array_map([ $this, 'source' ], $variants));
+
+        return <<<HTML
+            <picture>
+                $sources
+            </picture>
+        HTML;
+    }
+
     private function picture(Source $source): string
     {
         $variants = $this->imageRepository->getVariants($source);
-        $sources = implode("\n", array_map([ $this, 'image' ], $variants));
+        $sources = implode("\n", array_map([ $this, 'source' ], $variants));
 
         return <<<HTML
-            <a href="{$this->fileHandler->getSourceUrl($source)}" class="glide__slide">
+            <a href="{$this->fileHandler->getSourceUrl($source)}">
                 <picture>
                     $sources
                 </picture>
@@ -112,7 +124,7 @@ class ImageExtension extends AbstractExtension
     private function slide(Source $source): string
     {
         $variants = $this->imageRepository->getVariants($source);
-        $sources = implode("\n", array_map([ $this, 'image' ], $variants));
+        $sources = implode("\n", array_map([ $this, 'source' ], $variants));
 
         return <<<HTML
             <div class="glide__slide">
@@ -125,7 +137,7 @@ class ImageExtension extends AbstractExtension
         HTML;
     }
 
-    private function image(Variant $variant): string
+    private function source(Variant $variant): string
     {
         if ($variant->mimeType === MimeType::JPEG) {
             return <<<HTML

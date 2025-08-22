@@ -6,6 +6,9 @@ namespace App\Post;
 
 use Exception;
 
+/**
+ * Convert a block of images into a Twig function call suitable for {{ thumbnails }} or {{ slideshow }}
+ */
 readonly abstract class ImageBlockProcessor
 {
     private const MAPPING = [

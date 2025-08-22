@@ -16,6 +16,9 @@ use Symfony\Component\Serializer\Attribute as Serializer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Uid\Ulid;
 
+/**
+ * @phpstan-type Image array{src: string, actions: array<string>}
+ */
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\Table(name: 'posts')]
 #[ORM\Index(name: 'post_alias_index', columns: [ 'alias' ])]
@@ -69,6 +72,11 @@ class Post implements RoutedItemInterface
     /** @var array<string,mixed> */
     #[ORM\Column(type: 'json', options: [ 'jsonb' => true ])]
     private array $extra;
+
+    /** @var Image|null */
+    #[ORM\Column(type: 'json', nullable: true, options: [ 'jsonb' => true ])]
+    private ?array $image;
+
     #[ORM\Column(type: 'text', nullable: true, name: 'commonmark')]
     private ?string $commonMark = null;
 
@@ -95,6 +103,7 @@ class Post implements RoutedItemInterface
      * @param array<string,mixed> $extra
      * @param array<Category> $categories
      * @param array<Tag> $tags
+     * @param Image|null $image
      */
     public function __construct(
         string $title,
@@ -106,7 +115,8 @@ class Post implements RoutedItemInterface
         array $extra,
         ?string $summary = null,
         array $categories = [],
-        array $tags = []
+        array $tags = [],
+        ?array $image = null
     ) {
         $this->id = new Ulid();
         $this->title = $title;
@@ -117,6 +127,7 @@ class Post implements RoutedItemInterface
         $this->published = $published;
         $this->extra = $extra;
         $this->summary = $summary;
+        $this->image = $image;
 
         $this->created = new DateTimeImmutable('now');
         $this->updated = new DateTimeImmutable('now');
@@ -144,6 +155,14 @@ class Post implements RoutedItemInterface
     {
         $this->extra = $extra;
         $this->updated = new DateTimeImmutable('now');
+    }
+
+    /**
+     * @param Image|null $image
+     */
+    public function setImage(?array $image): void
+    {
+        $this->image = $image;
     }
 
     public function setSearchable(?string $searchable): void
@@ -194,6 +213,14 @@ class Post implements RoutedItemInterface
         return $this->extra;
     }
 
+    /**
+     * @return Image|null
+     */
+    public function getImage(): ?array
+    {
+        return $this->image;
+    }
+
     public function getAlias(): string
     {
         return $this->alias;
@@ -240,15 +267,6 @@ class Post implements RoutedItemInterface
     public function getUpdated(): DateTimeImmutable
     {
         return $this->updated;
-    }
-
-    #[Serializer\Groups([ 'frontmatter' ])]
-    public function getImage(): ?string
-    {
-        return (array_key_exists('image', $this->extra) && is_string($this->extra['image'])) ?
-            $this->extra['image'] :
-            null
-        ;
     }
 
     public function getFeedItemTitle(): string

@@ -36,7 +36,7 @@ services:
         arguments:
             $key: '%env(APP_SECRET)%'
 
-    App\Image\ActionFactory:
+    App\Image\SourceFactory:
         arguments:
             $resizeAliases: '%resize_aliases%'
 
@@ -45,7 +45,7 @@ services:
             $mediaDirectory: '%kernel.project_dir%/media'
             $mediaUrl: '/media/'
 
-    App\Image\ProcessingImageRepository:
+    App\Image\GatheringImageRepository:
         arguments:
             $decoratedImageRepository: '@App\Image\CoreImageRepository'
 

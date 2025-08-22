@@ -8,6 +8,9 @@ use App\Entity\Post;
 use DateTimeImmutable;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * Export posts to YAML front-matter'd Twig files
+ */
 readonly final class ExportProcessor implements Processor
 {
     public function __construct(

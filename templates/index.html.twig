@@ -19,7 +19,11 @@
                                 {% endif %}
                             </div>
                         </a>
-                        <img src="{{ p.post.extra.image|default(asset('img/placeholder.png')) }}" loading="lazy" alt="">
+                        {% if p.post.image is not empty %}
+                            {{ picture(p.post.image) }}
+                        {% else %}
+                            <picture><img src="img/placeholder.png" alt=""></picture>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>

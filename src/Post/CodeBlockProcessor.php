@@ -6,6 +6,9 @@ namespace App\Post;
 
 use App\Entity\Post;
 
+/**
+ * Convert <pre><code></code></pre> and <pre class="brush: xxxx"></pre> blocks into Twig filter calls
+ */
 readonly final class CodeBlockProcessor implements Processor
 {
     public function process(Post $post): void
