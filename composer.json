@@ -19,6 +19,7 @@
         "phpdocumentor/reflection-docblock": "^5.6.3",
         "phpstan/phpdoc-parser": "^2.2",
         "presta/sitemap-bundle": "^4.2.0",
+        "scrivo/highlight.php": "^9.18",
         "symfony/asset": "7.3.*",
         "symfony/console": "7.3.*",
         "symfony/dotenv": "7.3.*",

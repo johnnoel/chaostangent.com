@@ -1,0 +1,6 @@
+.code-block {
+    max-width: 544px;
+    width: 100%;
+    overflow-x: scroll;
+    margin: 0 0 1em;
+}

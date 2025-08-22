@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Extension\Twig;
 
 use App\Repository\FeatureRepository;
+use Highlight\Highlighter;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -20,6 +21,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFilter('gravatar', [ $this, 'gravatar' ]),
+            new TwigFilter('code', [ $this, 'codeBlock' ], [ 'is_safe' => [ 'html' ] ]),
         ];
     }
 
@@ -53,5 +55,16 @@ class AppExtension extends AbstractExtension
     public function isFeatureEnabled(string $key): bool
     {
         return $this->featureRepository->isFeatureEnabled($key);
+    }
+
+    public function codeBlock(string $language, string $code): string
+    {
+        $highlighter = new Highlighter();
+        $highlighted = $highlighter->highlight($code, $language);
+        $highlightedCode = trim($highlighted->value);
+
+        return <<<HTML
+            <pre class="code-block"><code class="hljs $highlighted->language">$highlightedCode</code></pre>
+        HTML;
     }
 }

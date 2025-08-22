@@ -55,6 +55,10 @@ class ImageExtension extends AbstractExtension
             4 => 'four',
             5 => 'five',
             6 => 'six',
+            7 => 'seven',
+            8 => 'eight',
+            9 => 'nine',
+            10 => 'ten',
         ];
         $count = $map[count($s)];
         $images = implode("\n", array_map([ $this, 'picture' ], $s));

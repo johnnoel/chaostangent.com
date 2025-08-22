@@ -1,6 +1,7 @@
 @import "reset.css" layer(reset);
 @import "fonts.css" layer(theme);
 @import "default.css" layer(theme);
+@import "../../vendor/scrivo/highlight.php/styles/darcula.css" layer(theme);
 
 @import "components/a11y-nav.css" layer(components);
 @import "components/site-header.css" layer(components);
@@ -12,6 +13,7 @@
 @import "components/posts-filter.css" layer(components);
 @import "components/image-grid.css" layer(components);
 @import "components/image-slideshow.css" layer(components);
+@import "components/code-block.css" layer(components);
 @import "components/post-meta.css" layer(components);
 @import "components/response-form.css" layer(components);
 @import "components/responses-list.css" layer(components);
