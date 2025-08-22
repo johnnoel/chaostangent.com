@@ -141,7 +141,7 @@ class ImageExtension extends AbstractExtension
     {
         if ($variant->mimeType === MimeType::JPEG) {
             return <<<HTML
-                <img src="$variant->src" alt="" width="$variant->width" height="$variant->height">
+                <img src="$variant->src" alt="" width="$variant->width" height="$variant->height" loading="lazy">
             HTML;
         }
 
