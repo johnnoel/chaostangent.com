@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% block title %}{{ post.fullTitle }}{% endblock %}
 
 {% block body %}
     <article id="post-{{ post.id }}" class="blog-post" role="article">

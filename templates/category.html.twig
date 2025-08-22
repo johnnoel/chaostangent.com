@@ -1,4 +1,10 @@
 {% extends 'base.html.twig' %}
+{% block title %}
+    {{ category.title }}
+    {% if page > 1 %}
+        : Page {{ page }}
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     {% include '_posts-list.html.twig' with {
@@ -10,4 +16,4 @@
         'pages': page_count,
         'title': 'Posts categorised “' ~ category.title ~ '”',
     } %}
-{% endblock %}
+{% endblock body %}

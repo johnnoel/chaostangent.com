@@ -18,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="More squirrels than sense">
 
-    <title>{% block title %}{% endblock %}{% if block('title') is not empty %} : {% endif %}chaostangent</title>
+    <title>{% block title %}{% endblock %}{% if block('title')|trim is not empty %} : {% endif %}chaostangent</title>
 
     <link rel="shortcut icon" href="{{ asset('img/favicon.ico') }}" sizes="16x16">
     <link rel="icon" href="{{ asset('img/favicon-32x32.png') }}" sizes="32x32" type="image/png">

@@ -1,4 +1,10 @@
 {% extends 'base.html.twig' %}
+{% block title %}
+    {{ tag.tag }}
+    {% if page > 1 %}
+        : Page {{ page }}
+    {% endif %}
+{% endblock title %}
 
 {% block body %}
     {% include '_posts-list.html.twig' with {
@@ -10,4 +16,4 @@
         'pages': page_count,
         'title': 'Posts with the “' ~ tag.tag ~ '” tag',
     } %}
-{% endblock %}
+{% endblock body %}

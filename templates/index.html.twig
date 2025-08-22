@@ -1,4 +1,9 @@
 {% extends 'base.html.twig' %}
+{% block title %}
+    {% if page > 1 %}
+        Page {{ page }}
+    {% endif %}
+{% endblock title %}
 
 {% block pre_body %}
     {% if image_strip|default([])|length > 0 %}
@@ -31,4 +36,4 @@
         'page': page,
         'pages': page_count,
     } %}
-{% endblock %}
+{% endblock body %}
