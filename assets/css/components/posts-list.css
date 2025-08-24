@@ -17,5 +17,9 @@
 
     .blog-post + .blog-post {
         margin-top: 36px;
+
+        @media (--lg) {
+            margin-top: 80px;
+        }
     }
 }
