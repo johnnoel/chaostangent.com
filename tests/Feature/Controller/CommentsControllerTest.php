@@ -48,6 +48,23 @@ class CommentsControllerTest extends WebTestCase
         $this->assertStringContainsString($postData['comment'], strval($client->getResponse()->getContent()));
     }
 
+    /**
+     * @return array<string,array<mixed>>
+     */
+    public static function commentProvider(): array
+    {
+        $default = [
+            'authorName' => 'Test author',
+            'authorEmail' => 'test@test.test',
+            'comment' => 'Test test test test test test',
+        ];
+
+        return [
+            'minimal' => [ $default ],
+            'with url' => [ array_merge($default, [ 'authorUrl' => 'https://chaostangent.com' ]) ],
+        ];
+    }
+
     public function testCommentSpam(): void
     {
         $client = static::createClient();
@@ -79,23 +96,6 @@ class CommentsControllerTest extends WebTestCase
             'Your comment has been marked as spam',
             strval($client->getResponse()->getContent())
         );
-    }
-
-    /**
-     * @return array<string,array<mixed>>
-     */
-    public static function commentProvider(): array
-    {
-        $default = [
-            'authorName' => 'Test author',
-            'authorEmail' => 'test@test.test',
-            'comment' => 'Test test test test test test',
-        ];
-
-        return [
-            'minimal' => [ $default ],
-            'with url' => [ array_merge($default, [ 'authorUrl' => 'https://chaostangent.com' ]) ],
-        ];
     }
 
     /**

@@ -48,7 +48,7 @@ class CommentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CommentModel::class,
-            'csrf_validation' => false,
+            'csrf_protection' => false,
         ]);
     }
 }
