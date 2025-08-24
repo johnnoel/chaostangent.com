@@ -1,0 +1,38 @@
+nelmio_security:
+    clickjacking:
+        paths:
+            '^/.*': DENY
+
+    external_redirects:
+        abort: true
+        log: true
+
+    content_type:
+        nosniff: true
+
+    referrer_policy:
+        enabled: true
+        policies:
+            - 'no-referrer'
+            - 'strict-origin-when-cross-origin'
+
+    csp:
+        hosts: []
+        content_types: []
+        enforce:
+            level1_fallback: false
+            browser_adaptive:
+                enabled: false
+            default-src:
+                - self
+            img-src:
+                - self
+                - www.gravatar.com
+            block-all-mixed-content: true
+
+when@prod:
+    nelmio_security:
+        forced_ssl:
+            hsts_max_age: 31536000
+            hsts_subdomains: true
+            redirect_status_code: 301

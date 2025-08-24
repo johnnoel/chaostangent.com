@@ -5,6 +5,10 @@
 {% block title %}About{% endblock %}
 
 {% block body %}
+    <style nonce="{{ csp_nonce('style') }}">
+        /* classes for the calendar go here */
+    </style>
+
     <article class="about">
         <h1>About</h1>
 
