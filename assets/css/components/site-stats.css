@@ -1,0 +1,128 @@
+.site-stats {
+    padding: 24px 0;
+
+    @media (--lg) {
+        display: grid;
+        column-gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    > section {
+        grid-row: 1 / 5;
+        display: grid;
+        grid-template-rows: subgrid;
+
+        > div {
+            padding: 12px 0 24px;
+        }
+    }
+
+    h2 {
+        font-size: 22px;
+        font-weight: 400;
+        color: var(--brand-grey);
+        padding: 0 0 12px;
+        border-bottom: 1px solid var(--brand-lighter-grey);
+    }
+
+    h3 {
+        text-transform: uppercase;
+        font-size: 16px;
+        letter-spacing: 0;
+        padding: 0 0 12px;
+
+        small {
+            float: right;
+            color: var(--brand-light-grey);
+            text-transform: none;
+            font-weight: 400;
+        }
+    }
+
+    h4 {
+        padding: 0 0 4px;
+    }
+
+    .bignum {
+        display: block;
+        font-weight: bold;
+        font-size: 64px;
+        font-style: normal;
+        letter-spacing: -2px;
+        line-height: 1;
+        color: var(--brand-dark-grey);
+    }
+
+    .postcount {
+        font-size: 12px;
+        color: var(--brand-grey);
+        text-align: center;
+        padding: 0 0 36px;
+
+        .bignum {
+            font-size: 128px;
+        }
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 12px;
+        text-align: center;
+        padding: 0 0 12px;
+
+        > * {
+            padding: 0 0 12px;
+        }
+    }
+
+    .stackedbars {
+        > ol {
+            list-style: none;
+            padding: 0;
+            font-size: 11px;
+
+            > li {
+                padding: 0 0 6px;
+            }
+        }
+
+        em {
+            font-style: normal;
+            font-weight: bold;
+            float: right;
+        }
+
+        a {
+            color: var(--brand-grey);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--brand-grey);
+
+            &:focus, &:hover {
+                color: var(--brand-orange);
+            }
+        }
+
+        .progressbar {
+            background: var(--brand-dark-beige);
+            margin: 3px 0;
+
+            > .inner {
+                height: 3px;
+                background: var(--brand-orange);
+            }
+        }
+    }
+
+    .calendar {
+        display: grid;
+        grid-template-columns: repeat(27, 9px);
+        gap: 2px;
+        padding: 0 0 6px;
+
+        > .week {
+            height: 9px;
+            background: var(--brand-orange);
+        }
+    }
+}

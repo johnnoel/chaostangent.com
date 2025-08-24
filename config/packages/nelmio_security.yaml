@@ -25,6 +25,9 @@ nelmio_security:
                 enabled: false
             default-src:
                 - self
+            style-src:
+                - self
+                - unsafe-inline
             img-src:
                 - self
                 - www.gravatar.com

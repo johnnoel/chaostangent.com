@@ -5,147 +5,134 @@
 {% block title %}About{% endblock %}
 
 {% block body %}
-    <style nonce="{{ csp_nonce('style') }}">
-        /* classes for the calendar go here */
-    </style>
-
-    <article class="about">
+    <article>
         <h1>About</h1>
 
-        <div class="about-row">
-            <section class="about-column about-posts">
+        <div class="site-stats">
+            <section>
                 <h2>Posts</h2>
-                <div class="statblock">
-                    <div class="statblock-number statblock-number-large">
-                        <em>{{ post_count }}</em> posts
+
+                <div>
+                    <div class="postcount">
+                        <em class="bignum">{{ post_count }}</em> posts
                     </div>
-                </div>
-                <div class="statblock">
-                    <div class="statblock-number">
+
+                    <div class="grid">
                         {% if word_count > 10000 %}
-                            <em>{{ (word_count / 1000)|number_format }}</em> thousand words
+                            <div><em class="bignum">{{ (word_count / 1000)|number_format }}</em> thousand words</div>
                         {% else %}
-                            <em>{{ word_count }}</em> words
+                            <div><em class="bignum">{{ word_count }}</em> words</div>
                         {% endif %}
-                    </div>
-                    <div class="statblock-number">
-                        <em>{{ (post_count > 0) ? (word_count / post_count)|number_format : 0 }}</em> avg. words per post
-                    </div>
-                    <div class="statblock-number">
-                        <em>{{ (word_count / 561093)|number_format(1) }}</em> War and Peace's
-                    </div>
-                    <div class="statblock-number">
-                        <em>{{ (word_count / 250 / 60 / 24)|number_format(2) }}</em> days to read
+                        <div><em class="bignum">{{ (post_count > 0) ? (word_count / post_count)|number_format : 0 }}</em> avg. words per post</div>
+                        <div><em class="bignum">{{ (word_count / 561093)|number_format(1) }}</em> War and Peace's</div>
+                        <div><em class="bignum">{{ (word_count / 250 / 60 / 24)|number_format(2) }}</em> days to read</div>
                     </div>
                 </div>
-                <div class="statblock">
-                    <h3>Most popular <small>(2 &times; comments + kudos)</small></h3>
+
+                <div>
                     {% if popular_posts is not empty %}
-                        <ul class="stackedbars">
-                            {% set highest_score = (popular_posts[0].commentCount * 2) + popular_posts[0].kudoCount %}
-                            {% for p in popular_posts %}
-                                {% set width = 0 %}
-                                {% set score = (p.commentCount * 2) + p.kudoCount %}
-                                {% if highest_score > 0 %}
-                                    {% set width = ((score / highest_score) * 100)|number_format(2) %}
-                                {% endif %}
-                                <li class="stackedbar">
-                                    <em class="stackedbar-value">{{ score }}</em> <a href="{{ path('post', p.post.routeParams) }}">{{ p.post.title }}</a>
-                                    <div class="progressbar"><div class="progressbar-inner" style="width:{{ width }}%"></div></div>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                        <div class="stackedbars">
+                            <h3>Most popular <small>(2 &times; comments + kudos)</small></h3>
+                            <ol>
+                                {% set highest_score = (popular_posts[0].commentCount * 2) + popular_posts[0].kudoCount %}
+                                {% for p in popular_posts %}
+                                    {% set width = 0 %}
+                                    {% set score = (p.commentCount * 2) + p.kudoCount %}
+                                    {% if highest_score > 0 %}
+                                        {% set width = ((score / highest_score) * 100)|number_format(2) %}
+                                    {% endif %}
+                                    <li>
+                                        <em>{{ score }}</em> <a href="{{ path('post', p.post.routeParams) }}">{{ p.post.title }}</a>
+                                        <div class="progressbar"><div class="inner" id="popular-post-{{ loop.index }}" style="width:{{ width }}%"></div></div>
+                                    </li>
+                                {% endfor %}
+                            </ol>
+                        </div>
                     {% endif %}
                 </div>
+
+                <div>
+                    <h3>Posts per week</h3>
+                    {% for year, weeks in post_calendar %}
+                        <h4>{{ year }}</h4>
+                        <div class="calendar">
+                            {% for week, count in weeks %}
+                                {% set opacity = 0.03 %}
+                                {% if post_calendar_max > 0 %}
+                                    {% set opacity = 0.03 + ((count / post_calendar_max) * 0.97)|number_format(3) %}
+                                {% endif %}
+                                <div class="week" style="background-color:rgba(213,64,0,{{ opacity }});" title="{{ count }}"></div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
             </section>
 
-            <section class="about-column about-responses">
+            <section>
                 <h2>Responses</h2>
-                <div class="statblock">
-                    <div class="statblock-number">
-                        <em>{{ comment_count }}</em> responses
-                    </div>
-                    <div class="statblock-number">
-                        <em>{{ participant_count }}</em> participants
-                    </div>
-                </div>
-                <div class="statblock">
-                    <h3>Most participated</h3>
-                    <ul class="stackedbars">
-                        {% set most_comments = null %}
-                        {% for r in most_participated|filter(r => r[0].authorEmail not in author_emails) %}
-                            {% set comment = r[0] %}
-                            {% if most_comments is null %}
-                                {% set most_comments = r.comment_count %}
-                            {% endif %}
-                            <li class="stackedbar">
-                                <em class="stackedbar-value">{{ r.comment_count }}</em> {{ comment.authorName }}
-                                <div class="progressbar"><div class="progressbar-inner" style="width:{{ ((r.comment_count / most_comments) * 100)|number_format(2) }}%"></div></div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="statblock">
-                    <h3>Longest <small>(in characters)</small></h3>
-                    <ul class="stackedbars">
-                        {% set longest = 0 %}
-                        {% if longest_comments|length > 0 %}
-                            {% set longest = longest_comments[0].comment_length %}
-                        {% endif %}
 
-                        {% for r in longest_comments|filter(r => r[0].authorEmail not in author_emails) %}
-                            {% set comment = r[0] %}
-                            {% set post = comment.post %}
-                            {% set path = path('post', post.routeParams) %}
-                            <li class="stackedbar">
-                                <em class="stackedbar-value">{{ r.comment_length|number_format(0, ',') }}</em> <a href="{{ path }}#comment-{{ comment.id }}">{{ r[0].authorName }}</a> on <a href="{{ path }}">{{ post.title|u.truncate(36) }}</a>
-                                <div class="progressbar"><div class="progressbar-inner" style="width:{{ ((r.comment_length / longest) * 100)|number_format(2) }}%"></div></div>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                <div>
+                    <div class="grid">
+                        <div><em class="bignum">{{ comment_count }}</em> responses</div>
+                        <div><em class="bignum">{{ participant_count }}</em> participants</div>
+                    </div>
+
+                    <div class="stackedbars">
+                        <h3>Most participated</h3>
+                        <ol>
+                            {% set most_comments = null %}
+                            {% for r in most_participated|filter(r => r[0].authorEmail not in author_emails) %}
+                                {% set comment = r[0] %}
+                                {% if most_comments is null %}
+                                    {% set most_comments = r.comment_count %}
+                                {% endif %}
+                                <li>
+                                    <em>{{ r.comment_count }}</em> {{ comment.authorName }}
+                                    <div class="progressbar"><div class="inner" style="width:{{ ((r.comment_count / most_comments) * 100)|number_format(2) }}%"></div></div>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="stackedbars">
+                        <h3>Longest <small>(in characters)</small></h3>
+                        <ol>
+                            {% set longest = longest_comments[0].comment_length|default(0) %}
+
+                            {% for r in longest_comments|filter(r => r[0].authorEmail not in author_emails) %}
+                                {% set comment = r[0] %}
+                                {% set post = comment.post %}
+                                {% set path = path('post', post.routeParams) %}
+                                <li>
+                                    <em>{{ r.comment_length|number_format(0, ',') }}</em>
+                                    <a href="{{ path }}#comment-{{ comment.id }}">
+                                        {{ r[0].authorName }}
+                                    </a> on <a href="{{ path }}">{{ post.title|u.truncate(36) }}</a>
+                                    <div class="progressbar"><div class="inner" style="width:{{ ((r.comment_length / longest) * 100)|number_format(2) }}%"></div></div>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>Responses per week</h3>
+                    {% for year, weeks in comment_calendar %}
+                        <h4>{{ year }}</h4>
+                        <div class="calendar">
+                            {% for week, count in weeks %}
+                                {% set opacity = 0.03 %}
+                                {% if comment_calendar_max > 0 %}
+                                    {% set opacity = 0.03 + ((count / comment_calendar_max) * 0.97)|number_format(3) %}
+                                {% endif %}
+                                <div class="week" style="background-color:rgba(213,64,0,{{ opacity }});" title="{{ count }}"></div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                 </div>
             </section>
-        </div>
-
-        <div class="about-row">
-            <div class="about-column about-posts">
-                <div class="statblock">
-                    <h3>Calendar <small>(posts per week)</small></h3>
-                    <div class="calendargraph">
-                        {% for year, weeks in post_calendar %}
-                            <h4 class="calendargraph-title">{{ year }}</h4>
-                            <div class="calendargraph-year">
-                                {% for week, count in weeks %}
-                                    {% set opacity = 0.03 %}
-                                    {% if post_calendar_max > 0 %}
-                                        {% set opacity = 0.03 + ((count / post_calendar_max) * 0.97)|number_format(3) %}
-                                    {% endif %}
-                                    <div class="calendargraph-week" style="background-color:rgba(213,64,0,{{ opacity }});" title="{{ count }}"></div>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="about-column about-responses">
-                <div class="statblock">
-                    <h3>Calendar <small>(comments per week)</small></h3>
-                    <div class="calendargraph">
-                        {% for year, weeks in comment_calendar %}
-                            <h4 class="calendargraph-title">{{ year }}</h4>
-                            <div class="calendargraph-year">
-                                {% for week, count in weeks %}
-                                    {% set opacity = 0.03 %}
-                                    {% if comment_calendar_max > 0 %}
-                                        {% set opacity = 0.03 + ((count / comment_calendar_max) * 0.97)|number_format(3) %}
-                                    {% endif %}
-                                    <div class="calendargraph-week" style="background-color:rgba(213,64,0,{{ opacity }});" title="{{ count }}"></div>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
         </div>
     </article>
 {% endblock %}
