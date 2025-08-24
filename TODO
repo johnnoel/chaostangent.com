@@ -1,9 +1,5 @@
 # Features
 
-* Search
-    - limit results
-    - pagination
-    - styling
 * Commenting
     - notify on pushover with links to mark as not spam etc.
 
@@ -14,3 +10,4 @@
     - start slideshows as paused until you press play? (https://www.w3.org/WAI/tutorials/carousels/)
     - buttons for next / previous
 * Comment parenting
+* Left & right container padding at mobile size

@@ -109,7 +109,7 @@ class PostRepository extends ServiceEntityRepository
     /**
      * @return Collection<int,SearchResultDTO>
      */
-    public function searchPosts(string $q): Collection
+    public function searchPosts(string $q, int $page, int $perPage = 10): Collection
     {
         $rsm = new ResultSetMappingBuilder($this->getEntityManager());
         $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
@@ -130,11 +130,14 @@ class PostRepository extends ServiceEntityRepository
             WHERE (to_tsvector('english', p.searchable) @@ to_tsquery('english', :query))
                 AND (p.published = true)
             ORDER BY rank DESC
+            LIMIT :limit OFFSET :offset
         SQL;
 
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
         /** @var array<array{0: Post, headline: string, rank: float}> $result */
         $result = $query->setParameter('query', $q)
+            ->setParameter('limit', $perPage)
+            ->setParameter('offset', ($page - 1) * $perPage)
             ->getResult()
         ;
 
@@ -142,6 +145,20 @@ class PostRepository extends ServiceEntityRepository
             fn (array $r): SearchResultDTO => new SearchResultDTO($r[0], $r['headline'], $r['rank']),
             $result
         ));
+    }
+
+    public function countSearchedPosts(string $q): int
+    {
+        $sql = <<<SQL
+            SELECT COUNT(p.id) AS post_count
+            FROM posts p
+            WHERE (to_tsvector('english', p.searchable) @@ to_tsquery('english', :query))
+                AND (p.published = true)
+        SQL;
+
+        $result = $this->getEntityManager()->getConnection()->executeQuery($sql, [ 'query' => $q ]);
+
+        return $result->fetchNumeric()[0];
     }
 
     /**

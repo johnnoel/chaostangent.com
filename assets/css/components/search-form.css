@@ -4,6 +4,10 @@
     padding: 4px 0 0;
     flex: 1 0 100%;
 
+    &.-lg {
+        padding: 12px 0 24px;
+    }
+
     label {
         display: none; /* DEVTODO replace with visually hidden */
     }
@@ -16,6 +20,11 @@
         color: var(--brand-dark-grey);
         padding: 3px 4px;
         width: 155px;
+    }
+
+    &.-lg .query {
+        width: 100%;
+        font-size: 24px;
     }
 
     .search {
@@ -36,6 +45,15 @@
 
         &:focus, &:hover {
             background-color: var(--brand-orange);
+        }
+    }
+
+    &.-lg .search {
+        padding: 0 8px;
+
+        svg {
+            width: 24px;
+            height: 24px;
         }
     }
 }

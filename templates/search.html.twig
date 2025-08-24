@@ -3,23 +3,36 @@
 {% block body %}
     <h1>Search results</h1>
 
-    <form method="get" action="{{ path('search') }}">
-        <label for="search-query">Query</label>
-        <input type="search" name="q" value="{{ search_query|default('') }}" id="search-query">
-        <button type="submit">Search</button>
+    <form method="get" action="{{ path('search') }}" class="search-form -lg">
+        <label for="search-query-main">Search query</label>
+        <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}" id="search-query-main">
+        <button type="submit" class="search"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-search"></use></svg> Search</button>
     </form>
 
     {% if search_results|length == 0 and search_query is not empty %}
         <p>Your query did not return any results, please try broadening your search or use different terms.</p>
     {% else %}
-        <ul class="search-results">
+        <div class="search-results">
             {% for r in search_results %}
-                <li>
-                    <a href="{{ path('post', r.post.routeParams) }}">{{ r.post.fullTitle }}</a>
-                    <p>{{ r.headline|raw }}</p>
-                </li>
+                <article>
+                    {% if r.post.image is not empty %}
+                        {{ picture(r.post.image) }}
+                    {% else %}
+                        <div></div>
+                    {% endif %}
+                    <h2><a href="{{ path('post', r.post.routeParams) }}">{{ r.post.fullTitle }}</a></h2>
+                    <p>&hellip;{{ r.headline|raw }}&hellip; <a href="{{ path('post', r.post.routeParams) }}">Read more</a></p>
+                </article>
             {% endfor %}
-        </ul>
+        </div>
+
+        {% include '_pagination.html.twig' with {
+            'route': 'search',
+            'page_1_route': 'search',
+            'route_params': { 'q': search_query },
+            'page': page,
+            'pages': page_count
+        } %}
     {% endif %}
 <ul>
 </ul>

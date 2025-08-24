@@ -18,6 +18,7 @@
 @import "components/response-form.css" layer(components);
 @import "components/responses-list.css" layer(components);
 @import "components/site-stats.css" layer(components);
+@import "components/search-results.css" layer(components);
 @import "components/site-footer.css" layer(components);
 
 @import "helpers.css" layer(helpers);

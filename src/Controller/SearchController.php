@@ -19,15 +19,24 @@ class SearchController extends AbstractController
     #[Route('/search', name: 'search', methods: [ 'GET' ])]
     public function search(Request $request): Response
     {
-        $searchQuery = $request->query->get('q');
-        $searchResults = ($searchQuery !== null && $searchQuery !== '') ?
-            $this->postRepository->searchPosts($searchQuery) :
-            []
-        ;
+        $searchQuery = $request->query->getString('q');
+
+        if ($searchQuery === null || $searchQuery === '') {
+            return $this->render('search.html.twig', [
+                'search_results' => [],
+                'search_query' => $searchQuery,
+            ]);
+        }
+
+        $page = $request->query->getInt('page', 1);
+        $searchResults = $this->postRepository->searchPosts($searchQuery, $page, 10);
+        $resultCount = $this->postRepository->countSearchedPosts($searchQuery);
 
         return $this->render('search.html.twig', [
             'search_results' => $searchResults,
             'search_query' => $searchQuery,
+            'page' => $page,
+            'page_count' => ceil($resultCount / 10),
         ]);
     }
 
