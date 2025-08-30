@@ -67,6 +67,51 @@ jobs:
             - store_test_results:
                   path: /tmp/chaostangent/junitreport.xml
 
+    build-assets:
+        working_directory: /tmp/chaostangent
+        docker:
+            - image: cimg/node:22
+        steps:
+            - attach_workspace:
+                  at: /tmp
+            - run: npm run prod
+            - persist_to_workspace:
+                  root: /tmp/
+                  paths:
+                      - chaostangent/public/assets
+
+    build:
+        working_directory: /tmp
+        docker:
+            - image: cimg/php:8.4
+              environment:
+                  APP_ENV: prod
+        steps:
+            - attach_workspace:
+                    at: /tmp
+            - run: composer install --working-dir /tmp/chaostangent --no-interaction --no-dev --no-progress --no-scripts --classmap-authoritative --ignore-platform-req=ext-xsl
+            - run: rm -rf /tmp/chaostangent/var/log/* /tmp/chaostangent/var/cache/*
+            - run: tar cjf chaostangent.tar.bz2 -C /tmp/chaostangent .
+            - store_artifacts:
+                  path: /tmp/chaostangent.tar.bz2
+
+    deploy:
+        working_directory: /tmp/chaostangent
+        docker:
+            - image: johnnoel/php:8.4
+        steps:
+            - attach_workspace:
+                  at: /tmp
+            - add_ssh_keys:
+                  fingerprints:
+                        - "SHA256:GGp0GTiWl55wQbLEZSe2oTt8Xhvq+wbkhRoPQzkYIJo"
+            - run: echo "export EXTERNAL_IP=$(wget -qO- http://checkip.amazonaws.com/)" >> $BASH_ENV
+            - run: doctl auth init --access-token "${DIGITALOCEAN_API_KEY}"
+            - run: doctl compute firewall add-rules --inbound-rules "protocol:tcp,ports:22,address:${EXTERNAL_IP}/32" "${DIGITALOCEAN_FIREWALL_ID}"
+            - run: touch ~/.ssh/known_hosts && ssh-keyscan -H 134.122.111.6 >> ~/.ssh/known_hosts
+            - run: vendor/bin/dep deploy -o "artifact_url=https://circleci.com/api/v1.1/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/latest/artifacts" -o "circle_ci_token=${CIRCLE_TOKEN}" stage=beta
+            - run: doctl compute firewall remove-rules --inbound-rules "protocol:tcp,ports:22,address:${EXTERNAL_IP}/32" "${DIGITALOCEAN_FIREWALL_ID}"
+
 workflows:
     version: 2
     install-and-test:
@@ -81,3 +126,22 @@ workflows:
             - test:
                   requires:
                       - install
+            - build-assets:
+                  filters:
+                      branches:
+                          only: main
+            - build:
+                  requires:
+                      - coding-standards
+                      - static-analysis
+                      - test
+                      - build-assets
+                  filters:
+                      branches:
+                          only: main
+            - deploy:
+                  requires:
+                      - build
+                  filters:
+                      branches:
+                          only: main
