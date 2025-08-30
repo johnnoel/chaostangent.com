@@ -89,7 +89,7 @@ jobs:
         steps:
             - attach_workspace:
                     at: /tmp
-            - run: composer install --working-dir /tmp/chaostangent --no-interaction --no-dev --no-progress --no-scripts --classmap-authoritative --ignore-platform-req=ext-xsl
+            - run: composer install --working-dir /tmp/chaostangent --no-interaction --no-dev --no-progress --no-scripts --classmap-authoritative --ignore-platform-reqs
             - run: rm -rf /tmp/chaostangent/var/log/* /tmp/chaostangent/var/cache/*
             - run: tar cjf chaostangent.tar.bz2 -C /tmp/chaostangent .
             - store_artifacts:
