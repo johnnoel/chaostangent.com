@@ -7,9 +7,10 @@ namespace Deployer;
 require 'recipe/symfony.php';
 
 set('repository', 'git@github.com:johnnoel/chaostangent.com.git');
-set('keep_releases', 5);
+set('keep_releases', 3);
 set('artifact_url', '');
 set('circle_ci_token', '');
+add('shared_dirs', [ 'public/media' ]);
 
 host('chaostangent.com')
     ->set('hostname', '134.122.111.6')
