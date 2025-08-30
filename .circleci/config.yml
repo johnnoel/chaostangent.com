@@ -70,7 +70,7 @@ jobs:
     build-assets:
         working_directory: /tmp/chaostangent
         docker:
-            - image: cimg/node:22
+            - image: cimg/node:22.19.0
         steps:
             - attach_workspace:
                   at: /tmp
@@ -127,6 +127,8 @@ workflows:
                   requires:
                       - install
             - build-assets:
+                  requires:
+                      - install
                   filters:
                       branches:
                           only: main
