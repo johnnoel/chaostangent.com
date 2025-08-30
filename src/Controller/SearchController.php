@@ -19,12 +19,14 @@ class SearchController extends AbstractController
     #[Route('/search', name: 'search', methods: [ 'GET' ])]
     public function search(Request $request): Response
     {
-        $searchQuery = $request->query->getString('q');
+        $searchQuery = trim($request->query->getString('q'));
 
-        if ($searchQuery === null || $searchQuery === '') {
+        if ($searchQuery === '') {
             return $this->render('search.html.twig', [
                 'search_results' => [],
                 'search_query' => $searchQuery,
+                'page' => 1,
+                'page_count' => 1,
             ]);
         }
 

@@ -156,9 +156,9 @@ class PostRepository extends ServiceEntityRepository
                 AND (p.published = true)
         SQL;
 
-        $result = $this->getEntityManager()->getConnection()->executeQuery($sql, [ 'query' => $q ]);
+        $result = $this->getEntityManager()->getConnection()->executeQuery($sql, [ 'query' => $q ])->fetchNumeric();
 
-        return $result->fetchNumeric()[0];
+        return (is_array($result) && count($result) > 0 && is_int($result[0])) ? $result[0] : 0;
     }
 
     /**
