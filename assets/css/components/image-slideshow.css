@@ -15,6 +15,10 @@
         flex-flow: row nowrap;
         gap: 4px;
 
+        @media (scripting: none) {
+            display: none;
+        }
+
         button {
             appearance: none;
             border: none;
@@ -41,6 +45,10 @@
         display: flex;
         flex-flow: row nowrap;
         gap: 10px;
+
+        @media (scripting: none) {
+            display: none;
+        }
 
         button {
             display: inline-flex;
@@ -124,5 +132,11 @@
     a:hover picture, a:focus picture {
         border-color: var(--brand-orange);
         background-color: var(--brand-orange);
+    }
+}
+
+@media (scripting: none) {
+    .glide__slides {
+        flex-wrap: wrap;
     }
 }
