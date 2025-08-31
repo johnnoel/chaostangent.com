@@ -10,6 +10,7 @@ use App\Image\MimeType;
 use App\Image\Source;
 use App\Image\SourceFactory;
 use App\Image\Variant;
+use Symfony\Component\Asset\Packages;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -18,7 +19,8 @@ class ImageExtension extends AbstractExtension
     public function __construct(
         private ImageRepository $imageRepository,
         private readonly SourceFactory $sourceFactory,
-        private readonly FileHandler $fileHandler
+        private readonly FileHandler $fileHandler,
+        private readonly Packages $packages
     ) {
     }
 
@@ -79,13 +81,32 @@ class ImageExtension extends AbstractExtension
             $sources
         );
         $slides = implode("\n", array_map([ $this, 'slide' ], $s));
+        $nav = implode("\n", array_map(fn (int $i) => <<<HTML
+            <button class="glide__bullet" data-glide-dir="=$i"></button>
+        HTML, array_keys($s)));
+        $svg = $this->packages->getUrl('icons.svg');
 
         return <<<HTML
             <div class="image-slideshow glide">
-                <div class="glide__track" data-glide-el="track">
+                <div class="track glide__track" data-glide-el="track">
                     <div class="glide__slides">
                         $slides
                     </div>
+                </div>
+                <div class="bullets glide__bullets" data-glide-el="controls[nav]">
+                    $nav
+                </div>
+                <div class="controls glide__arrows" data-glide-el="controls">
+                    <button class="toggle -pause">
+                        <svg class="play"><use xlink:href="$svg#icon-play"></use></svg>
+                        <svg class="pause"><use xlink:href="$svg#icon-pause"></use></svg>
+                    </button>
+                    <button class="left glide__arrow glide__arrow--left" data-glide-dir="<">
+                        <svg><use xlink:href="$svg#icon-back"></use></svg>
+                    </button>
+                    <button class="right glide__arrow glide__arrow--right" data-glide-dir=">">
+                        <svg><use xlink:href="$svg#icon-forward"></use></svg>
+                    </button>
                 </div>
             </div>
         HTML;

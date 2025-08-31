@@ -42,7 +42,8 @@
         "defaults"
     ],
     "dependencies": {
-        "@glidejs/glide": "^3.7.1"
+        "@glidejs/glide": "^3.7.1",
+        "scrollmonitor": "^1.2.11"
     },
     "engines": {
         "node": ">=22.19.0"

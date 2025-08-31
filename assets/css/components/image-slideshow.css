@@ -1,7 +1,118 @@
 .image-slideshow {
-    width: 540px;
+    width: 100%;
+    max-width: 540px;
     padding: 0 0 1em;
-    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+
+    > .track {
+        grid-column: span 2;
+    }
+
+    > .bullets {
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 4px;
+
+        button {
+            appearance: none;
+            border: none;
+            border-radius: 6px;
+            background: var(--brand-dark-beige);
+            width: 12px;
+            height: 12px;
+            cursor: pointer;
+            outline: 1px solid transparent;
+            transition: outline-color .15s, background-color .15s;
+
+            &:focus, &:hover {
+                outline: 1px solid var(--brand-darker-beige);
+            }
+
+            &.glide__bullet--active {
+                background: var(--brand-orange);
+            }
+        }
+    }
+
+    > .controls {
+        justify-self: end;
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 10px;
+
+        button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            appearance: none;
+            border: 1px solid var(--brand-darker-beige);
+            background: var(--brand-dark-beige);
+            border-radius: 50%;
+            font-size: 0;
+            color: transparent;
+            width: 32px;
+            height: 32px;
+            line-height: 1;
+            cursor: pointer;
+
+            &:focus, &:hover {
+                border-color: var(--brand-orange);
+
+                svg {
+                    fill: var(--brand-orange);
+                    color: var(--brand-orange);
+                }
+            }
+        }
+
+        svg {
+            width: 26px;
+            height: 26px;
+            fill: var(--brand-grey);
+            color: var(--brand-grey);
+        }
+
+        > .left {
+            svg {
+                height: 28px;
+            }
+        }
+
+        > .right {
+            svg {
+                width: 28px;
+            }
+        }
+
+        > .toggle {
+            svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            &.-pause {
+                .pause {
+                    display: block;
+                }
+
+                .play {
+                    display: none;
+                }
+            }
+
+            &.-play {
+                .pause {
+                    display: none;
+                }
+
+                .play {
+                    display: block;
+                }
+            }
+        }
+    }
 
     picture {
         display: inline-block;
