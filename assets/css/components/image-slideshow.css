@@ -94,21 +94,21 @@
 
             &.-pause {
                 .pause {
-                    display: block;
+                    display: none;
                 }
 
                 .play {
-                    display: none;
+                    display: block;
                 }
             }
 
             &.-play {
                 .pause {
-                    display: none;
+                    display: block;
                 }
 
                 .play {
-                    display: block;
+                    display: none;
                 }
             }
         }
