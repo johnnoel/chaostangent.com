@@ -5,9 +5,11 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
+    row-gap: 8px;
 
     > .track {
         grid-column: span 2;
+        background: var(--brand-dark-beige);
     }
 
     > .bullets {
@@ -122,11 +124,24 @@
         }
     }
 
+    a {
+        text-decoration: none;
+        line-height: 1;
+    }
+
     picture {
-        display: inline-block;
+        display: block;
         padding: 1px;
         border: 1px solid var(--brand-lighter-grey);
         transition: border-color .15s, background-color .15s;
+        background: var(--brand-beige);
+    }
+
+    span {
+        display: block;
+        text-decoration: none;
+        padding: 4px 4px 8px;
+        color: var(--brand-dark-grey);
     }
 
     a:hover picture, a:focus picture {

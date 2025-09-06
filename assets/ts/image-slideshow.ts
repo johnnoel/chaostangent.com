@@ -6,7 +6,7 @@ export default function(slideshow: HTMLElement) {
     const glide = new Glide(slideshow, {
         animationDuration: 1000,
         hoverpause: true,
-        rewindDuration: 3000
+        rewindDuration: 1500
     });
 
     glide.mount({ Autoplay, Controls, Swipe });

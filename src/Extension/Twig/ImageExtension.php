@@ -148,6 +148,7 @@ class ImageExtension extends AbstractExtension
     {
         $variants = $this->imageRepository->getVariants($source);
         $sources = implode("\n", array_map([ $this, 'source' ], $variants));
+        $caption = ($source->caption !== null) ? "<span>$source->caption</span>" : '';
 
         return <<<HTML
             <div class="glide__slide">
@@ -155,6 +156,7 @@ class ImageExtension extends AbstractExtension
                     <picture>
                         $sources
                     </picture>
+                    $caption
                 </a>
             </div>
         HTML;
