@@ -3,7 +3,7 @@
         <header class="author">
             <h2 class="name">
                 {% if comment.authorUrl is not empty %}
-                    <a href="{{ comment.authorUrl }}" rel="external nofollow" class="url">{{ comment.authorName }} <svg><use xlink:href="{{ asset('icons.svg') }}#icon-external-link"></use></svg></a>
+                    <a href="{{ comment.authorUrl }}" rel="external nofollow" target="_blank" class="url">{{ comment.authorName }} <svg><use xlink:href="{{ asset('icons.svg') }}#icon-external-link"></use></svg></a>
                 {% else %}
                     {{ comment.authorName }}
                 {% endif %}
