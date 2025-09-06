@@ -42,7 +42,7 @@ services:
 
     App\Image\FileHandler:
         arguments:
-            $mediaDirectory: '%kernel.project_dir%/media'
+            $mediaDirectory: '%env(MEDIA_LOCATION)%'
             $mediaUrl: '/media/'
 
     App\Image\GatheringImageRepository:
