@@ -9,7 +9,7 @@ readonly final class Source
     /**
      * @param array<Action> $actions
      */
-    public function __construct(public string $src, public array $actions)
+    public function __construct(public string $src, public array $actions, public ?string $caption = null)
     {
     }
 

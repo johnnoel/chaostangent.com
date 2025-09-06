@@ -7,9 +7,11 @@ namespace App\Tests\Unit\Post;
 use App\Entity\Post;
 use App\Post\ThumbnailsProcessor;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(ThumbnailsProcessor::class)]
 class ThumbnailsProcessorTest extends TestCase
 {
     #[DataProvider('processProvider')]

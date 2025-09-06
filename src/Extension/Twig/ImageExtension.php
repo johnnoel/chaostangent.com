@@ -77,7 +77,9 @@ class ImageExtension extends AbstractExtension
     public function slideshow(array $sources): string
     {
         $s = array_map(
-            fn (array $s): Source => $this->sourceFactory->createSource($s['src'], $s['actions']),
+            fn (array $s): Source => $this->sourceFactory->createSource(
+                $s['src'], $s['actions'], $s['caption'] ?? null
+            ),
             $sources
         );
         $slides = implode("\n", array_map([ $this, 'slide' ], $s));
