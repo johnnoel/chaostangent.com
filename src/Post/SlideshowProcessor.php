@@ -12,7 +12,7 @@ readonly final class SlideshowProcessor implements Processor
 {
     public function process(Post $post): void
     {
-        $post->setContent($this->transformSlideshows($post->getContent()));
+        $post->setContent(strval($this->transformSlideshows($post->getContent())));
         $post->setSummary($this->transformSlideshows($post->getSummary()));
     }
 
@@ -59,7 +59,7 @@ readonly final class SlideshowProcessor implements Processor
         }
 
         $sources = [];
-        $links->each(function (Crawler $link) use (&$sources) {
+        $links->each(function (Crawler $link) use (&$sources): void {
             $sources[] = $this->getImage($link);
         });
 
@@ -83,12 +83,16 @@ readonly final class SlideshowProcessor implements Processor
         }
 
         // https://chaostangent.com/media/abcdef => abcdef
-        $path = substr(strval(parse_url($link->attr('href'), PHP_URL_PATH)), 7);
+        $path = substr(strval(parse_url(strval($link->attr('href')), PHP_URL_PATH)), 7);
         $caption = $image->attr('title');
         $qs = [];
         parse_str($queryString, $qs);
 
-        $oldGroup = OldImageType::tryFrom($qs['g'] ?? '');
+        if (!array_key_exists('g', $qs) || !is_string($qs['g'])) {
+            throw new Exception('No group found in query string: ' . $queryString);
+        }
+
+        $oldGroup = OldImageType::tryFrom($qs['g']);
 
         if ($oldGroup === null) {
             throw new Exception('Unknown group found: ' . var_export($qs['g'], true));

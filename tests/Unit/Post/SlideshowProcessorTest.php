@@ -24,6 +24,9 @@ class SlideshowProcessorTest extends TestCase
         $this->assertSame($expected, $post->getContent());
     }
 
+    /**
+     * @return array<string,array<mixed>>
+     */
     public static function processProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength
@@ -92,6 +95,9 @@ class SlideshowProcessorTest extends TestCase
         $processor->process($post);
     }
 
+    /**
+     * @return array<string,array<mixed>>
+     */
     public static function processThrowsExceptionProvider(): array
     {
         return [
@@ -102,6 +108,10 @@ class SlideshowProcessorTest extends TestCase
             'no image query string' => [
                 '<p class="slideshow"><a href="https://chaostangent.com/media/test.jpg"><img src="abc"></a></p>',
                 'No query string on the image source: abc',
+            ],
+            'query string but no group' => [
+                '<p class="slideshow"><a href="https://chaostangent.com/media/test.jpg"><img src="abc?t=1"></a></p>',
+                'No group found in query string: t=1',
             ],
             'unknown group' => [
                 '<p class="slideshow"><a href="https://chaostangent.com/media/test.jpg"><img src="?g=test"></a></p>',

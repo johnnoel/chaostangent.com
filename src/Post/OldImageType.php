@@ -13,7 +13,7 @@ enum OldImageType: string
 
     public function getSize(): string
     {
-        return match($this) {
+        return match ($this) {
             self::OLDTHUMB => '268x117',
             self::OLDLEAD => '540x231',
             self::OLDPOSTER => '544x306',

@@ -72,13 +72,15 @@ class ImageExtension extends AbstractExtension
     }
 
     /**
-     * @param array<array{src: string, actions: array<string>}> $sources
+     * @param array<array{src: string, actions: array<string>, caption?: string}> $sources
      */
     public function slideshow(array $sources): string
     {
         $s = array_map(
             fn (array $s): Source => $this->sourceFactory->createSource(
-                $s['src'], $s['actions'], $s['caption'] ?? null
+                $s['src'],
+                $s['actions'],
+                $s['caption'] ?? null
             ),
             $sources
         );
