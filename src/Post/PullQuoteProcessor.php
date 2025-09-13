@@ -11,6 +11,7 @@ use App\Entity\Post;
  */
 readonly final class PullQuoteProcessor implements Processor
 {
+    #[\Override]
     public function process(Post $post): void
     {
         $content = $post->getContent();
@@ -36,6 +37,7 @@ readonly final class PullQuoteProcessor implements Processor
         $post->setExtra($extra);
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'pullquote';

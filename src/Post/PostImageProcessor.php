@@ -11,6 +11,7 @@ use App\Entity\Post;
  */
 readonly final class PostImageProcessor implements Processor
 {
+    #[\Override]
     public function process(Post $post): void
     {
         $extra = $post->getExtra();
@@ -43,6 +44,7 @@ readonly final class PostImageProcessor implements Processor
         ]);
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'post-image';

@@ -11,6 +11,7 @@ use App\Entity\Post;
  */
 readonly final class CodeBlockProcessor implements Processor
 {
+    #[\Override]
     public function process(Post $post): void
     {
         $content = $post->getContent();
@@ -47,6 +48,7 @@ readonly final class CodeBlockProcessor implements Processor
         $post->setContent($content);
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'code';

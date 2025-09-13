@@ -19,6 +19,7 @@ readonly final class ExportProcessor implements Processor
     ) {
     }
 
+    #[\Override]
     public function process(Post $post): void
     {
         $frontmatter = trim($this->serializer->serialize($post, 'yaml', context: [
@@ -39,6 +40,7 @@ readonly final class ExportProcessor implements Processor
         file_put_contents($this->outputDirectory . '/' . $filename, $export);
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'export';

@@ -26,6 +26,7 @@ readonly final class GenerateImagesProcessor implements Processor
     ) {
     }
 
+    #[\Override]
     public function process(Post $post): void
     {
         $this->imageExtension->setImageRepository($this->imageRepository);
@@ -52,6 +53,7 @@ readonly final class GenerateImagesProcessor implements Processor
         $this->imageRepository->reset();
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'generate-images';

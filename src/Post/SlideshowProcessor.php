@@ -10,17 +10,22 @@ use Symfony\Component\DomCrawler\Crawler;
 
 readonly final class SlideshowProcessor implements Processor
 {
+    #[\Override]
     public function process(Post $post): void
     {
-        $post->setContent(strval($this->transformSlideshows($post->getContent())));
+        $post->setContent($this->transformSlideshows($post->getContent()));
         $post->setSummary($this->transformSlideshows($post->getSummary()));
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'slideshow';
     }
 
+    /**
+     * @return ($content is string ? string : null)
+     */
     private function transformSlideshows(?string $content): ?string
     {
         if ($content === null) {

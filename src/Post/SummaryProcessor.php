@@ -11,6 +11,7 @@ use App\Entity\Post;
  */
 readonly final class SummaryProcessor implements Processor
 {
+    #[\Override]
     public function process(Post $post): void
     {
         $content = $post->getContent();
@@ -26,6 +27,7 @@ readonly final class SummaryProcessor implements Processor
         $post->setContent(trim($summary . $rest));
     }
 
+    #[\Override]
     public function getSlug(): string
     {
         return 'summary';

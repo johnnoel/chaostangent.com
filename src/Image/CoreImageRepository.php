@@ -12,8 +12,10 @@ readonly final class CoreImageRepository implements ImageRepository
 
     /** @inheritdoc */
     #[\Override]
-    public function getVariants(Source $source): array
-    {
+    public function getVariants(
+        Source $source,
+        array $mimeTypes = [ MimeType::AVIF, MimeType::WEBP, MimeType::JPEG ]
+    ): array {
         [ 'w' => $w, 'h' => $h ] = $source->getTargetSize();
 
         return array_map(
@@ -23,7 +25,7 @@ readonly final class CoreImageRepository implements ImageRepository
                 $w,
                 $h
             ),
-            [ MimeType::AVIF, MimeType::WEBP, MimeType::JPEG ]
+            $mimeTypes
         );
     }
 }

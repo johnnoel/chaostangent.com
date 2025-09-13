@@ -3,7 +3,7 @@ parameters:
     resize_aliases:
         thumb: { w: 268, h: 117 }
         lead: { w: 540, h: 231 }
-        poster: { w: 544, h: 306 }
+        poster: { w: 544, h: 304 }
         square: { w: 320, h: 320 }
 
 services:

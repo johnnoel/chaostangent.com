@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Extension\Twig;
 
+use App\Image\Action;
 use App\Image\FileHandler;
 use App\Image\ImageRepository;
 use App\Image\MimeType;
@@ -36,6 +37,7 @@ class ImageExtension extends AbstractExtension
             new TwigFunction('thumbnails', [ $this, 'thumbnails' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('slideshow', [ $this, 'slideshow' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('picture', [ $this, 'something' ], [ 'is_safe' => [ 'html' ]]),
+            new TwigFunction('video', [ $this, 'video' ], [ 'is_safe' => [ 'html' ]]),
         ];
     }
 
@@ -129,6 +131,34 @@ class ImageExtension extends AbstractExtension
             <picture>
                 $sources
             </picture>
+        HTML;
+    }
+
+    /**
+     * @param array<array{src: string, type: ?string}> $sources
+     */
+    public function video(array $sources, ?string $poster = null): string
+    {
+        if ($poster !== null) {
+            $posterVariant = $this->imageRepository->getVariants(
+                $this->sourceFactory->createSource($poster, [ 'resize:poster' ]),
+                [ MimeType::JPEG ]
+            );
+            $poster = array_first($posterVariant)?->src;
+        }
+
+        $p = ($poster !== null) ? 'poster="' . $poster . '"' : '';
+        $s = implode("\n", array_map(function (array $s): string {
+            $type = ($s['type'] !== null) ? 'type="' . $s['type'] . '"' : '';
+            $src = $this->fileHandler->getSourceUrl($this->sourceFactory->createSource($s['src'], []));
+
+            return sprintf('<source src="%s"%s>', $src, $type);
+        }, $sources));
+
+        return <<<HTML
+            <video controls preload="auto" width="544" height="304"$p>
+                $s
+            </video>
         HTML;
     }
 
