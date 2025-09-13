@@ -6,6 +6,7 @@
 * Search
     - should include titles (try "Regicide")
     - fix multiple words (try "k project")
+* Local links to images (rather than https://chaostangent.com)
 
 # Visual
 
@@ -13,17 +14,17 @@
 * Comment parenting
 * Left & right container padding at mobile size
 * General image quality? Contrast and sharpen maybe
+* Fix slideshow images not loading
 
 # Posts
 
 https://beta.chaostangent.com/2015/01/bifurcated/ - second image ratio, cropping
-https://beta.chaostangent.com/2015/01/godslayer/ - video sources and poster
-https://beta.chaostangent.com/2015/01/deadpan/ - video sources and poster
 https://beta.chaostangent.com/2014/12/how-i-write-about-anime/ - <ol> indent
-https://beta.chaostangent.com/2014/11/regicide/ - video sources
-https://beta.chaostangent.com/2014/10/tamako-catch/ - video sources
-https://beta.chaostangent.com/2014/10/god-mode/ - video sources
-https://beta.chaostangent.com/2014/09/maneater/ - video sources
+https://beta.chaostangent.com/2014/08/the-spaces-in-between/ - custom image ratios
+https://beta.chaostangent.com/2014/08/caring-for-your-introvert/ - non chaostangent.com sources
+https://beta.chaostangent.com/2014/06/comedy-club/ - opening GIF
+https://beta.chaostangent.com/2014/05/hey-listen/ - remove or hide machine tags
+https://beta.chaostangent.com/2014/04/spiffy/ - floating image + image ratio; trim category titles
 
 https://beta.chaostangent.com/2014/11/wrapup/ - maps
 - https://mygeodata.cloud/converter/kml-to-geojson

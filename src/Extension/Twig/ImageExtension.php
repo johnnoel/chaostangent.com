@@ -6,6 +6,7 @@ namespace App\Extension\Twig;
 
 use App\Image\FileHandler;
 use App\Image\ImageRepository;
+use App\Image\LoadingType;
 use App\Image\MimeType;
 use App\Image\Source;
 use App\Image\SourceFactory;
@@ -178,7 +179,7 @@ class ImageExtension extends AbstractExtension
     private function slide(Source $source): string
     {
         $variants = $this->imageRepository->getVariants($source);
-        $sources = implode("\n", array_map([ $this, 'source' ], $variants));
+        $sources = implode("\n", array_map(fn (Variant $v): string => $this->source($v, LoadingType::AUTO), $variants));
         $caption = ($source->caption !== null) ? "<span>$source->caption</span>" : '';
 
         return <<<HTML
@@ -193,11 +194,13 @@ class ImageExtension extends AbstractExtension
         HTML;
     }
 
-    private function source(Variant $variant): string
+    private function source(Variant $variant, LoadingType $loadingType = LoadingType::LAZY): string
     {
         if ($variant->mimeType === MimeType::JPEG) {
+            $loading = $loadingType->value;
+
             return <<<HTML
-                <img src="$variant->src" alt="" width="$variant->width" height="$variant->height" loading="lazy">
+                <img src="$variant->src" alt="" width="$variant->width" height="$variant->height" loading="$loading">
             HTML;
         }
 
