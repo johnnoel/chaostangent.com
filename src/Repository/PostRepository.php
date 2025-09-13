@@ -107,6 +107,44 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return array{prev: ?Post, next: ?Post}
+     */
+    public function getSurroundingPosts(Post $post): array
+    {
+        $dql = <<<DQL
+            SELECT p FROM App\Entity\Post p
+            WHERE (p.date > :date)
+                AND (p.published = :published)
+            ORDER BY p.date ASC
+        DQL;
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        /** @var Post|null $prev */
+        $prev = $query->setMaxResults(1)
+            ->setParameter('published', true)
+            ->setParameter('date', $post->getDate())
+            ->getOneOrNullResult()
+        ;
+
+        $dql = <<<DQL
+            SELECT p FROM App\Entity\Post p
+            WHERE (p.date < :date)
+                AND (p.published = :published)
+            ORDER BY p.date DESC
+        DQL;
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        /** @var Post|null $next */
+        $next = $query->setMaxResults(1)
+            ->setParameter('published', true)
+            ->setParameter('date', $post->getDate())
+            ->getOneOrNullResult()
+        ;
+
+        return [ 'prev' => $prev, 'next' => $next ];
+    }
+
+    /**
      * @return Collection<int,SearchResultDTO>
      */
     public function searchPosts(string $q, int $page, int $perPage = 10): Collection

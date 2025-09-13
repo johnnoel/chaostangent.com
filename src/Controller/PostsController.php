@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Form\Model\CommentModel;
 use App\Form\Type\CommentType;
 use App\Repository\CommentRepository;
+use App\Repository\PostRepository;
 use App\Repository\TagRepository;
 use DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -18,6 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class PostsController extends AbstractController
 {
     public function __construct(
+        private readonly PostRepository $postRepository,
         private readonly CommentRepository $commentRepository,
         private readonly TagRepository $tagRepository
     ) {
@@ -40,12 +42,15 @@ class PostsController extends AbstractController
         $commentModel = new CommentModel(formRendered: new DateTimeImmutable('now'));
         $commentForm = $this->createForm(CommentType::class, $commentModel);
         $tags = $this->tagRepository->getTagsForPost($post);
+        [ 'prev' => $prevPost, 'next' => $nextPost ] = $this->postRepository->getSurroundingPosts($post);
 
         return $this->render('post.html.twig', [
             'post' => $post,
             'comments' => $comments,
             'tags' => $tags,
             'comment_form' => $commentForm,
+            'prev_post' => $prevPost,
+            'next_post' => $nextPost,
         ]);
     }
 }

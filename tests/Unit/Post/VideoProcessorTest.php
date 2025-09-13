@@ -81,6 +81,7 @@ class VideoProcessorTest extends TestCase
         { 'src': '2025/09/test.webm', 'type': null } ]) }}
         TWIG;
         // phpcs:enable
+
         return [
             'nothing' => [ '', '' ],
             'just text' => [ 'Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet' ],

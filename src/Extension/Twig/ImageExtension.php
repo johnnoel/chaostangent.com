@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Extension\Twig;
 
-use App\Image\Action;
 use App\Image\FileHandler;
 use App\Image\ImageRepository;
 use App\Image\MimeType;

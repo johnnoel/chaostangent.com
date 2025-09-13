@@ -2,16 +2,30 @@
 
 * Commenting
     - notify on pushover with links to mark as not spam etc.
+    - make the time value a little harder to replay with
+* Search
+    - should include titles (try "Regicide")
+    - fix multiple words (try "k project")
 
 # Visual
 
 * Desktop styles
 * Comment parenting
 * Left & right container padding at mobile size
+* General image quality? Contrast and sharpen maybe
 
 # Posts
 
 https://beta.chaostangent.com/2015/01/bifurcated/ - second image ratio, cropping
 https://beta.chaostangent.com/2015/01/godslayer/ - video sources and poster
 https://beta.chaostangent.com/2015/01/deadpan/ - video sources and poster
+https://beta.chaostangent.com/2014/12/how-i-write-about-anime/ - <ol> indent
+https://beta.chaostangent.com/2014/11/regicide/ - video sources
+https://beta.chaostangent.com/2014/10/tamako-catch/ - video sources
+https://beta.chaostangent.com/2014/10/god-mode/ - video sources
+https://beta.chaostangent.com/2014/09/maneater/ - video sources
 
+https://beta.chaostangent.com/2014/11/wrapup/ - maps
+- https://mygeodata.cloud/converter/kml-to-geojson
+- https://reducegeojson.radicaldata.org/
+- https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static/geojson(%7B%22type%22%3A%22FeatureCollection%22%2C%22features%22%3A%5B%7B%22type%22%3A%22Feature%22%2C%22properties%22%3A%7B%22begin%22%3A%222014-11-01T11%3A01%3A42Z%22%2C%22end%22%3A%222014-11-01T11%3A44%3A59Z%22%7D%2C%22bbox%22%3A%5B73.8059417%2C15.3899423%2C73.9072751%2C15.4618842%5D%2C%22geometry%22%3A%7B%22type%22%3A%22LineString%22%2C%22coordinates%22%3A%5B%5B73.85792%2C15.38994%5D%2C%5B73.86044%2C15.39501%5D%2C%5B73.86205%2C15.40085%5D%2C%5B73.87347%2C15.39579%5D%2C%5B73.8844%2C15.39928%5D%2C%5B73.89482%2C15.40346%5D%2C%5B73.90426%2C15.40173%5D%2C%5B73.90728%2C15.40663%5D%2C%5B73.8931%2C15.42716%5D%2C%5B73.8815%2C15.43725%5D%2C%5B73.87719%2C15.44031%5D%2C%5B73.86336%2C15.45167%5D%2C%5B73.85287%2C15.46188%5D%2C%5B73.84875%2C15.45727%5D%2C%5B73.81749%2C15.45936%5D%2C%5B73.80634%2C15.45559%5D%2C%5B73.80594%2C15.45589%5D%2C%5B73.80594%2C15.45589%5D%5D%7D%7D%5D%7D),pin-s-1+555555(73.8579198,15.3899423),pin-s-2+555555(73.8059435,15.4558913)/auto/544x544@2x?access_token=...
