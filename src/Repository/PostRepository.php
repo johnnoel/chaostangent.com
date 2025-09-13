@@ -173,7 +173,7 @@ class PostRepository extends ServiceEntityRepository
 
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
         /** @var array<array{0: Post, headline: string, rank: float}> $result */
-        $result = $query->setParameter('query', $q)
+        $result = $query->setParameter('query', implode(' & ', preg_split('#\s+#', $q)))
             ->setParameter('limit', $perPage)
             ->setParameter('offset', ($page - 1) * $perPage)
             ->getResult()
