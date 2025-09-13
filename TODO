@@ -15,6 +15,7 @@
 * Left & right container padding at mobile size
 * General image quality? Contrast and sharpen maybe
 * Fix slideshow images not loading
+* Image lightbox / loupe
 
 # Posts
 
@@ -25,6 +26,9 @@ https://beta.chaostangent.com/2014/06/comedy-club/ - opening GIF
 https://beta.chaostangent.com/2014/05/hey-listen/ - remove or hide machine tags
 https://beta.chaostangent.com/2014/04/spiffy/ - floating image + image ratio; trim category titles
 https://chaostangent.com/2014/03/opening-move/ - custom image ratios
+https://beta.chaostangent.com/2014/02/cut-my-life-into-pieces/ - custom image ratio
+https://chaostangent.com/2014/02/surefooted/ - custom image ratio
+https://beta.chaostangent.com/2014/01/yozakura-quartet/ - custom image ratio in slideshow
 
 https://beta.chaostangent.com/2014/11/wrapup/ - maps
 - https://mygeodata.cloud/converter/kml-to-geojson
