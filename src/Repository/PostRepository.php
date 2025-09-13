@@ -150,10 +150,7 @@ class PostRepository extends ServiceEntityRepository
      */
     public function searchPosts(string $q, int $page, int $perPage = 10): Collection
     {
-        $tokens = preg_split('#\s+#', $q, flags: PREG_SPLIT_NO_EMPTY);
-        if ($tokens === false) {
-            throw new Exception('Invalid search query: ' . $q);
-        }
+        $searchQuery = $this->getSearchQuery($q);
 
         $rsm = new ResultSetMappingBuilder($this->getEntityManager());
         $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
@@ -180,7 +177,7 @@ class PostRepository extends ServiceEntityRepository
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
 
         /** @var array<array{0: Post, headline: string, rank: float}> $result */
-        $result = $query->setParameter('query', implode(' & ', $tokens))
+        $result = $query->setParameter('query', $searchQuery)
             ->setParameter('limit', $perPage)
             ->setParameter('offset', ($page - 1) * $perPage)
             ->getResult()
@@ -201,7 +198,10 @@ class PostRepository extends ServiceEntityRepository
                 AND (p.published = true)
         SQL;
 
-        $result = $this->getEntityManager()->getConnection()->executeQuery($sql, [ 'query' => $q ])->fetchNumeric();
+        $result = $this->getEntityManager()->getConnection()->executeQuery(
+            $sql,
+            [ 'query' => $this->getSearchQuery($q) ]
+        )->fetchNumeric();
 
         return (is_array($result) && count($result) > 0 && is_int($result[0])) ? $result[0] : 0;
     }
@@ -441,5 +441,15 @@ class PostRepository extends ServiceEntityRepository
                 ->setParameter('year', $criteria->year)
             ;
         }
+    }
+
+    private function getSearchQuery(string $q): string
+    {
+        $tokens = preg_split('#\s+#', $q, flags: PREG_SPLIT_NO_EMPTY);
+        if ($tokens === false) {
+            throw new Exception('Invalid search query: ' . $q);
+        }
+
+        return implode(' & ', $tokens);
     }
 }
