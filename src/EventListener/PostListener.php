@@ -38,8 +38,8 @@ readonly final class PostListener
         $template = $this->twig->createTemplate($post->getContent(), $post->getAlias());
         $content = $template->render();
 
-        // devtodo Add tags, title, and subtitle to this
+        // devtodo Add tags to this
         // devtodo Trim any double spaces
-        $post->setSearchable(trim(strip_tags($content)));
+        $post->setSearchable($post->getFullTitle() . ' ' . trim(strip_tags($content)));
     }
 }
