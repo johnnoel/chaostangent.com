@@ -15,6 +15,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Generator;
 use Illuminate\Support\Collection;
 use Symfony\Bridge\Doctrine\Types\UlidType;
@@ -149,6 +150,11 @@ class PostRepository extends ServiceEntityRepository
      */
     public function searchPosts(string $q, int $page, int $perPage = 10): Collection
     {
+        $tokens = preg_split('#\s+#', $q, flags: PREG_SPLIT_NO_EMPTY);
+        if ($tokens === false) {
+            throw new Exception('Invalid search query: ' . $q);
+        }
+
         $rsm = new ResultSetMappingBuilder($this->getEntityManager());
         $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
         $rsm->addScalarResult('headline', 'headline');
@@ -172,8 +178,9 @@ class PostRepository extends ServiceEntityRepository
         SQL;
 
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+
         /** @var array<array{0: Post, headline: string, rank: float}> $result */
-        $result = $query->setParameter('query', implode(' & ', preg_split('#\s+#', $q)))
+        $result = $query->setParameter('query', implode(' & ', $tokens))
             ->setParameter('limit', $perPage)
             ->setParameter('offset', ($page - 1) * $perPage)
             ->getResult()
