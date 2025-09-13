@@ -179,7 +179,7 @@ class ImageExtension extends AbstractExtension
     private function slide(Source $source): string
     {
         $variants = $this->imageRepository->getVariants($source);
-        $sources = implode("\n", array_map(fn (Variant $v): string => $this->source($v, LoadingType::AUTO), $variants));
+        $sources = implode("\n", array_map([ $this, 'source' ], $variants));
         $caption = ($source->caption !== null) ? "<span>$source->caption</span>" : '';
 
         return <<<HTML

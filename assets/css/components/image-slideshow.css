@@ -135,6 +135,8 @@
         border: 1px solid var(--brand-lighter-grey);
         transition: border-color .15s, background-color .15s;
         background: var(--brand-beige);
+        width: 100%;
+        max-width: 540px;
     }
 
     span {
