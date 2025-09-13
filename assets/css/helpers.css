@@ -16,6 +16,7 @@
 
     ul, ol {
         margin: 0 24px 12px;
+        padding: 0;
 
         ul, ol {
             margin: 6px 24px;
