@@ -3,10 +3,8 @@
 * Commenting
     - notify on pushover with links to mark as not spam etc.
     - make the time value a little harder to replay with
-* Search
-    - should include titles (try "Regicide")
-    - fix multiple words (try "k project")
 * Local links to images (rather than https://chaostangent.com)
+* Comment sorting (earliest first)
 
 # Visual
 
@@ -14,7 +12,6 @@
 * Comment parenting
 * Left & right container padding at mobile size
 * General image quality? Contrast and sharpen maybe
-* Fix slideshow images not loading
 * Image lightbox / loupe
 
 # Posts
@@ -25,9 +22,9 @@ https://beta.chaostangent.com/2014/08/caring-for-your-introvert/ - non chaostang
 https://beta.chaostangent.com/2014/06/comedy-club/ - opening GIF
 https://beta.chaostangent.com/2014/05/hey-listen/ - remove or hide machine tags
 https://beta.chaostangent.com/2014/04/spiffy/ - floating image + image ratio; trim category titles
-https://chaostangent.com/2014/03/opening-move/ - custom image ratios
+https://beta.chaostangent.com/2014/03/opening-move/ - custom image ratios
 https://beta.chaostangent.com/2014/02/cut-my-life-into-pieces/ - custom image ratio
-https://chaostangent.com/2014/02/surefooted/ - custom image ratio
+https://beta.chaostangent.com/2014/02/surefooted/ - custom image ratio
 https://beta.chaostangent.com/2014/01/yozakura-quartet/ - custom image ratio in slideshow
 https://beta.chaostangent.com/2014/01/beautifully-vacant/ - missing images
 https://beta.chaostangent.com/2013/05/fighting-fanservice/ - missing lead

@@ -71,6 +71,11 @@ class SlideshowProcessorTest extends TestCase
         { 'src': '2025/09/test3.jpg', 'actions': [ 'crop:1280x548+0+86', 'resize:thumb' ], 'caption': 'ghi' },
         { 'src': '2025/09/test4.jpg', 'actions': [ 'crop:1280x548+0+86', 'resize:thumb' ] } ]) }}
         TWIG;
+
+        $linkNoImage = '<p class="slideshow"><a href="https://chaostangent.com/media/test.jpg"></a></p>';
+        $noImageQueryString = '<p class="thumbnails four"><a href="https://chaostangent.com/media/test.jpg"><img src="abc"></a></p>';
+        $noGroup = '<p class="thumbnails two"><a href="https://chaostangent.com/media/1.jpg"><img src="abc?t=1"></a></p>';
+        $unknownGroup = '<p class="thumbnails"><a href="https://chaostangent.com/media/test.jpg"><img src="?g=test"></a></p>';
         // phpcs:enable
 
         return [
@@ -80,43 +85,10 @@ class SlideshowProcessorTest extends TestCase
             'one' => [ $slideshowOne, $expectedOne ],
             'many' => [ $slideshowMany, $expectedMany ],
             'captions' => [ $slideshowCaptions, $expectedCaptions ],
-        ];
-    }
-
-    #[DataProvider('processThrowsExceptionProvider')]
-    public function testProcessThrowsException(string $content, string $expectedMessage): void
-    {
-        $processor = new SlideshowProcessor();
-        $post = new Post('Test', null, 'test', $content, null, false, []);
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage($expectedMessage);
-
-        $processor->process($post);
-    }
-
-    /**
-     * @return array<string,array<mixed>>
-     */
-    public static function processThrowsExceptionProvider(): array
-    {
-        return [
-            'link no image' => [
-                '<p class="slideshow"><a href="https://chaostangent.com/media/test.jpg"></a></p>',
-                'No images within the link: <a href="https://chaostangent.com/media/test.jpg"></a>',
-            ],
-            'no image query string' => [
-                '<p class="slideshow"><a href="https://chaostangent.com/media/test.jpg"><img src="abc"></a></p>',
-                'No query string on the image source: abc',
-            ],
-            'query string but no group' => [
-                '<p class="slideshow"><a href="https://chaostangent.com/media/test.jpg"><img src="abc?t=1"></a></p>',
-                'No group found in query string: t=1',
-            ],
-            'unknown group' => [
-                '<p class="slideshow"><a href="https://chaostangent.com/media/test.jpg"><img src="?g=test"></a></p>',
-                'Unknown group found: \'test\'',
-            ],
+            'link no image' => [ $linkNoImage, $linkNoImage ],
+            'no image query string' => [ $noImageQueryString, $noImageQueryString ],
+            'query string but no group' => [ $noGroup, $noGroup],
+            'unknown group' => [ $unknownGroup, $unknownGroup ],
         ];
     }
 }

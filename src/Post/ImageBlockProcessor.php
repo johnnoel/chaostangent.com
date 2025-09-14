@@ -35,7 +35,12 @@ readonly abstract class ImageBlockProcessor
         // go in reverse order so we don't have to mess with offsets when replacing
         for ($i = $matchCount - 1; $i >= 0; $i--) {
             $slideshow = new Crawler($matches[0][$i][0]);
-            $sources = $this->getSources($slideshow);
+
+            try {
+                $sources = $this->getSources($slideshow);
+            } catch (Exception) {
+                continue;
+            }
 
             if (count($sources) === 0) {
                 continue;
@@ -82,17 +87,48 @@ readonly abstract class ImageBlockProcessor
             throw new Exception('No images within the link: ' . $link->outerHtml());
         }
 
-        $image = $images->first();
-        $imgSrc = strval($image->attr('src'));
-        $queryString = parse_url(html_entity_decode($imgSrc), PHP_URL_QUERY);
-
-        if (!is_string($queryString)) {
-            throw new Exception('No query string on the image source: ' . $imgSrc);
-        }
-
         // https://chaostangent.com/media/abcdef => abcdef
         $path = substr(strval(parse_url(strval($link->attr('href')), PHP_URL_PATH)), 7);
+
+        $image = $images->first();
+        $imgSrc = strval($image->attr('src'));
         $caption = $image->attr('title');
+        $actions = $this->getActions($imgSrc);
+
+        if (is_string($caption)) {
+            return sprintf(
+                "{ 'src': '%s', 'actions': [ '%s' ], 'caption': '%s' }",
+                $path,
+                implode("', '", $actions),
+                str_replace("'", "\\'", $caption)
+            );
+        }
+
+        return sprintf("{ 'src': '%s', 'actions': [ '%s' ] }", $path, implode("', '", $actions));
+    }
+
+    /**
+     * @return array<string>
+     */
+    private function getActions(string $src): array
+    {
+        $src = html_entity_decode($src);
+
+        if (str_contains($src, '?')) {
+            return $this->getActionsFromQueryString($src);
+        }
+
+        return $this->guessActionsFromFilename($src);
+    }
+
+    private function getActionsFromQueryString(string $src): array
+    {
+        $queryString = parse_url($src, PHP_URL_QUERY);
+
+        if (!is_string($queryString)) {
+            throw new Exception('No query string on the image source: ' . $src);
+        }
+
         $qs = [];
         parse_str($queryString, $qs);
 
@@ -106,20 +142,31 @@ readonly abstract class ImageBlockProcessor
             throw new Exception('Unknown group found: ' . var_export($qs['g'], true));
         }
 
-        $actions = [
+        $oldGroup = OldImageType::tryFrom($qs['g']);
+
+        if ($oldGroup === null) {
+            throw new Exception('Unknown group found: ' . var_export($qs['g'], true));
+        }
+
+        return [
             'crop:' . ((is_string($qs['c'])) ? $qs['c'] : '0x0+0+0'),
             'resize:' . ImageType::fromOldType($oldGroup)->value,
         ];
+    }
 
-        if (is_string($caption)) {
-            return sprintf(
-                "{ 'src': '%s', 'actions': [ '%s' ], 'caption': '%s' }",
-                $path,
-                implode("', '", $actions),
-                str_replace("'", "\\'", $caption)
-            );
+    private function guessActionsFromFilename(string $src): array
+    {
+        $regex = '#-(\d{3}x\d{3})\..*$#';
+        $matches = [];
+        $matchCount = preg_match($regex, $src, $matches);
+
+        if ($matchCount !== 1) {
+            throw new Exception('No resize parameters in image src: ' . $src);
         }
 
-        return sprintf("{ 'src': '%s', 'actions': [ '%s' ] }", $path, implode("', '", $actions));
+        return [
+            'crop:0x0+0+0',
+            'resize:' . $matches[1],
+        ];
     }
 }
