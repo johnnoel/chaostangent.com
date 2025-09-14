@@ -76,7 +76,7 @@ class SlideshowProcessorTest extends TestCase
         return [
             'nothing' => [ '', '' ],
             'just text' => [ 'Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet' ],
-            'no images' => [ '<p class="slideshow"></p>', '{{ slideshow([  ]) }}' ],
+            'no images' => [ '<p class="slideshow"></p>', '<p class="slideshow"></p>' ],
             'one' => [ $slideshowOne, $expectedOne ],
             'many' => [ $slideshowMany, $expectedMany ],
             'captions' => [ $slideshowCaptions, $expectedCaptions ],

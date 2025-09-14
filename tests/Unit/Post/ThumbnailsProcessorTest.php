@@ -36,8 +36,16 @@ class ThumbnailsProcessorTest extends TestCase
             </p>
         HTML;
 
+        // switch the alt attribute around
+        $thumbnailsOneAlt = <<<HTML
+            <p class="thumbnails one">
+                <a href="https://chaostangent.com/media/2025/08/test.jpg"><img alt="" src="?g=oldthumb&amp;c=1280x548%2B0%2B86&amp;sig=aaaaa"></a>
+            </p>
+        HTML;
+
+
         $expectedOne = <<<TWIG
-            {{ thumbnails([ { 'src': '2025/08/test.jpg', 'actions': [ 'crop:1280x548+0+86', 'resize:268x117' ] } ]) }}
+            {{ thumbnails([ { 'src': '2025/08/test.jpg', 'actions': [ 'crop:1280x548+0+86', 'resize:thumb' ] } ]) }}
         TWIG;
 
         $thumbnailsMany = <<<HTML
@@ -50,10 +58,10 @@ class ThumbnailsProcessorTest extends TestCase
         HTML;
 
         $expectedMany = <<<TWIG
-            {{ thumbnails([ { 'src': '2025/08/test1.jpg', 'actions': [ 'crop:1280x548+0+86', 'resize:268x117' ] },
-        { 'src': '2025/08/test2.jpg', 'actions': [ 'crop:1280x548+1+86', 'resize:540x231' ] },
-        { 'src': '2025/08/test3.jpg', 'actions': [ 'crop:1280x548+2+86', 'resize:544x306' ] },
-        { 'src': '2025/08/test4.jpg', 'actions': [ 'crop:1280x548+3+86', 'resize:320x320' ] } ]) }}
+            {{ thumbnails([ { 'src': '2025/08/test1.jpg', 'actions': [ 'crop:1280x548+0+86', 'resize:thumb' ] },
+        { 'src': '2025/08/test2.jpg', 'actions': [ 'crop:1280x548+1+86', 'resize:lead' ] },
+        { 'src': '2025/08/test3.jpg', 'actions': [ 'crop:1280x548+2+86', 'resize:poster' ] },
+        { 'src': '2025/08/test4.jpg', 'actions': [ 'crop:1280x548+3+86', 'resize:square' ] } ]) }}
         TWIG;
 
         $wrongUrl = <<<HTML
@@ -73,6 +81,7 @@ class ThumbnailsProcessorTest extends TestCase
             'nothing' => [ '', '' ],
             'just text' => [ 'Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet' ],
             'one' => [ $thumbnailsOne, $expectedOne ],
+            'one alt attribute' => [ $thumbnailsOneAlt, $expectedOne ],
             'multiple' => [ $thumbnailsOne . $thumbnailsMany, $expectedOne . $expectedMany ],
             'many' => [ $thumbnailsMany, $expectedMany ],
             'wrong url' => [ $wrongUrl, $wrongUrl ],
@@ -80,30 +89,43 @@ class ThumbnailsProcessorTest extends TestCase
                 $thumbnailsOne . $wrongUrl . $expectedMany,
                 $expectedOne . $wrongUrl . $expectedMany,
             ],
-            'no query string' => [ $noQueryString, $noQueryString ],
-            'no query string amongst many' => [
-                $thumbnailsOne . $noQueryString . $thumbnailsMany,
-                $expectedOne . $noQueryString . $expectedMany,
-            ],
         ];
     }
 
-    public function testProcessThrowsExceptionWithNoGroup(): void
+    #[DataProvider('processThrowsExceptionProvider')]
+    public function testProcessThrowsException(string $content, string $expectedMessage): void
     {
-        // phpcs:disable Generic.Files.LineLength
-        $content = <<<HTML
-            <p class="thumbnails one">
-                <a href="https://chaostangent.com/media/2025/08/test.jpg"><img src="?g=unknowngroup&amp;c=1280x548%2B0%2B86&amp;sig=aaaaa" alt=""></a>
-            </p>
-        HTML;
-        // phpcs:enable
-
         $processor = new ThumbnailsProcessor();
         $post = new Post('Test', null, 'test', $content, null, false, []);
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Unknown group found: 'unknowngroup'");
+        $this->expectExceptionMessage($expectedMessage);
 
         $processor->process($post);
+    }
+
+    /**
+     * @return array<string,array<mixed>>
+     */
+    public static function processThrowsExceptionProvider(): array
+    {
+        return [
+            'link no image' => [
+                '<p class="thumbnails one"><a href="https://chaostangent.com/media/test.jpg"></a></p>',
+                'No images within the link: <a href="https://chaostangent.com/media/test.jpg"></a>',
+            ],
+            'no image query string' => [
+                '<p class="thumbnails four"><a href="https://chaostangent.com/media/test.jpg"><img src="abc"></a></p>',
+                'No query string on the image source: abc',
+            ],
+            'query string but no group' => [
+                '<p class="thumbnails two"><a href="https://chaostangent.com/media/1.jpg"><img src="abc?t=1"></a></p>',
+                'No group found in query string: t=1',
+            ],
+            'unknown group' => [
+                '<p class="thumbnails"><a href="https://chaostangent.com/media/test.jpg"><img src="?g=test"></a></p>',
+                'Unknown group found: \'test\'',
+            ],
+        ];
     }
 }

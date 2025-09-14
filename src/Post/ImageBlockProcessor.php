@@ -5,80 +5,50 @@ declare(strict_types=1);
 namespace App\Post;
 
 use Exception;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Convert a block of images into a Twig function call suitable for {{ thumbnails }} or {{ slideshow }}
  */
 readonly abstract class ImageBlockProcessor
 {
-    private const MAPPING = [
-        'oldthumb' => '268x117',
-        'oldlead' => '540x231',
-        'oldposter' => '544x306',
-        'oldsquare' => '320x320',
-    ];
-
     abstract protected function getBlockRegex(): string;
 
     abstract protected function getTwigFunctionName(): string;
 
+    /**
+     * @return ($content is string ? string : null)
+     */
     protected function processImageBlocks(?string $content): ?string
     {
         if ($content === null) {
             return $content;
         }
 
-        $thumbnailMatches = $this->getThumbnailBlocks($content);
+        $matches = [];
+        $matchCount = preg_match_all($this->getBlockRegex(), $content, $matches, PREG_OFFSET_CAPTURE);
 
-        if (count($thumbnailMatches) === 0) {
+        if ($matchCount === 0) {
             return $content;
         }
 
-        $thumbnailsMatched = count($thumbnailMatches[0]);
-
         // go in reverse order so we don't have to mess with offsets when replacing
-        for ($i = $thumbnailsMatched - 1; $i >= 0; $i--) {
-            $sourceMatches = $this->getSourceBlocks($thumbnailMatches[1][$i][0]);
+        for ($i = $matchCount - 1; $i >= 0; $i--) {
+            $slideshow = new Crawler($matches[0][$i][0]);
+            $sources = $this->getSources($slideshow);
 
-            if (count($sourceMatches) === 0) {
+            if (count($sources) === 0) {
                 continue;
             }
 
-            $sources = [];
+            $replacement = sprintf(
+                '{{ %s([ %s ]) }}',
+                $this->getTwigFunctionName(),
+                implode(",\n", $sources)
+            );
 
-            foreach ($sourceMatches as $source) {
-                if (!str_starts_with($source[1], 'https://chaostangent.com/media/')) {
-                    // skip the entire block
-                    continue 2;
-                }
-
-                $path = substr(strval(parse_url($source[1], PHP_URL_PATH)), 7);
-                $qs = [];
-                $queryString = parse_url(html_entity_decode($source[2]), PHP_URL_QUERY);
-
-                if (!is_string($queryString)) {
-                    // skip the entire block
-                    continue 2;
-                }
-
-                parse_str($queryString, $qs);
-
-                if (!array_key_exists('g', $qs) || !is_string($qs['g']) || !array_key_exists($qs['g'], self::MAPPING)) {
-                    throw new Exception('Unknown group found: ' . var_export($qs['g'], true));
-                }
-
-                $actions = [
-                    'crop:' . ((is_string($qs['c'])) ? $qs['c'] : '0x0+0+0'),
-                    'resize:' . self::MAPPING[$qs['g']],
-                ];
-
-                $sources[] = sprintf("{ 'src': '%s', 'actions': [ '%s' ] }", $path, implode("', '", $actions));
-            }
-
-            $replacement = sprintf('{{ %s([ %s ]) }}', $this->getTwigFunctionName(), implode(",\n", $sources));
-
-            $length = strlen($thumbnailMatches[0][$i][0]);
-            $offset = $thumbnailMatches[0][$i][1];
+            $length = strlen($matches[0][$i][0]);
+            $offset = $matches[0][$i][1];
             $content = substr_replace($content, $replacement, $offset, $length);
         }
 
@@ -86,39 +56,70 @@ readonly abstract class ImageBlockProcessor
     }
 
     /**
-     * @return array<array<array{0: string, 1: int}>>
+     * @return array<string>
      */
-    private function getThumbnailBlocks(string $content): array
+    private function getSources(Crawler $slideshow): array
     {
-        $regex = $this->getBlockRegex();
-        $thumbnailMatches = [];
-        $thumbnailsMatched = preg_match_all(
-            $regex,
-            $content,
-            $thumbnailMatches,
-            PREG_PATTERN_ORDER | PREG_OFFSET_CAPTURE
-        );
+        $links = $slideshow->filter('a[href^="https://chaostangent.com/media/"]');
 
-        if ($thumbnailsMatched === 0 || $thumbnailsMatched === false) {
+        if ($links->count() === 0) {
             return [];
         }
 
-        return $thumbnailMatches;
+        $sources = [];
+        $links->each(function (Crawler $link) use (&$sources): void {
+            $sources[] = $this->getImage($link);
+        });
+
+        return $sources;
     }
 
-    /**
-     * @return array<array<string>>
-     */
-    private function getSourceBlocks(string $content): array
+    private function getImage(Crawler $link): string
     {
-        $regex = '#<a href="(.*?)"><img src="(.*?)".*?</a>#s';
-        $sourceMatches = [];
-        $sourcesMatched = preg_match_all($regex, $content, $sourceMatches, PREG_SET_ORDER);
+        $images = $link->filter('img');
 
-        if ($sourcesMatched === 0 || $sourcesMatched === false) {
-            return [];
+        if ($images->count() !== 1) {
+            throw new Exception('No images within the link: ' . $link->outerHtml());
         }
 
-        return $sourceMatches;
+        $image = $images->first();
+        $imgSrc = strval($image->attr('src'));
+        $queryString = parse_url(html_entity_decode($imgSrc), PHP_URL_QUERY);
+
+        if (!is_string($queryString)) {
+            throw new Exception('No query string on the image source: ' . $imgSrc);
+        }
+
+        // https://chaostangent.com/media/abcdef => abcdef
+        $path = substr(strval(parse_url(strval($link->attr('href')), PHP_URL_PATH)), 7);
+        $caption = $image->attr('title');
+        $qs = [];
+        parse_str($queryString, $qs);
+
+        if (!array_key_exists('g', $qs) || !is_string($qs['g'])) {
+            throw new Exception('No group found in query string: ' . $queryString);
+        }
+
+        $oldGroup = OldImageType::tryFrom($qs['g']);
+
+        if ($oldGroup === null) {
+            throw new Exception('Unknown group found: ' . var_export($qs['g'], true));
+        }
+
+        $actions = [
+            'crop:' . ((is_string($qs['c'])) ? $qs['c'] : '0x0+0+0'),
+            'resize:' . ImageType::fromOldType($oldGroup)->value,
+        ];
+
+        if (is_string($caption)) {
+            return sprintf(
+                "{ 'src': '%s', 'actions': [ '%s' ], 'caption': '%s' }",
+                $path,
+                implode("', '", $actions),
+                str_replace("'", "\\'", $caption)
+            );
+        }
+
+        return sprintf("{ 'src': '%s', 'actions': [ '%s' ] }", $path, implode("', '", $actions));
     }
 }

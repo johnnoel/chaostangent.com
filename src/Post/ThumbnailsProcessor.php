@@ -11,7 +11,7 @@ readonly final class ThumbnailsProcessor extends ImageBlockProcessor implements 
     #[\Override]
     public function process(Post $post): void
     {
-        $post->setContent(strval($this->processImageBlocks($post->getContent())));
+        $post->setContent($this->processImageBlocks($post->getContent()));
         $post->setSummary($this->processImageBlocks($post->getSummary()));
     }
 
