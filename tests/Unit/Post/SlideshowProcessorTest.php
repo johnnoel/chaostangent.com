@@ -6,7 +6,6 @@ namespace App\Tests\Unit\Post;
 
 use App\Entity\Post;
 use App\Post\SlideshowProcessor;
-use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

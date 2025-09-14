@@ -121,6 +121,9 @@ readonly abstract class ImageBlockProcessor
         return $this->guessActionsFromFilename($src);
     }
 
+    /**
+     * @return array<string>
+     */
     private function getActionsFromQueryString(string $src): array
     {
         $queryString = parse_url($src, PHP_URL_QUERY);
@@ -154,6 +157,9 @@ readonly abstract class ImageBlockProcessor
         ];
     }
 
+    /**
+     * @return array<string>
+     */
     private function guessActionsFromFilename(string $src): array
     {
         $regex = '#-(\d{3}x\d{3})\..*$#';
