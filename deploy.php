@@ -20,7 +20,7 @@ host('chaostangent.com')
 ;
 
 host('beta.chaostangent.com')
-    ->set('hostname', '134.122.111.6')
+    ->set('hostname', '91.98.161.234')
     ->set('remote_user', 'beta-chaostangent-com')
     ->set('deploy_path', '~/www')
     ->setLabels([ 'stage' => 'beta' ])
