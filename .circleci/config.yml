@@ -106,10 +106,10 @@ jobs:
                   fingerprints:
                         - "SHA256:KIxjSj6ztxfLVBI/vvWJ2GOOvLO0hifh85pL+VGYVJ0"
             - run: echo "export EXTERNAL_IP=$(wget -qO- http://checkip.amazonaws.com/)" >> $BASH_ENV
-            - run: hcloud firewall add-rule --description="CircleCI" --direction=in --source-ips=${EXTERNAL_IP}/32" --port=22 --protocol=tcp web-firewall
+            - run: hcloud firewall add-rule --description="CircleCI" --direction=in --source-ips="${EXTERNAL_IP}/32" --port=22 --protocol=tcp web-firewall
             - run: touch ~/.ssh/known_hosts && ssh-keyscan -H 91.98.161.234 >> ~/.ssh/known_hosts
             - run: vendor/bin/dep deploy -o "artifact_url=https://circleci.com/api/v1.1/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/latest/artifacts" -o "circle_ci_token=${CIRCLE_TOKEN}" stage=beta
-            - run: hcloud firewall delete-rule --description="CircleCI" --direction=in --source-ips=${EXTERNAL_IP}/32" --port=22 --protocol=tcp web-firewall
+            - run: hcloud firewall delete-rule --description="CircleCI" --direction=in --source-ips="${EXTERNAL_IP}/32" --port=22 --protocol=tcp web-firewall
 
 workflows:
     version: 2
