@@ -17,7 +17,7 @@ readonly final class CodeBlockProcessor implements Processor
         $content = $post->getContent();
         $matches = [];
         $matched = preg_match_all(
-            '#(<p(re)?>.*<code>(?<code1>.*)</code>.*</p(re)?>|<pre class="brush:(?<lang>.*)">(?<code2>.*)</pre>)#siU',
+            '#(<p(re)?>\s*<code>(?<code1>.*)</code>\s*</p(re)?>|<pre class="brush:(?<lang>.*)">(?<code2>.*)</pre>)#siU',
             $content,
             $matches,
             PREG_SET_ORDER | PREG_OFFSET_CAPTURE
