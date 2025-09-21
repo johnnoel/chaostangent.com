@@ -151,10 +151,15 @@ readonly abstract class ImageBlockProcessor
             throw new Exception('Unknown group found: ' . var_export($qs['g'], true));
         }
 
-        return [
-            'crop:' . ((is_string($qs['c'])) ? $qs['c'] : '0x0+0+0'),
+        $ret = [];
+
+        if (array_key_exists('c', $qs) && is_string($qs['c'])) {
+            $ret[] = 'crop:' . $qs['c'];
+        }
+
+        return array_merge($ret, [
             'resize:' . ImageType::fromOldType($oldGroup)->value,
-        ];
+        ]);
     }
 
     /**
@@ -171,7 +176,6 @@ readonly abstract class ImageBlockProcessor
         }
 
         return [
-            'crop:0x0+0+0',
             'resize:' . $matches[1],
         ];
     }

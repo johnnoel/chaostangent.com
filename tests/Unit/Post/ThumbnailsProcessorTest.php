@@ -46,6 +46,16 @@ class ThumbnailsProcessorTest extends TestCase
             {{ thumbnails([ { 'src': '2025/08/test.jpg', 'actions': [ 'crop:1280x548+0+86', 'resize:thumb' ] } ]) }}
         TWIG;
 
+        $thumbnailsOneNoCrop = <<<HTML
+            <p class="thumbnails one">
+                <a href="https://chaostangent.com/media/2025/08/test.jpg"><img alt="" src="?g=oldthumb&amp;sig=aaaaa"></a>
+            </p>
+        HTML;
+
+        $expectedOneNoCrop = <<<TWIG
+            {{ thumbnails([ { 'src': '2025/08/test.jpg', 'actions': [ 'resize:thumb' ] } ]) }}
+        TWIG;
+
         $thumbnailsOneFile = <<<HTML
             <p class="thumbnails one">
                 <a href="https://chaostangent.com/media/2025/08/test.jpg"><img alt="" src="/2025/08/test-123x456.jpg"></a>
@@ -53,7 +63,7 @@ class ThumbnailsProcessorTest extends TestCase
         HTML;
 
         $expectedOneFile = <<<TWIG
-            {{ thumbnails([ { 'src': '2025/08/test.jpg', 'actions': [ 'crop:0x0+0+0', 'resize:123x456' ] } ]) }}
+            {{ thumbnails([ { 'src': '2025/08/test.jpg', 'actions': [ 'resize:123x456' ] } ]) }}
         TWIG;
 
         $thumbnailsMany = <<<HTML
@@ -80,7 +90,7 @@ class ThumbnailsProcessorTest extends TestCase
         HTML;
 
         $expectedManyFile = <<<TWIG
-            {{ thumbnails([ { 'src': '2025/08/test1.jpg', 'actions': [ 'crop:0x0+0+0', 'resize:123x456' ] },
+            {{ thumbnails([ { 'src': '2025/08/test1.jpg', 'actions': [ 'resize:123x456' ] },
         { 'src': '2025/08/test2.jpg', 'actions': [ 'crop:1280x548+1+86', 'resize:lead' ] } ]) }}
         TWIG;
 
@@ -101,6 +111,7 @@ class ThumbnailsProcessorTest extends TestCase
             'just text' => [ 'Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet' ],
             'one' => [ $thumbnailsOne, $expectedOne ],
             'one alt attribute' => [ $thumbnailsOneAlt, $expectedOne ],
+            'one no crop' => [ $thumbnailsOneNoCrop, $expectedOneNoCrop ],
             'one with file' => [ $thumbnailsOneFile, $expectedOneFile ],
             'multiple' => [ $thumbnailsOne . $thumbnailsMany, $expectedOne . $expectedMany ],
             'many' => [ $thumbnailsMany, $expectedMany ],
