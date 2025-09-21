@@ -43,4 +43,64 @@ class SourceTest extends TestCase
             'resize first' => [ [ $resizeOne, $crop ], [ 'w' => 123, 'h' => 456 ] ],
         ];
     }
+
+    #[DataProvider('isSameAsProvider')]
+    public function testIsSameAs(Source $compare, bool $expected): void
+    {
+        $source = new Source('Test source', [
+            new Action('crop', '1x2+3+4'),
+            new Action('resize', '123x456'),
+        ], 'Test caption');
+
+        $this->assertSame($expected, $source->isSameAs($compare));
+        $this->assertSame($expected, $compare->isSameAs($source));
+    }
+
+    /**
+     * @return array<string,array{0: Source, 1: bool}>
+     */
+    public static function isSameAsProvider(): array
+    {
+        $same = new Source('Test source', [
+            new Action('crop', '1x2+3+4'),
+            new Action('resize', '123x456'),
+        ], 'Test caption');
+
+        $reorderedActions = new Source('Test source', [
+            new Action('resize', '123x456'),
+            new Action('crop', '1x2+3+4'),
+        ], 'Test caption');
+
+        $noActions = new Source('Test source', [], 'Test caption');
+
+        $modifiedAction = new Source('Test source', [
+            new Action('crop', '1x2+3+5'),
+            new Action('resize', '123x456'),
+        ], 'Test caption');
+
+        $differentSource = new Source('Test source 2', [
+            new Action('crop', '1x2+3+4'),
+            new Action('resize', '123x456'),
+        ], 'Test caption');
+
+        $differentCaption = new Source('Test source', [
+            new Action('crop', '1x2+3+4'),
+            new Action('resize', '123x456'),
+        ], 'Test caption 2');
+
+        $nullCaption = new Source('Test source', [
+            new Action('crop', '1x2+3+4'),
+            new Action('resize', '123x456'),
+        ], null);
+
+        return [
+            'same' => [ $same, true ],
+            'reordered actions' => [ $reorderedActions, false ],
+            'no actions' => [ $noActions, false ],
+            'modified action' => [ $modifiedAction, false ],
+            'different source' => [ $differentSource, false ],
+            'different caption' => [ $differentCaption, false ],
+            'null caption' => [ $nullCaption, false ],
+        ];
+    }
 }

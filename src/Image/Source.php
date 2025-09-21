@@ -4,13 +4,27 @@ declare(strict_types=1);
 
 namespace App\Image;
 
-readonly final class Source
+use Stringable;
+
+readonly final class Source implements Stringable
 {
     /**
      * @param array<Action> $actions
      */
     public function __construct(public string $src, public array $actions, public ?string $caption = null)
     {
+    }
+
+    public function __toString(): string
+    {
+        $actions = implode("', '", $this->actions);
+
+        if ($this->caption === null) {
+            return sprintf("{ 'src': '%s', 'actions': '%s' }", $this->src, $actions);
+        }
+
+        // devtodo str_replace in the caption
+        return sprintf("{ 'src': '%s', 'actions': '%s', 'caption': '%s' }", $this->src, $actions, $this->caption);
     }
 
     /**
@@ -29,5 +43,14 @@ readonly final class Source
         }
 
         return [ 'w' => $w, 'h' => $h ];
+    }
+
+    public function isSameAs(Source $source): bool
+    {
+        if (implode($this->actions) !== implode($source->actions)) {
+            return false;
+        }
+
+        return $this->src === $source->src && $this->caption === $source->caption;
     }
 }

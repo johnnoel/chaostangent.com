@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Post\Processor;
-use App\Repository\Criteria\FilterPostsCriteria;
-use App\Repository\DTO\PostDTO;
 use App\Repository\PostRepository;
-use Exception;
-use Illuminate\Support\Collection;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -26,17 +22,21 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 )]
 class ProcessPostsCommand extends Command
 {
-    private const PER_PAGE = 50;
+    use GetsPosts;
+
+    private const int PER_PAGE = 50;
 
     /**
      * @param iterable<Processor> $processors
      */
     public function __construct(
-        private readonly PostRepository $postRepository,
+        PostRepository $postRepository,
         #[AutowireIterator('app.post_processor')]
         private readonly iterable $processors
     ) {
         parent::__construct();
+
+        $this->postRepository = $postRepository;
     }
 
     protected function configure(): void
@@ -90,32 +90,5 @@ class ProcessPostsCommand extends Command
         $progressBar->finish();
 
         return Command::SUCCESS;
-    }
-
-    private function getPostCount(mixed $alias): int
-    {
-        if (is_string($alias)) {
-            return 1;
-        }
-
-        return $this->postRepository->countFilteredPosts(new FilterPostsCriteria());
-    }
-
-    /**
-     * @return Collection<int,PostDTO>
-     */
-    private function getPosts(mixed $alias, int $page): Collection
-    {
-        if (is_string($alias)) {
-            $post = $this->postRepository->findOneBy([ 'alias' => $alias ]);
-
-            if ($post === null) {
-                throw new Exception('Unable to find post with alias ' . $alias);
-            }
-
-            return new Collection([ new PostDTO($post) ]);
-        }
-
-        return $this->postRepository->filterPosts(new FilterPostsCriteria(page: $page, perPage: self::PER_PAGE));
     }
 }

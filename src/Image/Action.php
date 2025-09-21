@@ -6,8 +6,9 @@ namespace App\Image;
 
 use Exception;
 use InvalidArgumentException;
+use Stringable;
 
-readonly final class Action
+readonly final class Action implements Stringable
 {
     public string $action;
     public string $parameters;
@@ -27,6 +28,16 @@ readonly final class Action
         [ $action, $parameters ] = explode(':', $str, 2);
 
         return new self($action, $parameters);
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s: %s', $this->action, $this->parameters);
+    }
+
+    public function isSameAs(Action $action): bool
+    {
+        return $this->action === $action->action && $this->parameters === $action->parameters;
     }
 
     /**
