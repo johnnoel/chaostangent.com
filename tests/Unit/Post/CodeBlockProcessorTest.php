@@ -33,6 +33,10 @@ class CodeBlockProcessorTest extends TestCase
             <pre><code>public class TestCode { }</code></pre>
         HTML;
 
+        $codeOneAlt = <<<HTML
+            <p><code>public class TestCode { }</code></p>
+        HTML;
+
         $expectedOne = <<<TWIG
             {% apply code('shellscript') %}
         public class TestCode { }
@@ -54,6 +58,7 @@ class CodeBlockProcessorTest extends TestCase
             'some html' => [ '<a href="">hello</a>', '<a href="">hello</a>' ],
             'code format one' => [ $codeOne, $expectedOne ],
             'code format two' => [ $codeTwo, $expectedTwo ],
+            'code format three' => [ $codeOneAlt, $expectedOne ],
             'mixed 1' => [
                 '<div></div>' . $codeOne . '<a href="">hello</a>',
                 '<div></div>' . $expectedOne . '<a href="">hello</a>',
