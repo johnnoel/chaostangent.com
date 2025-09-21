@@ -35,7 +35,7 @@ readonly final class CodeBlockProcessor implements Processor
             $code = trim(html_entity_decode(str_replace("\t", str_repeat(' ', 4), $code)));
             $lang = (array_key_exists('lang', $codeBlock) && $codeBlock['lang'][0] !== '') ?
                 trim($codeBlock['lang'][0]) :
-                'shell'
+                'shellscript'
             ;
             $offset = $codeBlock[0][1];
             $length = strlen($codeBlock[0][0]);

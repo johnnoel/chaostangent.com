@@ -53,4 +53,16 @@ class PostsController extends AbstractController
             'next_post' => $nextPost,
         ]);
     }
+
+    #[Route('/{year}/{month}/{alias}/raw', name: 'raw-post', requirements: [
+        'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])',
+    ], methods: [ 'GET' ], env: 'dev')]
+    public function rawPost(
+        #[MapEntity(expr: 'repository.getPost(alias, year, month)')]
+        Post $post
+    ): Response {
+        return $this->render('raw-post.html.twig', [
+            'post' => $post,
+        ]);
+    }
 }

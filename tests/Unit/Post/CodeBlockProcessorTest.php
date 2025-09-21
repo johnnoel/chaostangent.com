@@ -34,7 +34,7 @@ class CodeBlockProcessorTest extends TestCase
         HTML;
 
         $expectedOne = <<<TWIG
-            {% apply code('shell') %}
+            {% apply code('shellscript') %}
         public class TestCode { }
         {% endapply %}
         TWIG;

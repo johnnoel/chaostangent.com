@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Extension\Twig;
 
 use App\Repository\FeatureRepository;
-use Highlight\Highlighter;
+use Phiki\Grammar\Grammar;
+use Phiki\Phiki;
+use Phiki\Theme\Theme;
+use Phiki\Transformers\Decorations\PreDecoration;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -57,14 +60,13 @@ class AppExtension extends AbstractExtension
         return $this->featureRepository->isFeatureEnabled($key);
     }
 
-    public function codeBlock(string $language, string $code): string
+    public function codeBlock(string $code, string $language, Theme $theme = Theme::GithubDarkDimmed): string
     {
-        $highlighter = new Highlighter();
-        $highlighted = $highlighter->highlight($code, $language);
-        $highlightedCode = trim($highlighted->value);
-
-        return <<<HTML
-            <pre class="code-block"><code class="hljs $highlighted->language">$highlightedCode</code></pre>
-        HTML;
+        return (new Phiki())
+            ->codeToHtml(trim($code), Grammar::from($language), $theme)
+            ->decoration(PreDecoration::make()->class('code-block'))
+            ->withGutter()
+            ->toString()
+        ;
     }
 }
