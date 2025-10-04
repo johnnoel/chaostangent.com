@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Component\Serializer\Attribute as Serializer;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: TagRepository::class)]
@@ -19,13 +20,15 @@ class Tag
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME)]
     private Ulid $id;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'string', length: 255)]
     private string $tag;
+
     #[ORM\Column(type: 'string', length: 255)]
     private string $alias;
-    /**
-     * @var Collection<int,Post>
-     */
+
+    /** @var Collection<int,Post> */
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'tags')]
     private Collection $posts;
 

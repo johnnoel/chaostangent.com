@@ -7,6 +7,7 @@ namespace App\Post;
 use App\Entity\Post;
 use DateTimeImmutable;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Export posts to YAML front-matter'd Twig files
@@ -25,6 +26,7 @@ readonly final class ExportProcessor implements Processor
         $frontmatter = trim($this->serializer->serialize($post, 'yaml', context: [
             'groups' => [ 'frontmatter' ],
             'yaml_inline' => 2,
+            'yaml_flags' => Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK,
         ]));
 
         $export = <<<POST

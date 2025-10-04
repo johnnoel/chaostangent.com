@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Serializer\Attribute as Serializer;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\Table(name: 'categories')]
@@ -19,21 +20,23 @@ class Category
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME)]
     private Ulid $id;
+
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'RESTRICT')]
     private ?Category $parent;
-    /**
-     * @var Collection<int,Category>
-     */
+
+    /** @var Collection<int,Category> */
     #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'parent')]
     private Collection $children;
+
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'string', length: 255)]
     private string $title;
+
     #[ORM\Column(type: 'string', length: 255)]
     private string $alias;
-    /**
-     * @var Collection<int,Post>
-     */
+
+    /** @var Collection<int,Post> */
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'categories')]
     private Collection $posts;
 

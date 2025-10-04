@@ -41,6 +41,7 @@ class Post implements RoutedItemInterface
     #[ORM\Column(type: 'string', length: 255)]
     private string $alias;
 
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $summary;
 
@@ -70,10 +71,12 @@ class Post implements RoutedItemInterface
     private bool $published = false;
 
     /** @var array<string,mixed> */
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'json', options: [ 'jsonb' => true ])]
     private array $extra;
 
     /** @var Image|null */
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\Column(type: 'json', nullable: true, options: [ 'jsonb' => true ])]
     private ?array $image;
 
@@ -83,6 +86,7 @@ class Post implements RoutedItemInterface
     private Collection $comments;
 
     /** @var Collection<int,Category> */
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'posts', cascade: [ 'persist' ])]
     #[ORM\JoinTable(name: 'posts2categories')]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -90,6 +94,7 @@ class Post implements RoutedItemInterface
     private Collection $categories;
 
     /** @var Collection<int,Tag> */
+    #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts', cascade: [ 'persist' ])]
     #[ORM\JoinTable(name: 'posts2tags')]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -249,6 +254,14 @@ class Post implements RoutedItemInterface
             'year' => $this->date?->format('Y'),
             'month' => $this->date?->format('m'),
         ];
+    }
+
+    /**
+     * @return Collection<int,Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
     }
 
     public function isPublished(): bool
