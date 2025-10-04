@@ -30,6 +30,7 @@ readonly final class HtmlPurifierTransformer implements DataTransformerInterface
 
         $config = HTMLPurifier_Config::createDefault();
         $config->set('HTML.Allowed', 'a[href|rel],p,b,strong,i,em,br,blockquote');
+        $config->set('HTML.Doctype', 'HTML 4.01 Transitional');
         $config->set('HTML.Nofollow', true);
         $config->set('Attr.AllowedRel', [ 'nofollow' ]);
         $purifier = new HTMLPurifier($config);
