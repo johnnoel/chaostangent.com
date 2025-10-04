@@ -21,6 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CommentType extends AbstractType
 {
     /** @inheritdoc */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('authorName', TextType::class, [
@@ -44,6 +45,7 @@ class CommentType extends AbstractType
         $builder->get('comment')->addModelTransformer(new HtmlPurifierTransformer());
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

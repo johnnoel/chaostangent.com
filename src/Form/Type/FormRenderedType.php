@@ -20,6 +20,7 @@ class FormRenderedType extends AbstractType
     }
 
     /** @inheritdoc */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addModelTransformer($this->signedDateTransformer);
@@ -28,6 +29,7 @@ class FormRenderedType extends AbstractType
     /**
      * @return class-string
      */
+    #[\Override]
     public function getParent(): string
     {
         return HiddenType::class;

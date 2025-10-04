@@ -10,6 +10,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 readonly final class TagNormaliser implements NormalizerInterface
 {
+    /** @inheritdoc */
+    #[\Override]
     public function normalize(mixed $data, ?string $format = null, array $context = []): string
     {
         if (!($data instanceof Tag)) {
@@ -19,11 +21,15 @@ readonly final class TagNormaliser implements NormalizerInterface
         return $data->getTag();
     }
 
+    /** @inheritdoc */
+    #[\Override]
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Tag;
     }
 
+    /** @inheritdoc */
+    #[\Override]
     public function getSupportedTypes(?string $format): array
     {
         return [

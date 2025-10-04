@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
+use App\Entity\Post;
+use App\Form\Model\PostModel;
+use App\Form\Type\PostType;
 use App\Message\ImportPost;
 use App\Repository\PostRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Webuni\FrontMatter\Twig\TwigCommentFrontMatter;
 
 #[AsMessageHandler]
 readonly final class ImportPostHandler
 {
-    public function __construct(private PostRepository $postRepository)
-    {
+    public function __construct(
+        private PostRepository $postRepository,
+        private FormFactoryInterface $formFactory
+    ) {
     }
 
     public function __invoke(ImportPost $message): void
@@ -29,11 +35,18 @@ readonly final class ImportPostHandler
         }
 
         $document = $frontmatter->parse($content);
-        /** @var array{date?: string, alias?: string} $data */
+        /** @var array{alias?: string, date?: string} $data */
         $data = $document->getData();
         $content = $document->getContent();
 
-        // for now just assume we're updating
+        $postModel = new PostModel();
+        $form = $this->formFactory->create(PostType::class, $postModel, [ 'csrf_protection' => false ]);
+        $form->submit(array_merge($data, [ 'content' => $content ]));
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            throw new Exception('Could not import post: ' . $form->getErrors(deep: true, flatten: true));
+        }
+
         $alias = $data['alias'] ?? '';
         $date = DateTimeImmutable::createFromFormat(DateTimeInterface::RFC3339, $data['date'] ?? '');
 
@@ -44,12 +57,10 @@ readonly final class ImportPostHandler
         $post = $this->postRepository->getPost($alias, intval($date->format('Y')), intval($date->format('m')));
 
         if ($post === null) {
-            throw new Exception(
-                sprintf('Unable to find post: %d/%d/%s', $alias, $date->format('Y'), $date->format('m'))
-            );
+            $post = Post::create($postModel);
         }
 
-        $post->setContent($content);
+        $post->update($postModel);
         $this->postRepository->update($post);
     }
 }

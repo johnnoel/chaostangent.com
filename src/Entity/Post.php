@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Form\Model\PostModel;
 use App\Repository\PostRepository;
 use DateTime;
 use DateTimeImmutable;
@@ -138,6 +139,23 @@ class Post implements RoutedItemInterface
         $this->tags = new ArrayCollection($tags);
     }
 
+    public static function create(PostModel $model): self
+    {
+        return new self(
+            $model->title,
+            $model->subtitle,
+            $model->alias,
+            $model->content,
+            $model->date,
+            $model->published,
+            $model->extra,
+            $model->summary,
+            $model->categories,
+            $model->tags,
+            $model->image
+        );
+    }
+
     public function setSummary(?string $summary): void
     {
         $this->summary = $summary;
@@ -170,6 +188,23 @@ class Post implements RoutedItemInterface
     public function setSearchable(?string $searchable): void
     {
         $this->searchable = $searchable;
+    }
+
+    public function update(PostModel $model): void
+    {
+        $this->title = $model->title;
+        $this->subtitle = $model->subtitle;
+        $this->summary = $model->summary;
+        $this->content = $model->content;
+        $this->alias = $model->alias;
+        $this->date = $model->date;
+        $this->published = $model->published;
+        $this->image = $model->image;
+        $this->extra = $model->extra;
+        $this->categories = new ArrayCollection($model->categories);
+        $this->tags = new ArrayCollection($model->tags);
+        $this->created = $model->created;
+        $this->updated = $model->updated;
     }
 
     public function getId(): Ulid

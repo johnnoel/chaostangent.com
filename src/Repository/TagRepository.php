@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Entity\Tag;
 use App\Repository\DTO\TagDTO;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Illuminate\Support\Collection;
@@ -80,5 +81,28 @@ class TagRepository extends ServiceEntityRepository
         $dtos = array_map(fn (array $r): TagDTO => new TagDTO($r[0], intval($r['post_count'])), $result);
 
         return new Collection($dtos);
+    }
+
+    /**
+     * @param array<string> $rawTags
+     * @return Collection<int,Tag>
+     */
+    public function findOrCreate(array $rawTags): Collection
+    {
+        $dql = <<<DQL
+            SELECT t
+            FROM App\Entity\Tag t
+            WHERE t.tag IN (:tags)
+        DQL;
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        /** @var array<Tag> $existingTags */
+        $existingTags = $query->setParameter('tags', $rawTags, ArrayParameterType::STRING)
+            ->getResult()
+        ;
+
+        // devtodo create the tags that don't already exist
+
+        return new Collection($existingTags);
     }
 }
