@@ -147,9 +147,9 @@ class ImageExtension extends AbstractExtension
             $poster = array_first($posterVariant)?->src;
         }
 
-        $p = ($poster !== null) ? 'poster="' . $poster . '"' : '';
+        $p = ($poster !== null) ? ' poster="' . $poster . '"' : '';
         $s = implode("\n", array_map(function (array $s): string {
-            $type = ($s['type'] !== null) ? 'type="' . $s['type'] . '"' : '';
+            $type = ($s['type'] !== null) ? ' type="' . $s['type'] . '"' : '';
             $src = $this->fileHandler->getSourceUrl($this->sourceFactory->createSource($s['src'], []));
 
             return sprintf('<source src="%s"%s>', $src, $type);

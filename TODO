@@ -1,5 +1,6 @@
 # MVP
 
+* Modify VideoProcessor to also retain the ratio of the video
 * Commenting
     - notify on pushover with links to mark as not spam etc.
     - make the time value a little harder to replay with
