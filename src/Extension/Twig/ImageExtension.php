@@ -156,7 +156,7 @@ class ImageExtension extends AbstractExtension
         }, $sources));
 
         return <<<HTML
-            <video controls preload="auto" width="544" height="304"$p>
+            <video controls preload="auto" width="544" height="306"$p>
                 $s
             </video>
         HTML;
