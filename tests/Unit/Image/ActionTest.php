@@ -100,6 +100,29 @@ class ActionTest extends TestCase
         ];
     }
 
+    /**
+     * @param array{w?: int, h?: int} $expected
+     */
+    #[DataProvider('getResizeParametersProvider')]
+    public function testGetResizeParameters(string $parameters, array $expected): void
+    {
+        $action = new Action('test', $parameters);
+        $this->assertSame($expected, $action->getResizeParameters());
+    }
+
+    /**
+     * @return array<string,array<mixed>>
+     */
+    public static function getResizeParametersProvider(): array
+    {
+        return [
+            'basic' => [ '0x0', [ 'w' => 0, 'h' => 0 ] ],
+            'values' => [ '1x2', [ 'w' => 1, 'h' => 2 ] ],
+            'just width' => [ '1x', [ 'w' => 1 ] ],
+            'just height' => [ 'x2', [ 'h' => 2 ] ],
+        ];
+    }
+
     #[DataProvider('getResizeParametersThrowsExceptionProvider')]
     public function testGetResizeParametersThrowsException(string $parameters): void
     {
@@ -117,6 +140,7 @@ class ActionTest extends TestCase
     {
         return [
             'nothing' => [ '' ],
+            'no width or height' => [ 'x' ],
             'no area' => [ '+1+2' ],
             'junk' => [ 'asdfasdfadfa' ],
         ];

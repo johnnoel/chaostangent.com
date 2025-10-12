@@ -196,11 +196,14 @@ class ImageExtension extends AbstractExtension
 
     private function source(Variant $variant, LoadingType $loadingType = LoadingType::LAZY): string
     {
+        $width = ($variant->width > 0) ? 'width="' . $variant->width . '"' : '';
+        $height = ($variant->height > 0) ? 'height="' . $variant->height . '"' : '';
+
         if ($variant->mimeType === MimeType::JPEG) {
             $loading = $loadingType->value;
 
             return <<<HTML
-                <img src="$variant->src" alt="" width="$variant->width" height="$variant->height" loading="$loading">
+                <img src="$variant->src" alt="" $width $height loading="$loading">
             HTML;
         }
 
@@ -208,8 +211,8 @@ class ImageExtension extends AbstractExtension
             <source
                 srcset="$variant->src"
                 type="{$variant->mimeType->value}"
-                width="$variant->width"
-                height="$variant->height"
+                $width
+                $height
             >
         HTML;
     }

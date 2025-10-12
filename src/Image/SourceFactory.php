@@ -9,7 +9,7 @@ use InvalidArgumentException;
 readonly final class SourceFactory
 {
     /**
-     * @param array<string,array{w: int, h: int}> $resizeAliases
+     * @param array<string,array{w?: int, h?: int}> $resizeAliases
      */
     public function __construct(private array $resizeAliases)
     {
@@ -35,8 +35,8 @@ readonly final class SourceFactory
 
         // rewrite parameters into the w x h format
         if ($action === 'resize' && array_key_exists($parameters, $this->resizeAliases)) {
-            [ 'w' => $w, 'h' => $h ] = $this->resizeAliases[$parameters];
-            $parameters = sprintf('%dx%d', $w, $h);
+            $alias = $this->resizeAliases[$parameters];
+            $parameters = sprintf('%sx%s', $alias['w'] ?? null, $alias['h'] ?? null);
         }
 
         // devtodo return specific action classes, i.e. new CropAction, new ResizeAction

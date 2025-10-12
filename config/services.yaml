@@ -1,9 +1,9 @@
 parameters:
     fallback_false: false
     resize_aliases:
-        thumb: { w: 268, h: 117 }
-        lead: { w: 540, h: 231 }
-        poster: { w: 544, h: 304 }
+        thumb: { w: 268 }
+        lead: { w: 540 }
+        poster: { w: 544 }
         square: { w: 320, h: 320 }
 
 services:

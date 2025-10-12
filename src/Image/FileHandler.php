@@ -44,9 +44,15 @@ readonly final class FileHandler
         $filename = basename($source->src);
         $baseFilename = pathinfo($filename, PATHINFO_FILENAME);
 
-        [ 'w' => $w, 'h' => $h ] = $source->getTargetSize();
+        $targetSize = $source->getTargetSize();
 
-        return sprintf('%s-%dx%d.%s', $baseFilename, $w, $h, $mimeType->getExtension());
+        return sprintf(
+            '%s-%dx%d.%s',
+            $baseFilename,
+            $targetSize['w'] ?? 0,
+            $targetSize['h'] ?? 0,
+            $mimeType->getExtension()
+        );
     }
 
     public function getVariantUrl(Source $source, MimeType $mimeType): string

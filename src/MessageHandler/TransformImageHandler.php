@@ -62,8 +62,14 @@ readonly final class TransformImageHandler
 
     private function resize(Action $action, ImageInterface $image): void
     {
-        [ 'w' => $w, 'h' => $h ] = $action->getResizeParameters();
+        $resizeParams = $action->getResizeParameters();
 
-        $image->resize($w, $h);
+        if (count($resizeParams) === 2) {
+            $image->resize($resizeParams['w'], $resizeParams['h']);
+
+            return;
+        }
+
+        $image->scale($resizeParams['w'] ?? null, $resizeParams['h'] ?? null);
     }
 }

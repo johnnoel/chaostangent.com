@@ -167,7 +167,7 @@ readonly abstract class ImageBlockProcessor
      */
     private function guessActionsFromFilename(string $src): array
     {
-        $regex = '#-(\d{3}x\d{3})\..*$#';
+        $regex = '#-((\d{3})x(\d{3}))\..*$#';
         $matches = [];
         $matchCount = preg_match($regex, $src, $matches);
 
@@ -175,8 +175,15 @@ readonly abstract class ImageBlockProcessor
             throw new Exception('No resize parameters in image src: ' . $src);
         }
 
+        $params = $matches[1];
+
+        // work out if we can change the resize parameters to one of our image types
+        if (($matches[2] * $matches[3]) < 40000) {
+            $params = ImageType::THUMB->value;
+        }
+
         return [
-            'resize:' . $matches[1],
+            'resize:' . $params,
         ];
     }
 }

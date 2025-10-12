@@ -31,16 +31,23 @@ class SourceTest extends TestCase
     {
         $resizeOne = new Action('resize', '123x456');
         $resizeTwo = new Action('resize', '456x123');
+        $resizeWidthOnly = new Action('resize', '123x');
+        $resizeHeightOnly = new Action('resize', 'x456');
         $crop = new Action('crop', '1x2+3+4');
+        $bigCrop = new Action('crop', '1280x720+0+0');
 
         return [
-            'no actions' => [ [], [ 'w' => 0, 'h' => 0 ] ],
-            'just crop' => [ [ $crop ], [ 'w' => 0, 'h' => 0 ] ],
+            'no actions' => [ [], [] ],
+            'just crop' => [ [ $crop ], [ 'w' => 1, 'h' => 2 ] ],
             'just resize' => [ [ $resizeOne ], [ 'w' => 123, 'h' => 456 ] ],
             'two resizes' => [ [ $resizeOne, $resizeTwo ], [ 'w' => 456, 'h' => 123 ] ],
             'two resizes (reverse)' => [ [ $resizeTwo, $resizeOne ], [ 'w' => 123, 'h' => 456 ] ],
             'resize last' => [ [ $crop, $resizeOne ], [ 'w' => 123, 'h' => 456 ] ],
-            'resize first' => [ [ $resizeOne, $crop ], [ 'w' => 123, 'h' => 456 ] ],
+            'resize first' => [ [ $resizeOne, $crop ], [ 'w' => 1, 'h' => 2 ] ],
+            'resize width only, no crop' => [ [ $resizeWidthOnly ], [ 'w' => 123 ] ],
+            'resize height only, no crop' => [ [ $resizeHeightOnly ], [ 'h' => 456 ] ],
+            'resize width only' => [ [ $bigCrop, $resizeWidthOnly ], [ 'w' => 123, 'h' => 69 ] ],
+            'resize height only' => [ [ $bigCrop, $resizeHeightOnly ], [ 'w' => 811, 'h' => 456 ] ],
         ];
     }
 

@@ -61,20 +61,28 @@ readonly final class Action implements Stringable
     }
 
     /**
-     * @return array{w: int, h: int}
+     * @return array{w?: int, h?: int}
      */
     public function getResizeParameters(): array
     {
-        $regex = '/^(\d+)x(\d+)$/';
-        $matches = [];
+        $wh = explode('x', $this->parameters, 2);
 
-        if (preg_match($regex, $this->parameters, $matches) !== 1) {
+        if (
+            (count($wh) === 1 && $wh[0] === $this->parameters) ||
+            (count($wh) === 2 && $wh[0] === '' && $wh[1] === '')
+        ) {
             throw new Exception('Unable to parse resize parameters');
         }
 
+        if ($wh[0] === '') {
+            return [ 'h' => intval($wh[1]) ];
+        } elseif ($wh[1] === '') {
+            return [ 'w' => intval($wh[0]) ];
+        }
+
         return [
-            'w' => intval($matches[1]),
-            'h' => intval($matches[2]),
+            'w' => intval($wh[0]),
+            'h' => intval($wh[1]),
         ];
     }
 }

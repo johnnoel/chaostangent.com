@@ -105,12 +105,15 @@ readonly final class GuessCropsProcessor implements Processor
         // devtodo remove fixed "media/" prefix
         $sourceSize = getimagesize('media/' . $source->src);
         $variantSize = getimagesize('media/' . $source->variant);
-        $sourceRatio = $sourceSize[0] / $sourceSize[1];
-        $variantRatio = $variantSize[0] / $variantSize[1];
 
-        // don't crop if the ratio of the thumbnail is the same as the source
-        if (abs($sourceRatio - $variantRatio) <= 0.1) {
-            return false;
+        if ($sourceSize !== false && $variantSize !== false) {
+            $sourceRatio = $sourceSize[0] / $sourceSize[1];
+            $variantRatio = $variantSize[0] / $variantSize[1];
+
+            // don't crop if the ratio of the thumbnail is the same as the source
+            if (abs($sourceRatio - $variantRatio) <= 0.1) {
+                return false;
+            }
         }
 
         return true;

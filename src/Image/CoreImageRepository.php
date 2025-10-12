@@ -16,14 +16,14 @@ readonly final class CoreImageRepository implements ImageRepository
         Source $source,
         array $mimeTypes = [ MimeType::AVIF, MimeType::WEBP, MimeType::JPEG ]
     ): array {
-        [ 'w' => $w, 'h' => $h ] = $source->getTargetSize();
+        $targetSize = $source->getTargetSize();
 
         return array_map(
             fn (MimeType $mt): Variant => new Variant(
                 $this->fileHandler->getVariantUrl($source, $mt),
                 $mt,
-                $w,
-                $h
+                $targetSize['w'] ?? 0,
+                $targetSize['h'] ?? 0,
             ),
             $mimeTypes
         );

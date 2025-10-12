@@ -87,6 +87,16 @@ class FileHandlerTest extends TestCase
                 new Source('test456.webp', [ new Action('resize', '123x456') ]),
                 'test/1/2/3/test456-123x456.jpg',
             ],
+            'width only' => [
+                'test/1/2/3/',
+                new Source('test456.webp', [ new Action('resize', '123x') ]),
+                'test/1/2/3/test456-123x0.jpg',
+            ],
+            'height only' => [
+                'test/1/2/3/',
+                new Source('test456.webp', [ new Action('resize', 'x456') ]),
+                'test/1/2/3/test456-0x456.jpg',
+            ],
         ];
     }
 

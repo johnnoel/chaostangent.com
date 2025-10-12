@@ -32,21 +32,37 @@ readonly final class Source implements Stringable
     }
 
     /**
-     * @return array{w: int, h: int}
+     * @return array{w?: int, h?: int}
      */
     public function getTargetSize(): array
     {
-        $w = 0;
-        $h = 0;
+        $w = null;
+        $h = null;
 
-        $resizeActions = array_filter($this->actions, fn (Action $a): bool => $a->action === 'resize');
+        foreach ($this->actions as $action) {
+            if ($action->action === 'crop') {
+                [ 'w' => $w, 'h' => $h ] = $action->getCropParameters();
+            } elseif ($action->action === 'resize') {
+                $resizeParams = $action->getResizeParameters();
 
-        if (count($resizeActions) > 0) {
-            $a = end($resizeActions);
-            [ 'w' => $w, 'h' => $h ] = $a->getResizeParameters();
+                if (array_key_exists('w', $resizeParams) && array_key_exists('h', $resizeParams)) {
+                    $w = $resizeParams['w'];
+                    $h = $resizeParams['h'];
+                } elseif (array_key_exists('w', $resizeParams) && $h !== null) {
+                    $h = intval(round(($h / $w) * $resizeParams['w']));
+                    $w = $resizeParams['w'];
+                } elseif (array_key_exists('w', $resizeParams)) {
+                    $w = $resizeParams['w'];
+                } elseif (array_key_exists('h', $resizeParams) && $w !== null) {
+                    $w = intval(round(($w / $h) * $resizeParams['h']));
+                    $h = $resizeParams['h'];
+                } elseif (array_key_exists('h', $resizeParams)) {
+                    $h = $resizeParams['h'];
+                }
+            }
         }
 
-        return [ 'w' => $w, 'h' => $h ];
+        return array_filter([ 'w' => $w, 'h' => $h ]);
     }
 
     public function isSameAs(Source $source): bool
