@@ -60,7 +60,7 @@ readonly final class GuessCropsProcessor implements Processor
             $modifiedSources = [];
 
             foreach ($sources as $source) {
-                // devtodo remove the fixed "media/" prefix
+                // devtodo remove fixed "media/" prefix
                 // devtodo cache the crop against the source and variant
                 $crop = $cropGuesser->guessCrop('media/' . $source->src, 'media/' . $source->variant);
                 $modifiedSources[] = new Source($source->src, [
@@ -83,19 +83,33 @@ readonly final class GuessCropsProcessor implements Processor
             return false;
         }
 
+        // the source already has a crop action
         $cropAction = array_find($source->actions, fn (Action $action): bool => $action->action === 'crop');
         if ($cropAction instanceof Action) {
             return false;
         }
 
+        // not resizing the source so don't need to crop
         $resizeAction = array_find($source->actions, fn (Action $action): bool => $action->action === 'resize');
         if ($resizeAction === null) {
             return false;
         }
 
         try {
+            // resize parameter isn't in the width x height format - usually an image type name e.g. thumb
             $resizeAction->getResizeParameters();
         } catch (Exception) {
+            return false;
+        }
+
+        // devtodo remove fixed "media/" prefix
+        $sourceSize = getimagesize('media/' . $source->src);
+        $variantSize = getimagesize('media/' . $source->variant);
+        $sourceRatio = $sourceSize[0] / $sourceSize[1];
+        $variantRatio = $variantSize[0] / $variantSize[1];
+
+        // don't crop if the ratio of the thumbnail is the same as the source
+        if (abs($sourceRatio - $variantRatio) <= 0.1) {
             return false;
         }
 
