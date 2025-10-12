@@ -32,7 +32,7 @@ readonly final class Action implements Stringable
 
     public function __toString(): string
     {
-        return sprintf('%s: %s', $this->action, $this->parameters);
+        return sprintf('%s:%s', $this->action, $this->parameters);
     }
 
     public function isSameAs(Action $action): bool

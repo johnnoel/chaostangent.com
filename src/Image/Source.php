@@ -11,8 +11,12 @@ readonly final class Source implements Stringable
     /**
      * @param array<Action> $actions
      */
-    public function __construct(public string $src, public array $actions, public ?string $caption = null)
-    {
+    public function __construct(
+        public string $src,
+        public array $actions,
+        public ?string $caption = null,
+        public ?string $variant = null
+    ) {
     }
 
     public function __toString(): string
@@ -20,11 +24,11 @@ readonly final class Source implements Stringable
         $actions = implode("', '", $this->actions);
 
         if ($this->caption === null) {
-            return sprintf("{ 'src': '%s', 'actions': '%s' }", $this->src, $actions);
+            return sprintf("{ 'src': '%s', 'actions': [ '%s' ] }", $this->src, $actions);
         }
 
         // devtodo str_replace in the caption
-        return sprintf("{ 'src': '%s', 'actions': '%s', 'caption': '%s' }", $this->src, $actions, $this->caption);
+        return sprintf("{ 'src': '%s', 'actions': [ '%s' ], 'caption': '%s' }", $this->src, $actions, $this->caption);
     }
 
     /**
