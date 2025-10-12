@@ -61,11 +61,11 @@
             color: var(--brand-dark-grey);
             text-decoration: none;
 
-            &.prev {
+            &.next {
                 padding: 0 6px 0 48px;
             }
 
-            &.next {
+            &.prev {
                 padding: 0 48px 0 6px;
                 text-align: right;
 

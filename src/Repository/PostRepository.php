@@ -120,8 +120,8 @@ class PostRepository extends ServiceEntityRepository
         DQL;
 
         $query = $this->getEntityManager()->createQuery($dql);
-        /** @var Post|null $prev */
-        $prev = $query->setMaxResults(1)
+        /** @var Post|null $next */
+        $next = $query->setMaxResults(1)
             ->setParameter('published', true)
             ->setParameter('date', $post->getDate())
             ->getOneOrNullResult()
@@ -135,8 +135,8 @@ class PostRepository extends ServiceEntityRepository
         DQL;
 
         $query = $this->getEntityManager()->createQuery($dql);
-        /** @var Post|null $next */
-        $next = $query->setMaxResults(1)
+        /** @var Post|null $prev */
+        $prev = $query->setMaxResults(1)
             ->setParameter('published', true)
             ->setParameter('date', $post->getDate())
             ->getOneOrNullResult()
