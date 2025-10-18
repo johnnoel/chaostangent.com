@@ -62,7 +62,7 @@ services:
     Intervention\Image\Interfaces\ImageManagerInterface:
         factory: [ 'Intervention\Image\ImageManager', 'withDriver' ]
         arguments:
-            - 'Intervention\Image\Drivers\Vips\Driver'
+            - 'Intervention\Image\Drivers\Imagick\Driver'
 
     Twig\Extension\StringLoaderExtension: ~
 
