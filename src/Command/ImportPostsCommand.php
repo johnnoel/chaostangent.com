@@ -6,11 +6,13 @@ namespace App\Command;
 
 use App\Message\ImportPost;
 use DirectoryIterator;
+use Spatie\Watcher\Watch;
 use SplFileInfo;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\HandleTrait;
@@ -33,7 +35,8 @@ class ImportPostsCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('location', InputArgument::REQUIRED, 'Where to import from');
+        $this->addArgument('location', InputArgument::REQUIRED, 'Where to import from')
+            ->addOption('watch', 'w', InputOption::VALUE_NONE, 'Watch your file / directory for changes');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -54,8 +57,28 @@ class ImportPostsCommand extends Command
         }
 
         foreach ($files as $file) {
+            if (!$file->isFile()) {
+                continue;
+            }
+
             $io->info($file->getFilename());
             $this->handle(new ImportPost(strval(file_get_contents($file->getPathname()))));
+        }
+
+        if ($input->getOption('watch')) {
+            $io->info('Watching...');
+            Watch::path($location)
+                ->onFileCreated(function (string $path) use ($io) {
+                    $io->info('Importing ' . $path);
+                    $this->handle(new ImportPost(strval(file_get_contents($path))));
+                    // devtodo now generate images
+                })
+                ->onFileUpdated(function (string $path) use ($io) {
+                    $io->info('Importing ' . $path);
+                    $this->handle(new ImportPost(strval(file_get_contents($path))));
+                })
+                ->start()
+            ;
         }
 
         return Command::SUCCESS;

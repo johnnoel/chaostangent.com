@@ -8,7 +8,7 @@ use App\Image\Source;
 
 readonly final class ProcessImage
 {
-    public function __construct(public Source $source)
+    public function __construct(public Source $source, public bool $force)
     {
     }
 }

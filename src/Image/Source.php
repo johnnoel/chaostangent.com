@@ -15,7 +15,8 @@ readonly final class Source implements Stringable
         public string $src,
         public array $actions,
         public ?string $caption = null,
-        public ?string $variant = null
+        public ?string $variant = null,
+        public ?string $link = null
     ) {
     }
 

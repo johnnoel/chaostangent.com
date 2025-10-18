@@ -45,6 +45,7 @@ class GenerateImagesCommand extends Command
     {
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Don\'t generate any images')
             ->addOption('alias', null, InputOption::VALUE_REQUIRED, 'Alias of a single post to fetch')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Always (re)generate images')
         ;
     }
 
@@ -73,7 +74,7 @@ class GenerateImagesCommand extends Command
 
                 $sources = $this->imageRepository->sources;
 
-                if ($post->getImage() !== null) {
+                if ($post->getImage() !== null && $post->getImage()['src'] !== null) {
                     $sources[] = $this->sourceFactory->createSource(...$post->getImage());
                 }
 
@@ -92,6 +93,7 @@ class GenerateImagesCommand extends Command
         $progressBar->finish();
         $progressBar->start($sourceCount);
         $dryRun = boolval($input->getOption('dry-run'));
+        $force = boolval($input->getOption('force'));
 
         foreach ($postSources as [ $post, $sources ]) {
             $progressBar->setMessage($post->getAlias());
@@ -99,7 +101,7 @@ class GenerateImagesCommand extends Command
             foreach ($sources as $source) {
                 if (!$dryRun) {
                     try {
-                        $this->messageBus->dispatch(new ProcessImage($source));
+                        $this->messageBus->dispatch(new ProcessImage($source, $force));
                     } catch (\Exception $e) {
                         $io->error('Could not process source "' . $source->src . '": ' . $e->getMessage());
                     }

@@ -36,7 +36,7 @@ final class ProcessImageHandler
 
         $mimeTypes = array_filter(
             self::MIME_TYPES,
-            fn (MimeType $mt): bool => $this->fileHandler->isStale($source, $mt)
+            fn (MimeType $mt): bool => $message->force || $this->fileHandler->isStale($source, $mt)
         );
 
         // generate the different variants based on actions

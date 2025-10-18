@@ -42,12 +42,17 @@ class ImageExtension extends AbstractExtension
     }
 
     /**
-     * @param array<array{src: string, actions: array<string>}> $sources
+     * @param array<array{src: string, link?: string, caption?: string, actions: array<string>}> $sources
      */
-    public function thumbnails(array $sources): string
+    public function thumbnails(array $sources, bool $showCaptions = false): string
     {
         $s = array_map(
-            fn (array $s): Source => $this->sourceFactory->createSource($s['src'], $s['actions']),
+            fn (array $s): Source => $this->sourceFactory->createSource(
+                $s['src'],
+                $s['actions'],
+                $s['caption'] ?? null,
+                $s['link'] ?? null,
+            ),
             $sources
         );
 
@@ -62,12 +67,15 @@ class ImageExtension extends AbstractExtension
             8 => 'eight',
             9 => 'nine',
             10 => 'ten',
+            11 => 'eleven',
+            12 => 'twelve',
         ];
         $count = $map[count($s)];
-        $images = implode("\n", array_map([ $this, 'picture' ], $s));
+        $images = implode("\n", array_map(fn (Source $s): string => $this->picture($s, $showCaptions), $s));
+        $captionsClass = ($showCaptions) ? ' -captions' : '';
 
         return <<<HTML
-            <div class="image-grid -$count">
+            <div class="image-grid -{$count}{$captionsClass}">
                 $images
             </div>
         HTML;
@@ -119,10 +127,14 @@ class ImageExtension extends AbstractExtension
     }
 
     /**
-     * @param array{src: string, actions: array<string>} $source
+     * @param array{src: string|null, actions: array<string>} $source
      */
     public function something(array $source): string
     {
+        if ($source['src'] === null) {
+            return '';
+        }
+
         $s = $this->sourceFactory->createSource($source['src'], $source['actions']);
         $variants = $this->imageRepository->getVariants($s);
         $sources = implode("\n", array_map([ $this, 'source' ], $variants));
@@ -137,7 +149,7 @@ class ImageExtension extends AbstractExtension
     /**
      * @param array<array{src: string, type: ?string}> $sources
      */
-    public function video(array $sources, ?string $poster = null): string
+    public function video(array $sources, ?string $poster = null, ?float $ratio = 16/9): string
     {
         if ($poster !== null) {
             $posterVariant = $this->imageRepository->getVariants(
@@ -155,23 +167,29 @@ class ImageExtension extends AbstractExtension
             return sprintf('<source src="%s"%s>', $src, $type);
         }, $sources));
 
+        $width = 544;
+        $height = intval(round($width / $ratio));
+
         return <<<HTML
-            <video controls preload="auto" width="544" height="306"$p>
+            <video controls preload="auto" width="$width" height="$height"$p>
                 $s
             </video>
         HTML;
     }
 
-    private function picture(Source $source): string
+    private function picture(Source $source, bool $showCaption = false): string
     {
         $variants = $this->imageRepository->getVariants($source);
         $sources = implode("\n", array_map([ $this, 'source' ], $variants));
+        $link = $source->link ?? $this->fileHandler->getSourceUrl($source);
+        $caption = ($showCaption && $source->caption !== null) ? $source->caption : '';
 
         return <<<HTML
-            <a href="{$this->fileHandler->getSourceUrl($source)}">
+            <a href="$link">
                 <picture>
                     $sources
                 </picture>
+                $caption
             </a>
         HTML;
     }
