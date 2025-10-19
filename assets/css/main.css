@@ -12,6 +12,7 @@
 @import "components/posts-filter.css" layer(components);
 @import "components/image-grid.css" layer(components);
 @import "components/image-slideshow.css" layer(components);
+@import "components/image-row.css" layer(components);
 @import "components/code-block.css" layer(components);
 @import "components/post-meta.css" layer(components);
 @import "components/response-form.css" layer(components);

@@ -38,6 +38,7 @@ class ImageExtension extends AbstractExtension
             new TwigFunction('slideshow', [ $this, 'slideshow' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('picture', [ $this, 'something' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('video', [ $this, 'video' ], [ 'is_safe' => [ 'html' ]]),
+            new TwigFunction('passthrough', [ $this, 'passthrough' ], [ 'is_safe' => [ 'html' ]]),
         ];
     }
 
@@ -90,7 +91,8 @@ class ImageExtension extends AbstractExtension
             fn (array $s): Source => $this->sourceFactory->createSource(
                 $s['src'],
                 $s['actions'],
-                $s['caption'] ?? null
+                $s['caption'] ?? null,
+                $s['link'] ?? null,
             ),
             $sources
         );
@@ -149,8 +151,12 @@ class ImageExtension extends AbstractExtension
     /**
      * @param array<array{src: string, type: ?string}> $sources
      */
-    public function video(array $sources, ?string $poster = null, ?float $ratio = 16/9): string
-    {
+    public function video(
+        array $sources,
+        ?string $poster = null,
+        ?float $ratio = 16/9,
+        ?string $subtitles = null
+    ): string {
         if ($poster !== null) {
             $posterVariant = $this->imageRepository->getVariants(
                 $this->sourceFactory->createSource($poster, [ 'resize:poster' ]),
@@ -167,13 +173,39 @@ class ImageExtension extends AbstractExtension
             return sprintf('<source src="%s"%s>', $src, $type);
         }, $sources));
 
+        $t = '';
+        if ($subtitles !== null) {
+            $t = <<<HTML
+                <track label="English" kind="subtitles" srclang="en" src="/media/$subtitles" default>
+            HTML;
+        }
+
         $width = 544;
         $height = intval(round($width / $ratio));
 
         return <<<HTML
             <video controls preload="auto" width="$width" height="$height"$p>
                 $s
+                $t
             </video>
+        HTML;
+    }
+
+    public function passthrough(array $sources): string
+    {
+        $images = implode("\n", array_map(function (array $s): string {
+            $caption = $s['caption'] ?? '';
+            $source = $this->fileHandler->getSourceUrl(new Source($s['src'], []));
+
+            return <<<HTML
+                <img src="$source" alt="$caption">
+            HTML;
+        }, $sources));
+
+        return <<<HTML
+            <div class="image-row">
+                $images
+            </div>
         HTML;
     }
 
@@ -199,10 +231,11 @@ class ImageExtension extends AbstractExtension
         $variants = $this->imageRepository->getVariants($source);
         $sources = implode("\n", array_map([ $this, 'source' ], $variants));
         $caption = ($source->caption !== null) ? "<span>$source->caption</span>" : '';
+        $link = ($source->link !== null) ? $source->link : $this->fileHandler->getSourceUrl($source);
 
         return <<<HTML
             <div class="glide__slide">
-                <a href="{$this->fileHandler->getSourceUrl($source)}">
+                <a href="$link">
                     <picture>
                         $sources
                     </picture>
