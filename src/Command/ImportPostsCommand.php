@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Post;
 use App\Message\ImportPost;
 use DirectoryIterator;
 use Spatie\Watcher\Watch;
 use SplFileInfo;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -36,7 +38,9 @@ class ImportPostsCommand extends Command
     protected function configure(): void
     {
         $this->addArgument('location', InputArgument::REQUIRED, 'Where to import from')
-            ->addOption('watch', 'w', InputOption::VALUE_NONE, 'Watch your file / directory for changes');
+            ->addOption('watch', 'w', InputOption::VALUE_NONE, 'Watch your file / directory for changes')
+            ->addOption('generate-images', 'g', InputOption::VALUE_NONE, 'Generate images for each post imported')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -62,7 +66,19 @@ class ImportPostsCommand extends Command
             }
 
             $io->info($file->getFilename());
-            $this->handle(new ImportPost(strval(file_get_contents($file->getPathname()))));
+            /** @var Post $post */
+            $post = $this->handle(new ImportPost(strval(file_get_contents($file->getPathname()))));
+
+            if ($input->getOption('generate-images')) {
+                $cmdInput = new ArrayInput([
+                    'command' => 'app:generate-images',
+                    '--force' => true,
+                    '--alias' => $post->getAlias(),
+                ]);
+
+                $cmdInput->setInteractive(false);
+                $this->getApplication()->doRun($cmdInput, $output);
+            }
         }
 
         if ($input->getOption('watch')) {
