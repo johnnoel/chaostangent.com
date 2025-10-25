@@ -45,7 +45,7 @@ class ImageExtension extends AbstractExtension
     /**
      * @param array<array{src: string, link?: string, caption?: string, actions: array<string>}> $sources
      */
-    public function thumbnails(array $sources, bool $showCaptions = false): string
+    public function thumbnails(array $sources, bool $showCaptions = false, ?string $classes = null): string
     {
         $s = array_map(
             fn (array $s): Source => $this->sourceFactory->createSource(
@@ -74,9 +74,10 @@ class ImageExtension extends AbstractExtension
         $count = $map[count($s)];
         $images = implode("\n", array_map(fn (Source $s): string => $this->picture($s, $showCaptions), $s));
         $captionsClass = ($showCaptions) ? ' -captions' : '';
+        $extraClasses = ($classes !== null) ? ' ' . ltrim($classes) : '';
 
         return <<<HTML
-            <div class="image-grid -{$count}{$captionsClass}">
+            <div class="image-grid -{$count}{$captionsClass}{$extraClasses}">
                 $images
             </div>
         HTML;

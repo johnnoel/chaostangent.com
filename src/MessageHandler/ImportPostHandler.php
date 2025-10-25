@@ -25,7 +25,7 @@ readonly final class ImportPostHandler
     ) {
     }
 
-    public function __invoke(ImportPost $message): void
+    public function __invoke(ImportPost $message): Post
     {
         $content = $message->content;
         $frontmatter = TwigCommentFrontMatter::create();
@@ -62,5 +62,7 @@ readonly final class ImportPostHandler
 
         $post->update($postModel);
         $this->postRepository->update($post);
+
+        return $post;
     }
 }
