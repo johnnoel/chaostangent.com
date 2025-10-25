@@ -82,7 +82,7 @@ class Post implements RoutedItemInterface
     private ?array $image;
 
     /** @var Collection<int,Comment> */
-    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class)]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post')]
     #[ORM\OrderBy([ 'created' => 'DESC' ])]
     private Collection $comments;
 

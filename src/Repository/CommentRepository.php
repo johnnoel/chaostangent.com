@@ -47,6 +47,7 @@ class CommentRepository extends ServiceEntityRepository
             WHERE (c.post = :post) AND
                 (c.spam = :spam) AND
                 (c.approved = :approved)
+            ORDER BY c.created ASC
         DQL;
 
         $query = $this->getEntityManager()->createQuery($dql);
