@@ -136,6 +136,86 @@
         }
     }
 
+    > .content {
+        line-height: 1.45;
+        min-height: 120px;
+
+        p {
+            margin: 0 0 1em;
+        }
+
+        em, i {
+            font-style: italic;
+        }
+
+        strong, b {
+            font-weight: bold;
+        }
+
+        ul, ol {
+            margin: 0 0 12px 24px;
+            padding: 0;
+
+            ul, ol {
+                margin: 6px 24px;
+            }
+        }
+
+        blockquote:not(.pullquote) {
+            padding: 6px 10px;
+            margin: 0 2em 1em;
+            font-size: 16px;
+            border-left: 6px solid var(--brand-orange);
+            background: var(--brand-dark-beige);
+
+            p:last-child {
+                margin: 0;
+            }
+        }
+
+        ol {
+            list-style: decimal outside;
+        }
+
+        ul {
+            list-style: disc outside;
+        }
+
+        h2 {
+            font-size: 30px;
+            margin: 0 0 12px;
+        }
+
+        h3 {
+            font-size: 26px;
+            margin: 0 0 8px;
+        }
+
+        video {
+            max-width: 100%;
+            margin: 0 0 1em;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 0 0 1em;
+
+            thead th {
+                font-weight: normal;
+                text-transform: uppercase;
+                text-align: left;
+                padding: 4px 12px;
+                border-bottom: 2px solid var(--brand-darker-beige);
+                font-size: 12px;
+            }
+
+            tbody td {
+                padding: 8px 12px;
+                border-bottom: 1px solid var(--brand-dark-beige);
+            }
+        }
+    }
+
     .pullquote {
         float: left;
         font-size: 18px;
@@ -154,5 +234,15 @@
             font-size: 20px;
             margin-left: -80px;
         }
+    }
+
+    .message {
+        border: 1px solid var(--brand-darker-beige);
+        border-radius: 4px;
+        background: var(--brand-dark-beige);
+        padding: 4px 8px;
+    }
+
+    .nonsense {
     }
 }

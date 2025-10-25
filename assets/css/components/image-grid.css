@@ -15,6 +15,11 @@
         padding: 0 0 8px;
     }
 
+    &.-right {
+        float: right;
+        padding: 0 0 1em 1em;
+    }
+
     &.-captions {
         row-gap: 16px;
     }

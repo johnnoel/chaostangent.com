@@ -62,10 +62,6 @@
             text-decoration: none;
 
             &.next {
-                padding: 0 6px 0 48px;
-            }
-
-            &.prev {
                 padding: 0 48px 0 6px;
                 text-align: right;
 
@@ -73,6 +69,10 @@
                     left: auto;
                     right: 0;
                 }
+            }
+
+            &.prev {
+                padding: 0 6px 0 48px;
             }
 
             &:focus, &:hover {

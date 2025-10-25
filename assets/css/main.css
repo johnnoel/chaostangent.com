@@ -1,6 +1,9 @@
+@layer reset, theme, components, posts, helpers;
+
 @import "reset.css" layer(reset);
 @import "fonts.css" layer(theme);
 @import "default.css" layer(theme);
+@import "helpers.css" layer(helpers);
 
 @import "components/a11y-nav.css" layer(components);
 @import "components/site-header.css" layer(components);
@@ -21,6 +24,5 @@
 @import "components/search-results.css" layer(components);
 @import "components/site-footer.css" layer(components);
 
-@import "helpers.css" layer(helpers);
-
-@layer reset, theme, components, helpers;
+@import "posts/comedy-script.css" layer(posts);
+@import "posts/haiku-stack.css" layer(posts);

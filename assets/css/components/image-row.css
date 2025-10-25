@@ -2,5 +2,11 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
+    gap: 4px;
     padding: 0 0 1em;
+
+    > img {
+        padding: 1px;
+        border: 1px solid var(--brand-lighter-grey);
+    }
 }

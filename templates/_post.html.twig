@@ -14,7 +14,7 @@
         {% if p.commentCount > 0 %}<a href="{{ post_link }}#responses" title="Respond to {{ p.post.title|e('html_attr') }}" class="responses">{{ p.commentCount }} response{% if p.commentCount > 1 %}s{% endif %}</a>{% endif %}
     </aside>
 
-    <div class="summary _content">
+    <div class="summary content">
         {{ include(template_from_string(p.post.summary is null ? p.post.content : p.post.summary)) }}
         <p><a href="{{ post_link }}#more-{{ p.post.id }}">Read the rest of this entry</a></p>
     </div>
