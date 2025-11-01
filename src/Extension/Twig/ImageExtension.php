@@ -192,7 +192,7 @@ class ImageExtension extends AbstractExtension
         HTML;
     }
 
-    public function passthrough(array $sources): string
+    public function passthrough(array $sources, ?string $classes = null): string
     {
         $images = implode("\n", array_map(function (array $s): string {
             $caption = $s['caption'] ?? '';
@@ -203,8 +203,10 @@ class ImageExtension extends AbstractExtension
             HTML;
         }, $sources));
 
+        $extraClasses = ($classes !== null) ? ' ' . ltrim($classes) : '';
+
         return <<<HTML
-            <div class="image-row">
+            <div class="image-row{$extraClasses}">
                 $images
             </div>
         HTML;
