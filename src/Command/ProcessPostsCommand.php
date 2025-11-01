@@ -6,6 +6,7 @@ namespace App\Command;
 
 use App\Post\Processor;
 use App\Repository\PostRepository;
+use Illuminate\Support\Collection;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -33,7 +34,8 @@ class ProcessPostsCommand extends Command
         PostRepository $postRepository,
         #[AutowireIterator('app.post_processor')]
         private readonly iterable $processors
-    ) {
+    )
+    {
         parent::__construct();
 
         $this->postRepository = $postRepository;
@@ -43,8 +45,7 @@ class ProcessPostsCommand extends Command
     {
         $this->addArgument('processors', InputArgument::IS_ARRAY, 'Processors to apply to posts')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Don\'t commit any changes')
-            ->addOption('alias', null, InputOption::VALUE_REQUIRED, 'Alias of a single post to fetch')
-        ;
+            ->addOption('alias', null, InputOption::VALUE_REQUIRED, 'Alias of a single post to fetch');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -58,10 +59,8 @@ class ProcessPostsCommand extends Command
             return Command::FAILURE;
         }
 
-        $toApply = array_filter(
-            iterator_to_array($this->processors),
-            fn (Processor $p): bool => in_array($p->getSlug(), $processors)
-        );
+        $availableProcessors = (new Collection($this->processors))->keyBy(fn(Processor $p): string => $p->getSlug());
+        $toApply = array_map(fn(string $p): ?Processor => $availableProcessors[$p] ?? null, $processors);
 
         $postCount = $this->getPostCount($input->getOption('alias'));
         $pages = ceil($postCount / self::PER_PAGE);
