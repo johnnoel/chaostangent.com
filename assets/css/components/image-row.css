@@ -5,6 +5,10 @@
     gap: 4px;
     padding: 0 0 1em;
 
+    &.-right {
+        float: right;
+    }
+
     > img {
         padding: 1px;
         border: 1px solid var(--brand-lighter-grey);

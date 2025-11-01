@@ -1,38 +1,26 @@
 # MVP
 
-* Modify VideoProcessor to also retain the ratio of the video
 * Commenting
     - notify on pushover with links to mark as not spam etc.
     - make the time value a little harder to replay with
-* Local links to images (rather than https://chaostangent.com)
-* Comment sorting (earliest first)
 * Desktop styles
 * Left & right container padding at mobile size
+* Consistent image citation markup
+* JSON-LD for blog posts
 
 ## Posts
 
-https://beta.chaostangent.com/2015/01/bifurcated/ - second image ratio, cropping
-https://beta.chaostangent.com/2014/08/the-spaces-in-between/ - custom image ratios
-https://beta.chaostangent.com/2014/08/caring-for-your-introvert/ - non chaostangent.com sources
-https://beta.chaostangent.com/2014/06/comedy-club/ - opening GIF
-https://beta.chaostangent.com/2014/05/hey-listen/ - remove or hide machine tags
-https://beta.chaostangent.com/2014/04/spiffy/ - floating image + image ratio; trim category titles
-https://beta.chaostangent.com/2014/03/opening-move/ - custom image ratios
-https://beta.chaostangent.com/2014/02/cut-my-life-into-pieces/ - custom image ratio
-https://beta.chaostangent.com/2014/02/surefooted/ - custom image ratio
-https://beta.chaostangent.com/2014/01/yozakura-quartet/ - custom image ratio in slideshow
+2010/06/the-last-evangelion-2-x-post-ill-write/ - custom map with points on
+2012/05/queens-blade-rebellion-an-interpretation-of-episode-01/ - comedy script
+2012/07/i-dont-have-much-to-say-about-the-new-anime-season/ - JS quiz
+2012/11/shes-a-rainbow-correlations-and-theories-on-eureka-seven-ao/ - custom map with points on
+2014/11/wrapup/ - custom route maps
+2012/04/beautiful-fighting-girl - original image sources?
+Jeanne d'Arc mode?
 
-### gallery.chaostangent.com
+### Questions
 
-https://beta.chaostangent.com/2007/05/day-0-preparation-and-travel/ - gallery.chaostangent.com photos
-https://beta.chaostangent.com/2007/05/day-1-heat-height-and-hustle/
-https://beta.chaostangent.com/2007/05/day-2-trucks-travel-and-tracheotomy/
-https://beta.chaostangent.com/2007/06/day-3-car-castle-and-closed/
-https://beta.chaostangent.com/2007/06/day-4-incline-insanity-and-inebriation/
-
-### hitman.chaostangent.com
-
-https://beta.chaostangent.com/2007/08/hitman-blood-money-playthrough-mission-1/
+* Do we need to change relative links to absolute ones in the RSS feed?
 
 https://beta.chaostangent.com/2014/11/wrapup/ - maps
 - https://mygeodata.cloud/converter/kml-to-geojson
@@ -44,6 +32,7 @@ https://beta.chaostangent.com/2014/11/wrapup/ - maps
 * Comment parenting
 * General image quality? Contrast and sharpen maybe
 * Image lightbox / loupe
+* Import posts should regularly reset Doctrine
 * Create a tree view of post -> image / media like
     2025/09/test-post
     - 2025/09/test.jpg (thumbnails, slideshow etc.)
@@ -55,3 +44,15 @@ https://beta.chaostangent.com/2014/11/wrapup/ - maps
       - test-320x320.jpg
     - 2025/09/video.mp4 (video)
     - 2025/09/only-linked.jpg (link)
+* Microformats for anime linking e.g. data-anidb-id=""
+* Square images on the previous / next post block
+* Twitter archive
+
+# Blog post ideas
+
+* Non-square pixels
+* YouTube video rot
+* Posts that have not aged well:
+    - 2014/09/war-what-is-it-good-for/
+    - 2012/06/dead-letter-office-does-modern-anime-suck/
+    - 2010/05/why-everyone-wants-to-know-who-they-are/ - mentioning "traps"
