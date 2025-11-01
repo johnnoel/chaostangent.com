@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Image;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Stringable;
 
-readonly final class Source implements Stringable
+readonly final class Source implements Stringable, Arrayable
 {
     /**
      * @param array<Action> $actions
@@ -20,6 +21,7 @@ readonly final class Source implements Stringable
     ) {
     }
 
+    #[\Override]
     public function __toString(): string
     {
         $actions = implode("', '", $this->actions);
@@ -30,6 +32,18 @@ readonly final class Source implements Stringable
 
         // devtodo str_replace in the caption
         return sprintf("{ 'src': '%s', 'actions': [ '%s' ], 'caption': '%s' }", $this->src, $actions, $this->caption);
+    }
+
+    #[\Override]
+    public function toArray(): array
+    {
+        return array_filter([
+            'src' => $this->src,
+            'actions' => array_map(fn(Action $a): string => (string)$a, $this->actions),
+            'caption' => $this->caption,
+            'variant' => $this->variant,
+            'link' => $this->link,
+        ]);
     }
 
     /**
