@@ -2,6 +2,7 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
+    align-items: center; /* ensures different height images aren't stretched */
     gap: 4px;
     padding: 0 0 1em;
 
