@@ -6,3 +6,10 @@ if (slideshows.length > 0) {
         slideshows.forEach(slideshow => module.default(slideshow));
     });
 }
+
+const quiz = document.getElementById('js-quiz');
+if (quiz !== null) {
+    import('./quiz' /* webpackChunkName: "quiz" */).then(module => {
+        module.default(quiz);
+    });
+}

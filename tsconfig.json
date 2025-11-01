@@ -5,7 +5,9 @@
         "sourceMap": true,
         "strictNullChecks": true,
         "moduleResolution": "node",
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact"
     },
     "include": [
         "./assets/ts/"

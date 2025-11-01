@@ -1,0 +1,96 @@
+.anime-quiz {
+    list-style: none;
+    margin: 0 0 24px;
+    min-height: 675px;
+    border: 1px solid #EEEDE8;
+    padding: 1px 1px 10px;
+    background: linear-gradient(to bottom, #EDEDE4, #FBFBF9);
+    position: relative;
+
+    .position {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        color: var(--brand-lighter-grey);
+        margin: 0;
+
+        > .index, > .total {
+            font-size: 72px;
+        }
+
+        > .index {
+            color: var(--brand-darker-beige);
+        }
+    }
+
+    .question {
+        > h3 {
+            font-size: 18px;
+            margin: 0 10px;
+        }
+    }
+
+    .answers {
+        list-style: none;
+        padding: 10px 10px 0;
+        position: relative;
+
+        > li {
+            padding: 0 0 10px 16px;
+            position: relative;
+
+            &::before {
+                content: '\00BB';
+                position: absolute;
+                left: 0; top: 4px;
+            }
+        }
+
+        button {
+            appearance: none;
+            border: 1px solid var(--brand-lighter-grey);
+            border-radius: 3px;
+            background: var(--brand-dark-beige);
+            padding: 3px 5px;
+            cursor: pointer;
+            text-align: left;
+            transition: color .2s;
+
+            &:focus, &:hover {
+                color: var(--brand-orange);
+            }
+        }
+
+    }
+
+    .congratulations {
+        text-align: center;
+        padding: 10px 0 0;
+
+        > h3 {
+            font-size: 24px;
+        }
+
+        > p {
+            margin: 0;
+        }
+
+        .score {
+            display: block;
+            font-size: 72px;
+        }
+
+        .meaningless {
+            font-size: 11px;
+            color: #CCC;
+        }
+
+        .twitter {
+            padding: 12px 0 0;
+        }
+    }
+
+    img {
+        margin: 0 0 6px;
+    }
+}

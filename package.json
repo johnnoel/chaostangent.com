@@ -44,6 +44,7 @@
     "dependencies": {
         "@glidejs/glide": "^3.7.1",
         "chokidar": "^4.0.3",
+        "preact": "^10.27.2",
         "scrollmonitor": "^1.2.11"
     },
     "engines": {

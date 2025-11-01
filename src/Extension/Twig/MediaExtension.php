@@ -15,7 +15,7 @@ use Symfony\Component\Asset\Packages;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class ImageExtension extends AbstractExtension
+class MediaExtension extends AbstractExtension
 {
     public function __construct(
         private ImageRepository $imageRepository,
@@ -39,6 +39,7 @@ class ImageExtension extends AbstractExtension
             new TwigFunction('picture', [ $this, 'something' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('video', [ $this, 'video' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('passthrough', [ $this, 'passthrough' ], [ 'is_safe' => [ 'html' ]]),
+            new TwigFunction('quiz', [ $this, 'quiz' ], [ 'is_safe' => [ 'html' ]]),
         ];
     }
 
@@ -208,6 +209,29 @@ class ImageExtension extends AbstractExtension
         return <<<HTML
             <div class="image-row{$extraClasses}">
                 $images
+            </div>
+        HTML;
+    }
+
+    /**
+     * @param array<array{question: string, image: array<mixed>, answers: array<mixed>}> $questions
+     */
+    public function quiz(array $questions): string
+    {
+        foreach ($questions as &$question) {
+            $source = $this->sourceFactory->createSource($question['image']['src'], $question['image']['actions']);
+            $question['images'] = $this->imageRepository->getVariants($source);
+            unset($question['image']);
+        }
+
+        $json = json_encode($questions);
+
+        return <<<HTML
+            <script id="js-quiz-data" type="application/json">
+                $json
+            </script>
+            <div id="js-quiz" data-questions="#js-quiz-data">
+                <noscript class="message">You can only take the quiz if you have JavaScript enabled</noscript>
             </div>
         HTML;
     }

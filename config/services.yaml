@@ -28,7 +28,7 @@ services:
 
     App\Comment\SpamDecider: '@App\Comment\ChainDecider'
 
-    App\Extension\Twig\ImageExtension:
+    App\Extension\Twig\MediaExtension:
         arguments:
             $imageRepository: '@App\Image\CoreImageRepository'
 

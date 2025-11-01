@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Extension\Twig\ImageExtension;
+use App\Extension\Twig\MediaExtension;
 use App\Image\GatheringImageRepository;
 use App\Image\SourceFactory;
 use App\Message\ProcessImage;
@@ -29,7 +29,7 @@ class GenerateImagesCommand extends Command
     private const int PER_PAGE = 50;
 
     public function __construct(
-        private readonly ImageExtension $imageExtension,
+        private readonly MediaExtension $imageExtension,
         private readonly GatheringImageRepository $imageRepository,
         private readonly SourceFactory $sourceFactory,
         private readonly MessageBusInterface $messageBus,

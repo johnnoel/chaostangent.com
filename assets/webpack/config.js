@@ -15,7 +15,12 @@ module.exports = {
         publicPath: '/assets/'
     },
     resolve: {
-        extensions: [ '.ts', '.js', '.json' ],
+        extensions: [ '.ts', '.tsx', '.js', '.json' ],
+        alias: {
+            react: 'preact/compat',
+            'react-dom': 'preact/compat',
+            'react/jsx-runtime': 'preact/jsx-runtime',
+        },
     },
     module: {
         rules: [
