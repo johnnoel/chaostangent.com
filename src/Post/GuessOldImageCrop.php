@@ -65,11 +65,11 @@ readonly final class GuessOldImageCrop implements Processor
 
         $count = 0;
         $srcPath = preg_replace('/-\d+x\d+\.jpg$/', '.jpg', $cropPath, count: $count);
-        $fullSrcPath = $this->fileHandler->getSourcePath(new Source($srcPath, []));
-
-        if ($count === 0) { // can't differentiate between the cropped image and its source
+        if ($srcPath === null || $count === 0) { // can't differentiate between the cropped image and its source
             return null;
         }
+
+        $fullSrcPath = $this->fileHandler->getSourcePath(new Source($srcPath, []));
 
         if (!file_exists($fullSrcPath)) {
             // try a png source

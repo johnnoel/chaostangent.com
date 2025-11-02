@@ -77,19 +77,19 @@ class ImportPostsCommand extends Command
                 ]);
 
                 $cmdInput->setInteractive(false);
-                $this->getApplication()->doRun($cmdInput, $output);
+                $this->getApplication()?->doRun($cmdInput, $output);
             }
         }
 
         if ($input->getOption('watch')) {
             $io->info('Watching...');
             Watch::path($location)
-                ->onFileCreated(function (string $path) use ($io) {
+                ->onFileCreated(function (string $path) use ($io): void {
                     $io->info('Importing ' . $path);
                     $this->handle(new ImportPost(strval(file_get_contents($path))));
                     // devtodo now generate images
                 })
-                ->onFileUpdated(function (string $path) use ($io) {
+                ->onFileUpdated(function (string $path) use ($io): void {
                     $io->info('Importing ' . $path);
                     $this->handle(new ImportPost(strval(file_get_contents($path))));
                 })

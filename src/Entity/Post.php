@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Uid\Ulid;
 
 /**
- * @phpstan-type Image array{src: string, actions: array<string>}
+ * @phpstan-type Image array{src: ?string, actions: array<string>}
  */
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\Table(name: 'posts')]

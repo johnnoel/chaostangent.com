@@ -15,6 +15,11 @@ use Symfony\Component\Asset\Packages;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+/**
+ * @phpstan-type QuizImage array{src: string, actions: array<string>}
+ * @phpstan-type QuizAnswer array{score: int, answer: string}
+ * @phpstan-type QuizQuestion array{question: string, image: QuizImage, answers: array<QuizAnswer>}
+ */
 class MediaExtension extends AbstractExtension
 {
     public function __construct(
@@ -85,7 +90,7 @@ class MediaExtension extends AbstractExtension
     }
 
     /**
-     * @param array<array{src: string, actions: array<string>, caption?: string}> $sources
+     * @param array<array{src: string, actions: array<string>, caption?: string, link?: string}> $sources
      */
     public function slideshow(array $sources): string
     {
@@ -156,7 +161,7 @@ class MediaExtension extends AbstractExtension
     public function video(
         array $sources,
         ?string $poster = null,
-        ?float $ratio = 16/9,
+        ?float $ratio = 16 / 9,
         ?string $subtitles = null
     ): string {
         if ($poster !== null) {
@@ -193,6 +198,9 @@ class MediaExtension extends AbstractExtension
         HTML;
     }
 
+    /**
+     * @param array<array{src: string, caption?: string}> $sources
+     */
     public function passthrough(array $sources, ?string $classes = null): string
     {
         $images = implode("\n", array_map(function (array $s): string {
@@ -214,7 +222,7 @@ class MediaExtension extends AbstractExtension
     }
 
     /**
-     * @param array<array{question: string, image: array<mixed>, answers: array<mixed>}> $questions
+     * @param array<QuizQuestion> $questions
      */
     public function quiz(array $questions): string
     {

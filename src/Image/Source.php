@@ -7,6 +7,9 @@ namespace App\Image;
 use Illuminate\Contracts\Support\Arrayable;
 use Stringable;
 
+/**
+ * @implements Arrayable<string,string|array<mixed>>
+ */
 readonly final class Source implements Stringable, Arrayable
 {
     /**
@@ -34,16 +37,20 @@ readonly final class Source implements Stringable, Arrayable
         return sprintf("{ 'src': '%s', 'actions': [ '%s' ], 'caption': '%s' }", $this->src, $actions, $this->caption);
     }
 
+    /**
+     * @return array{src: string, actions: array<string>, caption?: string, variant?: string, link?: string}
+     */
     #[\Override]
     public function toArray(): array
     {
-        return array_filter([
+        return array_merge([
             'src' => $this->src,
-            'actions' => array_map(fn(Action $a): string => (string)$a, $this->actions),
+            'actions' => array_map(fn (Action $a): string => (string)$a, $this->actions),
+        ], array_filter([
             'caption' => $this->caption,
             'variant' => $this->variant,
             'link' => $this->link,
-        ]);
+        ]));
     }
 
     /**

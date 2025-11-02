@@ -34,8 +34,7 @@ class ProcessPostsCommand extends Command
         PostRepository $postRepository,
         #[AutowireIterator('app.post_processor')]
         private readonly iterable $processors
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->postRepository = $postRepository;
@@ -51,16 +50,19 @@ class ProcessPostsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        /** @var array<string> $processors */
         $processors = $input->getArgument('processors');
 
-        if (!is_array($processors) || count($processors) === 0) {
+        if (count($processors) === 0) {
             $io->error('No processors supplied');
 
             return Command::FAILURE;
         }
 
-        $availableProcessors = (new Collection($this->processors))->keyBy(fn(Processor $p): string => $p->getSlug());
-        $toApply = array_map(fn(string $p): ?Processor => $availableProcessors[$p] ?? null, $processors);
+        $availableProcessors = (new Collection(iterator_to_array($this->processors)))
+            ->keyBy(fn (Processor $p): string => $p->getSlug())
+        ;
+        $toApply = array_filter(array_map(fn (string $p): ?Processor => $availableProcessors[$p] ?? null, $processors));
 
         $postCount = $this->getPostCount($input->getOption('alias'));
         $pages = ceil($postCount / self::PER_PAGE);
