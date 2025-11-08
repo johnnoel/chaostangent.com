@@ -23,6 +23,7 @@
 @import "components/site-stats.css" layer(components);
 @import "components/search-results.css" layer(components);
 @import "components/site-footer.css" layer(components);
+@import "components/map-embed.css" layer(components);
 
 @import "posts/comedy-script.css" layer(posts);
 @import "posts/haiku-stack.css" layer(posts);

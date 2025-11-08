@@ -10,10 +10,8 @@
 
 ## Posts
 
-2010/06/the-last-evangelion-2-x-post-ill-write/ - custom map with points on
 2012/05/queens-blade-rebellion-an-interpretation-of-episode-01/ - comedy script
-2012/11/shes-a-rainbow-correlations-and-theories-on-eureka-seven-ao/ - custom map with points on
-2014/11/wrapup/ - custom route maps
+2014/11/wrapup/ - storify story
 2012/04/beautiful-fighting-girl - original image sources?
 2013/02/eyehack/ - video poster
 Jeanne d'Arc mode?
@@ -44,9 +42,11 @@ https://beta.chaostangent.com/2014/11/wrapup/ - maps
       - test-320x320.jpg
     - 2025/09/video.mp4 (video)
     - 2025/09/only-linked.jpg (link)
-* Microformats for anime linking e.g. data-anidb-id=""
+* Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
 * Square images on the previous / next post block
 * Twitter archive
+* Set the maps to only load when scrolled into view
+* When plotting routes mark start and end, maybe with points in between with the time / altitude
 
 # Blog post ideas
 

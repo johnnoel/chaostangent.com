@@ -1,0 +1,31 @@
+.map-embed {
+    height: 500px;
+    margin: 0 0 1em;
+
+    .marker {
+        background: url(../icons/location-sharp.svg) no-repeat 0 0 / contain;
+
+        &.-colourtwo {
+            background-image: url(../icons/location-sharp-colourtwo.svg);
+        }
+
+        &.-colourthree {
+            background-image: url(../icons/location-sharp-colourthree.svg);
+        }
+    }
+
+    .popup {
+        font-family: var(--font-body);
+        font-size: 14px;
+
+        h5 {
+            font-size: 20px;
+            padding: 0 0 6px;
+            margin: 0;
+        }
+
+        p {
+            margin: 0 !important;
+        }
+    }
+}

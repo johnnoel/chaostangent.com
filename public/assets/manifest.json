@@ -1,8 +1,14 @@
 {
-  "icons.js": "/assets/123.2845a43ed2fd78026d08.js",
-  "icons.svg": "/assets/icons.e610bc9fe4d2669f7b5a.svg",
-  "main.css": "/assets/main.434502901da416314255.css",
-  "main.js": "/assets/main.7cf68ce2084c59b81307.js",
+  "icons.js": "/assets/123.e4f36402139a41aaf6e0.js",
+  "icons.svg": "/assets/icons.d57c815dd53546eeee30.svg",
+  "main.css": "/assets/main.cfeaefa7aec2f1a42986.css",
+  "main.js": "/assets/main.8b8a027a3e4660c64841.js",
   "vegur-bold-webfont.woff2": "/assets/ec37284d419decaa2316.woff2",
-  "vegur-regular-webfont.woff2": "/assets/b69baad342b6d4fa2039.woff2"
+  "vegur-regular-webfont.woff2": "/assets/b69baad342b6d4fa2039.woff2",
+  "marker-icon.png": "/assets/2b3e1faf89f94a483539.png",
+  "layers-2x.png": "/assets/8f2c4d11474275fbc161.png",
+  "layers.png": "/assets/416d91365b44e4b4f477.png",
+  "location-sharp-colourthree.svg": "/assets/5396d732cd62c3bd12ea.svg",
+  "location-sharp-colourtwo.svg": "/assets/6b0d10df8231fb240850.svg",
+  "location-sharp.svg": "/assets/bfd625c5bf2763508a7c.svg"
 }

@@ -13,3 +13,11 @@ if (quiz !== null) {
         module.default(quiz);
     });
 }
+
+
+const maps = document.querySelectorAll<HTMLElement>('.js-map');
+if (maps.length > 0) {
+    import('./map' /* webpackChunkNAme: "map" */).then(module => {
+        maps.forEach(map => module.default(map));
+    });
+}

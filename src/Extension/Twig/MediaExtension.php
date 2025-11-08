@@ -12,6 +12,7 @@ use App\Image\Source;
 use App\Image\SourceFactory;
 use App\Image\Variant;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\String\ByteString;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -19,6 +20,8 @@ use Twig\TwigFunction;
  * @phpstan-type QuizImage array{src: string, actions: array<string>}
  * @phpstan-type QuizAnswer array{score: int, answer: string}
  * @phpstan-type QuizQuestion array{question: string, image: QuizImage, answers: array<QuizAnswer>}
+ * @phpstan-type MapPoint array{lat: float, lng: float, title: string, caption?: string, colour?: int}
+ * @phpstan-type MapRoute array{lat: float, lng: float}
  */
 class MediaExtension extends AbstractExtension
 {
@@ -45,6 +48,7 @@ class MediaExtension extends AbstractExtension
             new TwigFunction('video', [ $this, 'video' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('passthrough', [ $this, 'passthrough' ], [ 'is_safe' => [ 'html' ]]),
             new TwigFunction('quiz', [ $this, 'quiz' ], [ 'is_safe' => [ 'html' ]]),
+            new TwigFunction('map', [ $this, 'map' ], [ 'is_safe' => [ 'html' ]]),
         ];
     }
 
@@ -241,6 +245,37 @@ class MediaExtension extends AbstractExtension
             <div id="js-quiz" data-questions="#js-quiz-data">
                 <noscript class="message">You can only take the quiz if you have JavaScript enabled</noscript>
             </div>
+        HTML;
+    }
+
+    /**
+     * @param array<MapPoint> $points
+     * @param array<MapRoute> $routes
+     * @param array{0: float, 1: float}|null $centre
+     * @return string
+     */
+    public function map(array $points = [], array $routes = [], ?array $centre = null, ?int $zoom = null): string
+    {
+        $id = ByteString::fromRandom(16);
+        $pointsJson = json_encode($points);
+        $routesJson = json_encode($routes);
+        $zoom ??= 10;
+        $centre = json_encode($centre ?? [ 0, 0 ]);
+
+        return <<<HTML
+            <script id="js-map-points-$id" type="application/json">
+                $pointsJson
+            </script>
+            <script id="js-map-routes-$id" type="application/json">
+                $routesJson
+            </script>
+            <div
+                class="map-embed js-map"
+                data-points="#js-map-points-$id"
+                data-routes="#js-map-routes-$id"
+                data-centre="$centre"
+                data-zoom="$zoom"
+            ></div>
         HTML;
     }
 
