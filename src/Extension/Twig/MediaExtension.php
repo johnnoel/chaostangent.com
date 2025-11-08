@@ -252,7 +252,6 @@ class MediaExtension extends AbstractExtension
      * @param array<MapPoint> $points
      * @param array<MapRoute> $routes
      * @param array{0: float, 1: float}|null $centre
-     * @return string
      */
     public function map(array $points = [], array $routes = [], ?array $centre = null, ?int $zoom = null): string
     {

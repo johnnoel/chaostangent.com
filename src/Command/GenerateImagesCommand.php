@@ -71,7 +71,7 @@ class GenerateImagesCommand extends Command
                 $post = $dto->post;
                 $template = $this->twig->createTemplate($post->getSummary() . $post->getContent(), $post->getAlias());
                 $template->render();
-                $sources = [];
+                $sources = $this->imageRepository->sources;
 
                 if (is_array($post->getImage()) && $post->getImage()['src'] !== null) {
                     $sources[] = $this->sourceFactory->createSource(...$post->getImage());
