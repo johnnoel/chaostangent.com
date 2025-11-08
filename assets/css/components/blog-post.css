@@ -243,6 +243,19 @@
         padding: 4px 8px;
     }
 
-    .nonsense {
+    .btn { /* 2015/01/godslayer/ */
+        border: none;
+        font: 14px var(--font-body);
+        line-height: 1;
+        padding: 6px 12px;
+        margin: 0;
+        background: var(--brand-orange);
+        color: #FFF;
+        cursor: pointer;
+        transition: background-color .15s ease;
+
+        &:focus, &:hover {
+            text-decoration: underline;
+        }
     }
 }

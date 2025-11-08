@@ -5,14 +5,10 @@
     - make the time value a little harder to replay with
 * Desktop styles
 * Left & right container padding at mobile size
-* Consistent image citation markup
-* JSON-LD for blog posts
 
 ## Posts
 
 2014/11/wrapup/ - storify story
-2012/04/beautiful-fighting-girl - original image sources?
-Jeanne d'Arc mode?
 
 ### Questions
 
@@ -45,6 +41,8 @@ https://beta.chaostangent.com/2014/11/wrapup/ - maps
 * Twitter archive
 * Set the maps to only load when scrolled into view
 * When plotting routes mark start and end, maybe with points in between with the time / altitude
+* Consistent image citation markup
+* JSON-LD for blog posts
 
 # Blog post ideas
 

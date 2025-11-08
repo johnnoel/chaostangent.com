@@ -14,10 +14,16 @@ if (quiz !== null) {
     });
 }
 
-
 const maps = document.querySelectorAll<HTMLElement>('.js-map');
 if (maps.length > 0) {
-    import('./map' /* webpackChunkNAme: "map" */).then(module => {
+    import('./map' /* webpackChunkName: "map" */).then(module => {
         maps.forEach(map => module.default(map));
+    });
+}
+
+const jeanneDarcMode = document.getElementById('js-jeannedarcmode');
+if (jeanneDarcMode !== null) {
+    import('./jeannedarcmode' /* webpackChunkName: "jeanne-darc-mode" */).then(module => {
+        module.default(jeanneDarcMode);
     });
 }
