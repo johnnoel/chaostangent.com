@@ -23,13 +23,10 @@
             <div class="categories">
                 <h5>Categorised and filed neatly under:</h5>
                 <ul>
-                    {% for category in post.categories %}
-                        <li>
-                            <a href="{{ path('category', { 'alias': category.alias }) }}" title="View all posts in {{ category.title|e('html_attr') }}">
-                                {{ category.title }}
-                            </a>
-                        </li>
-                    {% endfor %}
+                    {# Must be on one line to prevent odd spacing between the end of the word and the comma suffix #}
+                    {%- for category in post.categories -%}
+                        <li><a href="{{ path('category', { 'alias': category.alias }) }}" title="View all posts in {{ category.title|e('html_attr') }}">{{ category.title }}</a></li>
+                    {%- endfor -%}
                 </ul>
             </div>
 
@@ -49,26 +46,26 @@
                     </ul>
                 </div>
             {% endif %}
-
-            <nav class="prevnext">
-                {% if prev_post is defined and prev_post is not null %}
-                    <a href="{{ path('post', prev_post.routeParams) }}" class="prev">
-                        <span><svg><use xlink:href="{{ asset('icons.svg') }}#icon-back"></use></svg></span>
-                        <small>Previous post:</small>
-                        <h4>{{ prev_post.title }}</h4>
-                        {% if prev_post.subtitle is not empty %}<h5>{{ prev_post.subtitle }}</h5>{% endif %}
-                    </a>
-                {% endif %}
-                {% if next_post is defined and next_post is not null %}
-                    <a href="{{ path('post', next_post.routeParams) }}" class="next">
-                        <span><svg><use xlink:href="{{ asset('icons.svg') }}#icon-forward"></use></svg></span>
-                        <small>Next post:</small>
-                        <h4>{{ next_post.title }}</h4>
-                        {% if next_post.subtitle is not empty %}<h5>{{ next_post.subtitle }}</h5>{% endif %}
-                    </a>
-                {% endif %}
-            </nav>
         </footer>
+
+        <nav class="post-prevnext">
+            {% if prev_post is defined and prev_post is not null %}
+                <a href="{{ path('post', prev_post.routeParams) }}" class="prev">
+                    <span><svg><use xlink:href="{{ asset('icons.svg') }}#icon-back"></use></svg></span>
+                    <small>Previous post:</small>
+                    <h4>{{ prev_post.title }}</h4>
+                    {% if prev_post.subtitle is not empty %}<h5>{{ prev_post.subtitle }}</h5>{% endif %}
+                </a>
+            {% endif %}
+            {% if next_post is defined and next_post is not null %}
+                <a href="{{ path('post', next_post.routeParams) }}" class="next">
+                    <span><svg><use xlink:href="{{ asset('icons.svg') }}#icon-forward"></use></svg></span>
+                    <small>Next post:</small>
+                    <h4>{{ next_post.title }}</h4>
+                    {% if next_post.subtitle is not empty %}<h5>{{ next_post.subtitle }}</h5>{% endif %}
+                </a>
+            {% endif %}
+        </nav>
 
         <section id="responses">
             {% if comments|length > 0 %}

@@ -18,6 +18,7 @@
 @import "components/image-row.css" layer(components);
 @import "components/code-block.css" layer(components);
 @import "components/post-meta.css" layer(components);
+@import "components/post-prevnext.css" layer(components);
 @import "components/response-form.css" layer(components);
 @import "components/responses-list.css" layer(components);
 @import "components/site-stats.css" layer(components);

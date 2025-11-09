@@ -1,8 +1,5 @@
 # MVP
 
-* Commenting
-    - notify on pushover with links to mark as not spam etc.
-    - make the time value a little harder to replay with
 * Desktop styles
 * Left & right container padding at mobile size
 
@@ -12,19 +9,32 @@
 
 ### Questions
 
-* Do we need to change relative links to absolute ones in the RSS feed?
-
-https://beta.chaostangent.com/2014/11/wrapup/ - maps
-- https://mygeodata.cloud/converter/kml-to-geojson
-- https://reducegeojson.radicaldata.org/
-- https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static/geojson(%7B%22type%22%3A%22FeatureCollection%22%2C%22features%22%3A%5B%7B%22type%22%3A%22Feature%22%2C%22properties%22%3A%7B%22begin%22%3A%222014-11-01T11%3A01%3A42Z%22%2C%22end%22%3A%222014-11-01T11%3A44%3A59Z%22%7D%2C%22bbox%22%3A%5B73.8059417%2C15.3899423%2C73.9072751%2C15.4618842%5D%2C%22geometry%22%3A%7B%22type%22%3A%22LineString%22%2C%22coordinates%22%3A%5B%5B73.85792%2C15.38994%5D%2C%5B73.86044%2C15.39501%5D%2C%5B73.86205%2C15.40085%5D%2C%5B73.87347%2C15.39579%5D%2C%5B73.8844%2C15.39928%5D%2C%5B73.89482%2C15.40346%5D%2C%5B73.90426%2C15.40173%5D%2C%5B73.90728%2C15.40663%5D%2C%5B73.8931%2C15.42716%5D%2C%5B73.8815%2C15.43725%5D%2C%5B73.87719%2C15.44031%5D%2C%5B73.86336%2C15.45167%5D%2C%5B73.85287%2C15.46188%5D%2C%5B73.84875%2C15.45727%5D%2C%5B73.81749%2C15.45936%5D%2C%5B73.80634%2C15.45559%5D%2C%5B73.80594%2C15.45589%5D%2C%5B73.80594%2C15.45589%5D%5D%7D%7D%5D%7D),pin-s-1+555555(73.8579198,15.3899423),pin-s-2+555555(73.8059435,15.4558913)/auto/544x544@2x?access_token=...
+* Do I need to change relative links to absolute ones in the RSS feed?
 
 # Phase X
 
-* Comment parenting
+* Missing comments?
+* JSON-LD and microformats for blog posts
+* Replace the slideshow with another library
 * General image quality? Contrast and sharpen maybe
+* Import ceetea.uk content
+* Import buttondown.email/johnnoel content
+* Web mentions
+* Redirect anime-1 tag to anime
+* Set the maps to only load when scrolled into view
+* When plotting routes mark start and end, maybe with points in between with the time / altitude
+* Consistent image citation markup
+* Square images on the previous / next post block
 * Image lightbox / loupe
 * Import posts should regularly reset Doctrine
+* Commenting
+    - parenting
+    - notify on pushover with links to mark as not spam etc.
+    - make the time value a little harder to replay with
+    - email on replies
+* Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
+* Twitter archive
+* Hitman Blood Money video subtitles
 * Create a tree view of post -> image / media like
     2025/09/test-post
     - 2025/09/test.jpg (thumbnails, slideshow etc.)
@@ -36,13 +46,6 @@ https://beta.chaostangent.com/2014/11/wrapup/ - maps
       - test-320x320.jpg
     - 2025/09/video.mp4 (video)
     - 2025/09/only-linked.jpg (link)
-* Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
-* Square images on the previous / next post block
-* Twitter archive
-* Set the maps to only load when scrolled into view
-* When plotting routes mark start and end, maybe with points in between with the time / altitude
-* Consistent image citation markup
-* JSON-LD for blog posts
 
 # Blog post ideas
 
