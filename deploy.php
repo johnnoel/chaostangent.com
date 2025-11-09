@@ -13,7 +13,7 @@ set('circle_ci_token', '');
 add('shared_dirs', [ 'public/media' ]);
 
 host('chaostangent.com')
-    ->set('hostname', '134.122.111.6')
+    ->set('hostname', '91.98.161.234')
     ->set('remote_user', 'chaostangent-com')
     ->set('deploy_path', '~/www')
     ->setLabels([ 'stage' => 'production' ])
