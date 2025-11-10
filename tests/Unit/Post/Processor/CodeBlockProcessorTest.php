@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Post;
+namespace App\Tests\Unit\Post\Processor;
 
 use App\Entity\Post;
-use App\Post\CodeBlockProcessor;
+use App\Post\Processor\CodeBlockProcessor;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

@@ -49,7 +49,7 @@ services:
         arguments:
             $decoratedImageRepository: '@App\Image\CoreImageRepository'
 
-    App\Post\ExportProcessor:
+    App\Post\Processor\ExportProcessor:
         arguments:
             $outputDirectory: '%kernel.project_dir%/content'
 

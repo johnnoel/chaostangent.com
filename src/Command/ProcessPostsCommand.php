@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Post\Processor;
+use App\Post\Processor\Processor;
 use App\Repository\PostRepository;
 use Illuminate\Support\Collection;
 use Symfony\Component\Console\Attribute\AsCommand;

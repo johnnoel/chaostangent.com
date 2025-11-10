@@ -26,7 +26,10 @@
 * Consistent image citation markup
 * Square images on the previous / next post block
 * Image lightbox / loupe
-* Import posts should regularly reset Doctrine
+* Import posts
+    - should regularly reset Doctrine
+    - should import posts in alphabetical order
+    - should probably have a progress bar
 * Commenting
     - parenting
     - notify on pushover with links to mark as not spam etc.

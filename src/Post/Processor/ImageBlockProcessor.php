@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Post;
+namespace App\Post\Processor;
 
 use Exception;
 use Symfony\Component\DomCrawler\Crawler;
