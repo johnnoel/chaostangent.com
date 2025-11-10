@@ -28,7 +28,7 @@ readonly final class RssCommentNormaliser implements NormalizerInterface
         return [
             'title' => 'By : ' . $comment->getAuthorName(),
             'link' => $this->urlGenerator->getCommentUrl($comment),
-            'pubData' => $comment->getCreated()->format('D, d M Y H:i:s O'),
+            'pubDate' => $comment->getCreated()->format('D, d M Y H:i:s O'),
             'dc:creator' => $comment->getAuthorName(),
             'guid' => [
                 '@isPermaLink' => 'false',

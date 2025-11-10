@@ -73,7 +73,7 @@ readonly final class AtomNormaliser implements NormalizerInterface
             'link' => [
                 [
                     '@href' => $this->urlGenerator->getHomeUrl(),
-                    '@rel' => 'alternative',
+                    '@rel' => 'alternate',
                     '@type' => 'text/html',
                 ],
                 [
@@ -87,7 +87,7 @@ readonly final class AtomNormaliser implements NormalizerInterface
                 '@uri' => $this->urlGenerator->getHomeUrl(),
                 '#' => $this->generatorName,
             ],
-            'entries' => $posts,
+            'entry' => $posts,
         ];
     }
 
@@ -111,7 +111,7 @@ readonly final class AtomNormaliser implements NormalizerInterface
             'link' => [
                 [
                     '@href' => $this->urlGenerator->getPostCommentsRssUrl($post),
-                    '@rel' => 'alternative',
+                    '@rel' => 'alternate',
                     '@type' => 'text/html',
                 ],
                 [
@@ -125,7 +125,7 @@ readonly final class AtomNormaliser implements NormalizerInterface
                 '@uri' => $this->urlGenerator->getHomeUrl(),
                 '#' => $this->generatorName,
             ],
-            'entries' => $post->getComments()->toArray(),
+            'entry' => $post->getComments()->toArray(),
         ];
     }
 }
