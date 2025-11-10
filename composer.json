@@ -11,7 +11,6 @@
         "doctrine/doctrine-bundle": "^2.18.1",
         "doctrine/doctrine-migrations-bundle": "^3.6.0",
         "doctrine/orm": "^3.5.3",
-        "eko/feedbundle": "^2.2",
         "ezyang/htmlpurifier": "^4.19",
         "illuminate/collections": "^12.37.0",
         "intervention/image": "^3.11.4",

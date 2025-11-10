@@ -66,6 +66,22 @@ services:
 
     Twig\Extension\StringLoaderExtension: ~
 
+    # Feed defaults
+    App\Extension\Serializer\RssNormaliser:
+        arguments:
+            $title: chaostangent.com
+            $description: More squirrels than sense
+            $generator: chaostangent.com
+            $language: en-GB
+            $updatePeriod: hourly
+            $updateFrequency: 1
+
+    App\Extension\Serializer\AtomNormaliser:
+        arguments:
+            $title: chaostangent.com
+            $subtitle: More squirrels than sense
+            $generatorName: chaostangent.com
+
 when@test:
     services:
         App\Comment\ChainDecider:

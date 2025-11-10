@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Post;
 use App\Entity\Tag;
+use App\Post\Feed;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\Criteria\FilterPostsCriteria;
@@ -13,21 +15,23 @@ use App\Repository\DTO\PostDTO;
 use App\Repository\DTO\TagDTO;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
-use Eko\FeedBundle\Feed\FeedManager;
 use Presta\SitemapBundle\Sitemap\Url\UrlConcrete as Sitemap;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Uid\Ulid;
 
 class DefaultController extends AbstractController
 {
     public const PER_PAGE = 5;
 
-    public function __construct(private readonly PostRepository $postRepository, private FeedManager $feedManager)
-    {
+    public function __construct(
+        private readonly PostRepository $postRepository,
+        private readonly SerializerInterface $serializer,
+    ) {
     }
 
     #[Route('/page/{page}/', name: 'home:paginated', requirements: [ 'page' => '\d+' ], methods: [ 'GET' ])]
@@ -169,11 +173,6 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    public function imageStrip(): Response
-    {
-        return new Response();
-    }
-
     public function filter(CategoryRepository $categoryRepository, TagRepository $tagRepository): Response
     {
         $calendar = $this->postRepository->getPostCalendar();
@@ -207,9 +206,10 @@ class DefaultController extends AbstractController
         $requestFormat = $request->getRequestFormat();
 
         if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
-            return new Response(
-                $this->feedManager->get('posts')->addFromArray($posts->pluck('post')->all())->render($requestFormat)
-            );
+            /** @var array<Post> $feedItems */
+            $feedItems = $posts->pluck('post')->all();
+
+            return new Response($this->serializer->serialize(new Feed($feedItems), $requestFormat));
         }
 
         $pageCount = ceil($this->postRepository->countFilteredPosts($criteria) / self::PER_PAGE);

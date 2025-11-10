@@ -6,12 +6,12 @@ namespace App\Entity;
 
 use App\Form\Model\PostModel;
 use App\Repository\PostRepository;
-use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
-use Eko\FeedBundle\Item\Writer\RoutedItemInterface;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Serializer\Attribute as Serializer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -24,7 +24,7 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Table(name: 'posts')]
 #[ORM\Index(name: 'post_alias_index', columns: [ 'alias' ])]
 #[ORM\Index(name: 'post_alias_date', columns: [ 'date' ])]
-class Post implements RoutedItemInterface
+class Post
 {
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME)]
@@ -276,7 +276,13 @@ class Post implements RoutedItemInterface
      */
     public function getComments(): Collection
     {
-        return $this->comments;
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('approved', true))
+            ->andWhere(Criteria::expr()->eq('spam', false))
+            ->orderBy([ 'created' => Order::Descending ])
+        ;
+
+        return $this->comments->matching($criteria);
     }
 
     /**
@@ -314,37 +320,19 @@ class Post implements RoutedItemInterface
         return $this->updated;
     }
 
-    public function getFeedItemTitle(): string
-    {
-        return $this->getFullTitle();
-    }
-
-    public function getFeedItemDescription(): string
-    {
-        // TODO need to trim this
-        return $this->getContent();
-    }
-
-    public function getFeedItemRouteName(): string
-    {
-        return 'post';
-    }
-
     /**
-     * @return array{year: string|null, month: string|null, alias: string}
+     * @return array<string>
      */
-    public function getFeedItemRouteParameters(): array
+    public function getDistinctCategoryAndTagNames(): array
     {
-        return $this->getRouteParams();
+        return array_unique(array_merge(
+            $this->categories->map(fn (Category $c): string => $c->getTitle())->toArray(),
+            $this->tags->map(fn (Tag $t): string => $t->getTag())->toArray()
+        ));
     }
 
-    public function getFeedItemUrlAnchor(): string
+    public function getAuthor(): string
     {
-        return '';
-    }
-
-    public function getFeedItemPubDate(): DateTime
-    {
-        return DateTime::createFromImmutable($this->date ?? new DateTimeImmutable('now'));
+        return 'chaostangent';
     }
 }

@@ -14,7 +14,7 @@ class PostTest extends TestCase
     public function testGetFullTitle(string $title, ?string $subtitle, string $expectedFeedItemTitle): void
     {
         $post = new Post($title, $subtitle, 'test-post', '', null, false, []);
-        $this->assertSame($expectedFeedItemTitle, $post->getFeedItemTitle());
+        $this->assertSame($expectedFeedItemTitle, $post->getFullTitle());
     }
 
     /**

@@ -7,21 +7,25 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\Model\CommentModel;
 use App\Form\Type\CommentType;
+use App\Post\Feed;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
 use DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class PostsController extends AbstractController
 {
     public function __construct(
         private readonly PostRepository $postRepository,
         private readonly CommentRepository $commentRepository,
-        private readonly TagRepository $tagRepository
+        private readonly TagRepository $tagRepository,
+        private readonly SerializerInterface $serializer
     ) {
     }
 
@@ -36,8 +40,15 @@ class PostsController extends AbstractController
     ], defaults: [ '_format' => 'atom' ], methods: [ 'GET' ])]
     public function post(
         #[MapEntity(expr: 'repository.getPost(alias, year, month)')]
-        Post $post
+        Post $post,
+        Request $request
     ): Response {
+        $requestFormat = $request->getRequestFormat();
+
+        if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
+            return new Response($this->serializer->serialize(new Feed($post), $requestFormat));
+        }
+
         $comments = $this->commentRepository->getTree($post);
         $commentModel = new CommentModel(formRendered: new DateTimeImmutable('now'));
         $commentForm = $this->createForm(CommentType::class, $commentModel);

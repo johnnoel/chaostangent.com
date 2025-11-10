@@ -59,18 +59,6 @@
             "migrations/.gitignore"
         ]
     },
-    "eko/feedbundle": {
-        "version": "2.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "1.2",
-            "ref": "18200f71f86a12023fcd952546dad61850806c22"
-        },
-        "files": [
-            "config/packages/eko_feed.yaml"
-        ]
-    },
     "nelmio/security-bundle": {
         "version": "3.5",
         "recipe": {
@@ -271,19 +259,6 @@
         "files": [
             "config/packages/routing.yaml",
             "config/routes.yaml"
-        ]
-    },
-    "symfony/translation": {
-        "version": "7.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "6.3",
-            "ref": "620a1b84865ceb2ba304c8f8bf2a185fbf32a843"
-        },
-        "files": [
-            "config/packages/translation.yaml",
-            "translations/.gitignore"
         ]
     },
     "symfony/twig-bundle": {

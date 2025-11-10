@@ -1,9 +1,0 @@
-eko_feed:
-    feeds:
-        posts:
-            title: 'chaostangent.com'
-            description: 'More squirrels than sense'
-            link:
-                route_name: home
-            encoding: 'utf-8'
-            author: 'John Noel'
