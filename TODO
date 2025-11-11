@@ -4,6 +4,8 @@
 
 # Phase X
 
+* Wrong image ratio for slideshows on mobile
+* Image strip negative margins so it stretches the full width
 * Missing comments?
 * OpenGraph cards
 * JSON-LD and microformats for blog posts
