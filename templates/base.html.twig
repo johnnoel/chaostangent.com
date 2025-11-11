@@ -24,12 +24,13 @@
     <link rel="icon" href="{{ asset('favicon-32x32.png') }}" sizes="32x32" type="image/png">
     <link rel="apple-touch-icon-precomposed" href="{{ asset('favicon-128x128.png') }}">
 
-    {% block share %}
-        <meta property="og:type" content="">
+    {% block opengraph %}
+        <meta property="og:type" content="website">
         <meta property="og:url" content="{{ app.request.uri }}">
-        <meta property="og:title" content="{{ block('title') }}{% if block('title') is not empty %} : {% endif %}chaostangent">
+        <meta property="og:title" content="{{ block('title') }}{% if block('title')|trim is not empty %} : {% endif %}chaostangent">
         <meta property="og:description" content="More squirrels than sense">
-        <meta property="og:image" content="{{ absolute_url(asset('img/favicon-128x128.png')) }}">
+        <meta property="og:image" content="{{ absolute_url(asset('favicon-128x128.png')) }}">
+        <meta property="twitter:card" content="summary">
     {% endblock %}
 
     {% block feeds %}

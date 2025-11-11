@@ -4,8 +4,6 @@
 
 # Phase X
 
-* Missing comments?
-* OpenGraph cards
 * JSON-LD and microformats for blog posts
 * Replace the slideshow with another library
 * General image quality? Contrast and sharpen maybe
@@ -19,6 +17,7 @@
 * Consistent image citation markup
 * Square images on the previous / next post block
 * Image lightbox / loupe
+* OpenGraph card image
 * Import posts
     - should regularly reset Doctrine
     - should import posts in alphabetical order

@@ -1,9 +1,26 @@
 {% extends 'base.html.twig' %}
+{% set post_link = path('post', post.routeParams) %}
 {% block title %}{{ post.fullTitle }}{% endblock %}
+
+{% block opengraph %}
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ absolute_url(post_link) }}">
+    <meta property="og:title" content="{{ post.fullTitle }} : chaostangent">
+    <meta property="og:description" content="More squirrels than sense">
+    <meta property="og:image" content="{{ absolute_url(asset('favicon-128x128.png')) }}">
+    <meta property="article:published_time" content="{{ post.date|date('Y-m-d\\TH:i:sP') }}">
+    <meta property="article:modified_time" content="{{ post.updated|date('Y-m-d\\TH:i:sP') }}">
+    {% if post.categories|length > 0 %}
+        <meta property="article:section" content="{{ post.categories[0].title }}">
+    {% endif %}
+    {% for t in tags|filter(t => t.postCount > 1) %}
+        <meta property="article:tag" content="{{ t.tag.tag }}">
+    {% endfor %}
+    <meta property="twitter:card" content="summary">
+{% endblock opengraph %}
 
 {% block body %}
     <article id="post-{{ post.id }}" class="blog-post" role="article">
-        {% set post_link = path('post', post.routeParams) %}
         <header>
             <h1><a href="{{ post_link }}" title="Permanent Link to {{ post.title|e('html_attr') }}" rel="bookmark">{{ post.title }}</a></h1>
             {% if post.subtitle is not empty %}<h2>{{ post.subtitle }}</h2>{% endif %}
