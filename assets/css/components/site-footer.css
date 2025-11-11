@@ -1,13 +1,18 @@
 .site-footer {
     max-width: var(--container-width);
-    margin: 0 auto 80px;
-    padding: 6px 12px 0;
-    display: flex;
-    flex-flow: row nowrap;
+    margin: 0 auto 58px;
+    padding: 6px 0 0;
     border-top: 1px solid var(--brand-lighter-grey);
+    display: flex;
+    flex-flow: row wrap;
+
+    @media (--lg) {
+        flex-wrap: nowrap;
+    }
 
     .socialmedia {
         flex: 1 0 auto;
+        padding: 0 0 12px;
 
         ul {
             display: flex;

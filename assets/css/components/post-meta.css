@@ -3,8 +3,11 @@
     border-bottom: 1px solid var(--brand-lighter-grey);
     padding: 12px 0;
     display: grid;
-    grid-template-columns: repeat(2, 50%);
     gap: 12px;
+
+    @media (--lg) {
+        grid-template-columns: repeat(2, 50%);
+    }
 
     h5 {
         font-size: 18px;

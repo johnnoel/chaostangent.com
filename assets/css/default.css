@@ -23,6 +23,7 @@ body {
     font: 14px/1 var(--font-body);
     color: var(--brand-dark-grey);
     background: var(--brand-beige);
+    padding: 0 12px;
 }
 
 h1, h2, h3, h4, h5, h6 {

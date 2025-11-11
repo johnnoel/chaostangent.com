@@ -1,5 +1,6 @@
 .site-header {
-    margin: 0 0 24px;
+    margin: 0 -12px 24px;
+    padding: 0 12px;
     border-bottom: 1px solid var(--brand-darker-beige);
 
     @media (--lg) {
@@ -42,6 +43,7 @@
 
     .nav {
         ul {
+            padding: 0;
             font-size: 0;
         }
 
@@ -51,6 +53,10 @@
             line-height: 1;
             margin: 0 0 0 16px;
             vertical-align: middle;
+
+            &:first-of-type {
+                margin-left: 0;
+            }
 
             @media (--lg) {
                 margin-left: 20px;

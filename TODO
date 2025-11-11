@@ -1,22 +1,15 @@
-# MVP
-
-* Desktop styles
-* Left & right container padding at mobile size
-
-## Posts
+# Posts
 
 2014/11/wrapup/ - storify story
-
-### Questions
-
-* Do I need to change relative links to absolute ones in the RSS feed?
 
 # Phase X
 
 * Missing comments?
+* OpenGraph cards
 * JSON-LD and microformats for blog posts
 * Replace the slideshow with another library
 * General image quality? Contrast and sharpen maybe
+* Webpack code splitting
 * Import ceetea.uk content
 * Import buttondown.email/johnnoel content
 * Web mentions
@@ -35,6 +28,7 @@
     - notify on pushover with links to mark as not spam etc.
     - make the time value a little harder to replay with
     - email on replies
+* Move absolute URL functionality for feeds into a Twig extension
 * Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
 * Twitter archive
 * Hitman Blood Money video subtitles
@@ -54,6 +48,8 @@
 
 * Non-square pixels
 * YouTube video rot
+* Serialization with RSS and Atom feeds
+* Media management, pre-generating variants rather than dynamically serving
 * Posts that have not aged well:
     - 2014/09/war-what-is-it-good-for/
     - 2012/06/dead-letter-office-does-modern-anime-suck/

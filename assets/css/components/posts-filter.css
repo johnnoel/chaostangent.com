@@ -4,13 +4,19 @@
     padding: 12px 0;
     border-top: 1px solid var(--brand-lighter-grey);
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     grid-template-rows: auto auto 1fr;
+
+    @media (--lg) {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
     h5 {
         font-size: 22px;
         padding: 0 0 12px;
-        grid-column: 1 / 3;
+
+        @media (--lg) {
+            grid-column: 1 / 3;
+        }
     }
 
     h6 {
@@ -20,7 +26,12 @@
     }
 
     .calendar {
-        grid-row: 2 / 4;
+        padding: 0 0 24px;
+
+        @media (--lg) {
+            grid-row: 2 / 4;
+            padding: 0;
+        }
 
         ul {
             list-style: none;
@@ -79,15 +90,23 @@
         }
     }
 
-    .tags ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        text-align: center;
+    .tags {
+        padding: 0 0 24px;
 
-        li {
-            display: inline-block;
-            margin: 0 4px;
+        @media (--lg) {
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+
+            li {
+                display: inline-block;
+                margin: 0 4px;
+            }
         }
     }
 }
