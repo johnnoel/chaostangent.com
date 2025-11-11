@@ -34,7 +34,7 @@ readonly final class AtomCommentNormaliser implements NormalizerInterface
                 '@rel' => 'alternate',
                 '@type' => 'text/html',
             ],
-            'id' => '',
+            'id' => $this->urlGenerator->getCommentUrl($comment),
             'updated' => $created,
             'published' => $created,
             'content' => [
