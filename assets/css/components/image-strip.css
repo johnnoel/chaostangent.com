@@ -1,8 +1,7 @@
 .image-strip {
     display: none;
-    width: 100%;
     overflow: hidden;
-    margin-bottom: 36px;
+    margin: 0 -12px 36px;
     padding: 0 0 2px;
     border-bottom: 1px solid var(--brand-lighter-grey);
 
@@ -14,17 +13,6 @@
         height: auto;
         aspect-ratio: 1;
     }
-
-    /*&-noimage {
-        a {
-            background: rgba(213, 64, 0, 0.6);
-
-            &:hover {
-                background: rgba(68, 68, 68, 1);
-            }
-        }
-    }
-    */
 
     > ul {
         display: grid;
