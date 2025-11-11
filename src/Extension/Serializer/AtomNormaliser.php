@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Extension\Serializer;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Post\Feed;
 use App\Post\FeedUrlGenerator;
 use DateTimeImmutable;
+use DateTimeZone;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -58,6 +60,11 @@ readonly final class AtomNormaliser implements NormalizerInterface
      */
     private function getPostsFeed(array $posts): array
     {
+        $updated = (count($posts) > 0) ?
+            max(array_map(fn (Post $p): DateTimeImmutable => $p->getUpdated(), $posts)) :
+            new DateTimeImmutable('now')
+        ;
+
         return [
             '@xmlns' => 'http://www.w3.org/2005/Atom',
             '@xmlns:thr' => 'http://purl.org/syndication/thread/1.0',
@@ -69,7 +76,7 @@ readonly final class AtomNormaliser implements NormalizerInterface
                 '@type' => 'text',
                 '#' => $this->subtitle,
             ],
-            'updated' => new DateTimeImmutable('now'),
+            'updated' => $updated->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s\Z'),
             'link' => [
                 [
                     '@href' => $this->urlGenerator->getHomeUrl(),
@@ -96,6 +103,12 @@ readonly final class AtomNormaliser implements NormalizerInterface
      */
     private function getCommentsFeed(Post $post): array
     {
+        $comments = $post->getComments()->toArray();
+        $updated = (count($comments) > 0) ?
+            max(array_map(fn (Comment $comment): DateTimeImmutable => $comment->getCreated(), $comments)) :
+            new DateTimeImmutable('now')
+        ;
+
         return [
             '@xmlns' => 'http://www.w3.org/2005/Atom',
             '@xmlns:thr' => 'http://purl.org/syndication/thread/1.0',
@@ -107,7 +120,7 @@ readonly final class AtomNormaliser implements NormalizerInterface
                 '@type' => 'text',
                 '#' => $this->subtitle,
             ],
-            'updated' => new DateTimeImmutable('now'),
+            'updated' => $updated->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s\Z'),
             'link' => [
                 [
                     '@href' => $this->urlGenerator->getPostCommentsRssUrl($post),
@@ -125,7 +138,7 @@ readonly final class AtomNormaliser implements NormalizerInterface
                 '@uri' => $this->urlGenerator->getHomeUrl(),
                 '#' => $this->generatorName,
             ],
-            'entry' => $post->getComments()->toArray(),
+            'entry' => $comments,
         ];
     }
 }

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Extension\Serializer;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Post\Feed;
 use App\Post\FeedUrlGenerator;
 use DateTimeImmutable;
+use DateTimeZone;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -67,7 +69,6 @@ readonly final class RssNormaliser implements NormalizerInterface
     {
         $channel = [
             'description' => $this->description,
-            'lastBuildDate' => (new DateTimeImmutable('now'))->format('D, d M Y H:i:s O'),
             'language' => $this->language,
             'sy:updatePeriod' => $this->updatePeriod,
             'sy:updateFrequency' => $this->updateFrequency,
@@ -75,29 +76,57 @@ readonly final class RssNormaliser implements NormalizerInterface
         ];
 
         if ($feed->items instanceof Post) {
-            $post = $feed->items;
-
-            return array_merge($channel, [
-                'title' => 'Response to : ' . $post->getFullTitle(),
-                'atom:link' => [
-                    '@href' => $this->urlGenerator->getPostCommentsRssUrl($post),
-                    '@rel' => 'self',
-                    '@type' => 'application/rss+xml',
-                ],
-                'link' => $this->urlGenerator->getPostUrl($post),
-                'item' => $post->getComments()->toArray(),
-            ]);
+            return array_merge($channel, $this->getCommentsChannel($feed->items));
         }
 
-        return array_merge($channel, [
+        return array_merge($channel, $this->getPostsChannel($feed->items));
+    }
+
+    /**
+     * @param array<Post> $posts
+     * @return array<string,mixed>
+     */
+    private function getPostsChannel(array $posts): array
+    {
+        $lastBuildDate = (count($posts) > 0) ?
+            max(array_map(fn (Post $p) => $p->getUpdated(), $posts)) :
+            new DateTimeImmutable('now')
+        ;
+
+        return [
             'title' => $this->title,
+            'lastBuildDate' => $lastBuildDate->setTimezone(new DateTimeZone('UTC'))->format('D, d M Y H:i:s O'),
             'atom:link' => [
                 '@href' => $this->urlGenerator->getRssUrl(),
                 '@rel' => 'self',
                 '@type' => 'application/rss+xml',
             ],
             'link' => $this->urlGenerator->getHomeUrl(),
-            'item' => $feed->items,
-        ]);
+            'item' => $posts,
+        ];
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    private function getCommentsChannel(Post $post): array
+    {
+        $comments = $post->getComments()->toArray();
+        $lastBuildDate = (count($comments) > 0) ?
+            max(array_map(fn (Comment $c): DateTimeImmutable => $c->getCreated(), $comments)) :
+            new DateTimeImmutable('now')
+        ;
+
+        return [
+            'title' => 'Response to : ' . $post->getFullTitle(),
+            'lastBuildDate' => $lastBuildDate->setTimezone(new DateTimeZone('UTC'))->format('D, d M Y H:i:s O'),
+            'atom:link' => [
+                '@href' => $this->urlGenerator->getPostCommentsRssUrl($post),
+                '@rel' => 'self',
+                '@type' => 'application/rss+xml',
+            ],
+            'link' => $this->urlGenerator->getPostUrl($post),
+            'item' => $comments,
+        ];
     }
 }

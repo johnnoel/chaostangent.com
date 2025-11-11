@@ -7,6 +7,7 @@ namespace App\Extension\Serializer;
 use App\Entity\Post;
 use App\Post\FeedUrlGenerator;
 use DateTimeImmutable;
+use DateTimeZone;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Twig\Environment;
@@ -29,12 +30,13 @@ final readonly class RssPostNormaliser implements NormalizerInterface
         }
 
         $post = $data;
+        $pubDate = $post->getDate() ?? new DateTimeImmutable('now');
 
         return [
             'title' => $post->getFullTitle(),
             'link' => $this->urlGenerator->getPostUrl($post),
             'comments' => $this->urlGenerator->getPostCommentsUrl($post),
-            'pubDate' => ($post->getDate() ?? new DateTimeImmutable('now'))->format('D, d M Y H:i:s O'),
+            'pubDate' => $pubDate->setTimezone(new DateTimeZone('UTC'))->format('D, d M Y H:i:s O'),
             'dc:creator' => $post->getAuthor(),
             'category' => $post->getDistinctCategoryAndTagNames(),
             'guid' => [

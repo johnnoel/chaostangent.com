@@ -6,6 +6,7 @@ namespace App\Extension\Serializer;
 
 use App\Entity\Comment;
 use App\Post\FeedUrlGenerator;
+use DateTimeZone;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -28,7 +29,7 @@ readonly final class RssCommentNormaliser implements NormalizerInterface
         return [
             'title' => 'By : ' . $comment->getAuthorName(),
             'link' => $this->urlGenerator->getCommentUrl($comment),
-            'pubDate' => $comment->getCreated()->format('D, d M Y H:i:s O'),
+            'pubDate' => $comment->getCreated()->setTimezone(new DateTimeZone('UTC'))->format('D, d M Y H:i:s O'),
             'dc:creator' => $comment->getAuthorName(),
             'guid' => [
                 '@isPermaLink' => 'false',
