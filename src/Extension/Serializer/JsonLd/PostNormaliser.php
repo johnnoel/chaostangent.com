@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Extension\Serializer\JsonLd;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\Tag;
 use App\Post\FeedUrlGenerator;
@@ -35,8 +36,8 @@ readonly final class PostNormaliser implements NormalizerInterface
             'headline' => $post->getFullTitle(),
             'name' => $post->getFullTitle(),
             'description' => $post->getSummary() ?? $post->getContent(),
-            'datePublished' => $post->getDate()?->format('Y-m-d'),
-            'dateModified' => $post->getUpdated()->format('Y-m-d'),
+            'datePublished' => $post->getDate()?->format('Y-m-d\\TH:i:sP'),
+            'dateModified' => $post->getUpdated()->format('Y-m-d\\TH:i:sP'),
             'url' => $this->urlGenerator->getPostUrl($post),
             'isPartOf' => [
                 '@type' => 'Blog',
@@ -49,7 +50,17 @@ readonly final class PostNormaliser implements NormalizerInterface
                 'name' => $post->getAuthor(),
             ],
             'commentCount' => $post->getComments()->count(),
-            'comment' => $post->getComments()->toArray(),
+            'comment' => array_map(fn (Comment $c): array => ([
+                '@type' => 'Comment',
+                '@id' => $this->urlGenerator->getCommentUrl($c),
+                'dateCreated' => $c->getCreated()->format('Y-m-d\\TH:i:sP'),
+                'description' => $c->getComment(),
+                'author' => [
+                    '@type' => 'Person',
+                    'name' => $c->getAuthorName(),
+                    'url' => $c->getAuthorUrl(),
+                ],
+            ]), $post->getComments()->toArray()),
         ];
     }
 
