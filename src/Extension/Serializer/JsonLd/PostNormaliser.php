@@ -10,12 +10,14 @@ use App\Entity\Tag;
 use App\Post\FeedUrlGenerator;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Twig\Environment;
 
 readonly final class PostNormaliser implements NormalizerInterface
 {
     public function __construct(
         private string $title,
         private FeedUrlGenerator $urlGenerator,
+        private Environment $twig,
     ) {
     }
 
@@ -35,7 +37,7 @@ readonly final class PostNormaliser implements NormalizerInterface
             '@id' => $this->urlGenerator->getPostUrl($post),
             'headline' => $post->getFullTitle(),
             'name' => $post->getFullTitle(),
-            'description' => $post->getSummary() ?? $post->getContent(),
+            'description' => $this->twig->createTemplate($post->getSummary() ?? $post->getContent())->render(),
             'datePublished' => $post->getDate()?->format('Y-m-d\\TH:i:sP'),
             'dateModified' => $post->getUpdated()->format('Y-m-d\\TH:i:sP'),
             'url' => $this->urlGenerator->getPostUrl($post),
