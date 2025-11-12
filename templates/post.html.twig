@@ -123,3 +123,9 @@
         </section>
     </article>
 {% endblock body %}
+
+{% block jsonld %}
+    <script type="application/ld+json">
+        {{ post|serialize(format = 'json-ld')|raw }}
+    </script>
+{% endblock jsonld %}

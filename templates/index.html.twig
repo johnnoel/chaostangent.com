@@ -41,3 +41,21 @@
         'pages': page_count,
     } %}
 {% endblock body %}
+
+{% block jsonld %}
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@id": "{{ absolute_url(path('home')) }}",
+          "@type": "Blog",
+          "name": "chaostangent.com",
+          "description": "More squirrels than sense",
+          "url": "{{ absolute_url(path('home')) }}",
+          "author": {
+            "@type": "Person",
+            "name": "chaostangent",
+            "url": "https://chaostangent.com"
+          }
+        }
+    </script>
+{% endblock jsonld %}

@@ -82,6 +82,10 @@ services:
             $subtitle: More squirrels than sense
             $generatorName: chaostangent.com
 
+    App\Extension\Serializer\JsonLd\PostNormaliser:
+        arguments:
+            $title: chaostangent.com
+
 when@test:
     services:
         App\Comment\ChainDecider:
