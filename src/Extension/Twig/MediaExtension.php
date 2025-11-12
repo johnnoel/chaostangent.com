@@ -107,19 +107,33 @@ class MediaExtension extends AbstractExtension
             ),
             $sources
         );
-        $slides = implode("\n", array_map([ $this, 'slide' ], $s));
-        $nav = implode("\n", array_map(fn (int $i) => <<<HTML
-            <button class="glide__bullet" data-glide-dir="=$i"></button>
+        $slides = implode('', array_map([ $this, 'slide' ], $s));
+        $nav = implode('', array_map(fn (int $i) => <<<HTML
+            <button class="bullet" data-idx="$i"></button>
         HTML, array_keys($s)));
         $svg = $this->packages->getUrl('icons.svg');
 
         return <<<HTML
-            <div class="image-slideshow glide">
-                <div class="track glide__track" data-glide-el="track">
-                    <div class="glide__slides">
+            <div class="image-slideshow">
+                <div class="track">
+                    <div class="container">
                         $slides
                     </div>
                 </div>
+
+                <div class="controls">
+                    <div class="bullets">$nav</div>
+
+                    <button class="toggle -pause">
+                        <svg class="play"><use xlink:href="$svg#icon-play"></use></svg>
+                        <svg class="pause"><use xlink:href="$svg#icon-pause"></use></svg>
+                    </button>
+                    <button class="left"><svg><use xlink:href="$svg#icon-back"></use></svg></button>
+                    <button class="right"><svg><use xlink:href="$svg#icon-forward"></use></svg></button>
+                </div>
+            </div>
+        HTML;
+        /*
                 <div class="bullets glide__bullets" data-glide-el="controls[nav]">
                     $nav
                 </div>
@@ -135,8 +149,7 @@ class MediaExtension extends AbstractExtension
                         <svg><use xlink:href="$svg#icon-forward"></use></svg>
                     </button>
                 </div>
-            </div>
-        HTML;
+         */
     }
 
     /**
@@ -303,7 +316,7 @@ class MediaExtension extends AbstractExtension
         $link = ($source->link !== null) ? $source->link : $this->fileHandler->getSourceUrl($source);
 
         return <<<HTML
-            <div class="glide__slide">
+            <div class="slide">
                 <a href="$link">
                     <picture>
                         $sources

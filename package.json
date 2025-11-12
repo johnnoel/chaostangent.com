@@ -45,8 +45,9 @@
         "baseline widely available"
     ],
     "dependencies": {
-        "@glidejs/glide": "^3.7.1",
         "chokidar": "^4.0.3",
+        "embla-carousel": "^8.6.0",
+        "embla-carousel-autoplay": "^8.6.0",
         "leaflet": "^1.9.4",
         "leaflet-gesture-handling": "^1.2.2",
         "leaflet.markercluster": "^1.5.3",
