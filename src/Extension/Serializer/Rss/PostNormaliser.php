@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Extension\Serializer;
+namespace App\Extension\Serializer\Rss;
 
 use App\Entity\Post;
 use App\Post\FeedUrlGenerator;
@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Twig\Environment;
 
 // minify generated html
-final readonly class RssPostNormaliser implements NormalizerInterface
+final readonly class PostNormaliser implements NormalizerInterface
 {
     public function __construct(
         private FeedUrlGenerator $urlGenerator,

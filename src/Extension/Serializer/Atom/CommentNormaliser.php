@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Extension\Serializer;
+namespace App\Extension\Serializer\Atom;
 
 use App\Entity\Comment;
 use App\Post\FeedUrlGenerator;
@@ -10,7 +10,7 @@ use DateTimeZone;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-readonly final class AtomCommentNormaliser implements NormalizerInterface
+readonly final class CommentNormaliser implements NormalizerInterface
 {
     public function __construct(private FeedUrlGenerator $urlGenerator)
     {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Extension\Serializer;
+namespace App\Extension\Serializer\Atom;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
-class AtomEncoder extends XmlEncoder
+class Encoder extends XmlEncoder
 {
     public const string FORMAT = 'atom';
 

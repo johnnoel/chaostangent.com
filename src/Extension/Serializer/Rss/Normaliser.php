@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Extension\Serializer;
+namespace App\Extension\Serializer\Rss;
 
 use App\Entity\Comment;
 use App\Entity\Post;
@@ -13,7 +13,7 @@ use DateTimeZone;
 use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-readonly final class RssNormaliser implements NormalizerInterface
+readonly final class Normaliser implements NormalizerInterface
 {
     public function __construct(
         private string $title,

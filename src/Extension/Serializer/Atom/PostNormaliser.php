@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Extension\Serializer;
+namespace App\Extension\Serializer\Atom;
 
 use App\Entity\Post;
 use App\Post\FeedUrlGenerator;
@@ -12,7 +12,7 @@ use InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Twig\Environment;
 
-readonly final class AtomPostNormaliser implements NormalizerInterface
+readonly final class PostNormaliser implements NormalizerInterface
 {
     public function __construct(
         private FeedUrlGenerator $urlGenerator,

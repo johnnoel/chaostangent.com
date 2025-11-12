@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Extension\Serializer;
+namespace App\Extension\Serializer\Rss;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
-class RssEncoder extends XmlEncoder
+class Encoder extends XmlEncoder
 {
     public const string FORMAT = 'rss';
 
