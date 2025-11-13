@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\Model\CommentModel;
 use App\Form\Type\CommentType;
+use App\Message\GenerateImages;
 use App\Message\ImportPost;
 use App\Post\Feed;
 use App\Repository\CommentRepository;
@@ -84,7 +85,9 @@ class PostsController extends AbstractController
         }
 
         try {
-            $this->handle(new ImportPost($request->getContent()));
+            /** @var Post $post */
+            $post = $this->handle(new ImportPost($request->getContent()));
+            $this->handle(new GenerateImages($post));
         } catch (Exception $e) {
             return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
