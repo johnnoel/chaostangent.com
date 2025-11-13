@@ -17,9 +17,12 @@ final class PostModel
     #[Assert\NotBlank(message: 'Please enter an alias')]
     public string $alias;
     public ?string $summary = null;
+    #[Assert\NotBlank(message: 'Please provide a published date/time')]
     public DateTimeImmutable $date;
+    #[Assert\NotBlank(message: 'Please provide a created date/time')]
     #[Assert\LessThanOrEqual('now', message: 'Please enter a created date in the past')]
     public DateTimeImmutable $created;
+    #[Assert\NotBlank(message: 'Please provide an updated date/time')]
     #[Assert\LessThanOrEqual('now', message: 'Please enter an updated date in the past')]
     public DateTimeImmutable $updated;
     public bool $published = false;

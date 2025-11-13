@@ -8,14 +8,17 @@ use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @implements DataTransformerInterface<array<Category>,array<string>>
  */
 readonly final class CategoriesTransformer implements DataTransformerInterface
 {
-    public function __construct(private CategoryRepository $categoryRepository)
-    {
+    public function __construct(
+        private CategoryRepository $categoryRepository,
+        private bool $createIfNotFound = true
+    ) {
     }
 
     /**
@@ -52,8 +55,24 @@ readonly final class CategoriesTransformer implements DataTransformerInterface
         $categoryTitles = array_unique(array_filter(array_map('trim', $value)));
         $categories = $this->categoryRepository->findManyByTitle($categoryTitles);
 
-        if ($categories->isEmpty()) {
-            throw new TransformationFailedException('No categories found for ' . var_export($value, true));
+        $foundCategories = $categories->map(fn (Category $category) => $category->getTitle())->all();
+        $notFound = array_diff($value, $foundCategories);
+
+        if (count($notFound) > 0) {
+            if (!$this->createIfNotFound) {
+                throw new TransformationFailedException(
+                    'Could not find existing categories for: ' . var_export($notFound, true)
+                );
+            }
+
+            $slugger = new AsciiSlugger();
+            $toCreate = array_map(
+                fn (string $t): Category => new Category($t, $slugger->slug($t)->toString()),
+                $notFound
+            );
+
+            $this->categoryRepository->createMany(...$toCreate);
+            $categories = $categories->merge($toCreate);
         }
 
         return $categories->all();

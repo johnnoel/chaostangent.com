@@ -36,12 +36,15 @@ class PostType extends AbstractType
         ])->add('date', DateTimeType::class, [
             'required' => true,
             'input' => 'datetime_immutable',
+            'invalid_message' => 'Please enter a valid date/time for date',
         ])->add('created', DateTimeType::class, [
             'required' => true,
             'input' => 'datetime_immutable',
+            'invalid_message' => 'Please enter a valid date/time for created',
         ])->add('updated', DateTimeType::class, [
             'required' => true,
             'input' => 'datetime_immutable',
+            'invalid_message' => 'Please enter a valid date/time for updated',
         ])->add('published', CheckboxType::class, [
             'required' => false,
         ])->add('extra', ExtraType::class)->add('image', ImageType::class, [

@@ -115,15 +115,31 @@ class TagsTransformerTest extends TestCase
             ->willReturn(new Collection())
         ;
 
-        $transformer = new TagsTransformer($tagRepository);
+        $transformer = new TagsTransformer($tagRepository, createIfNotFound: false);
 
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage("No tags found for array (\n  0 => 'Test 1',\n)");
+        $this->expectExceptionMessage("Could not find existing tags for: array (\n  0 => 'Test 1',\n)");
 
         $transformer->reverseTransform([ 'Test 1' ]);
     }
 
-    public function testReverseTransform(): void
+    public function testReverseTransformCreatesTags(): void
+    {
+        $tagRepository = $this->createMock(TagRepository::class);
+        $tagRepository->expects($this->once())
+            ->method('findOrCreate')
+            ->with([ 'Test 1' ])
+            ->willReturn(new Collection([]))
+        ;
+        $tagRepository->expects($this->once())
+            ->method('createMany')
+        ;
+
+        $transformer = new TagsTransformer($tagRepository);
+        $this->assertCount(1, $transformer->reverseTransform([ 'Test 1' ]));
+    }
+
+    public function testReverseTransformFindsTags(): void
     {
         $tag = new Tag('Test 1', 'test-1');
         $tagRepository = $this->createMock(TagRepository::class);
@@ -135,5 +151,19 @@ class TagsTransformerTest extends TestCase
 
         $transformer = new TagsTransformer($tagRepository);
         $this->assertSame([ $tag ], $transformer->reverseTransform([ 'Test 1' ]));
+    }
+
+    public function testReverseTransform(): void
+    {
+        $tag = new Tag('Test 1', 'test-1');
+        $tagRepository = $this->createMock(TagRepository::class);
+        $tagRepository->expects($this->once())
+            ->method('findOrCreate')
+            ->with([ 'Test 1', 'Test 2' ])
+            ->willReturn(new Collection([ $tag ]))
+        ;
+
+        $transformer = new TagsTransformer($tagRepository);
+        $this->assertCount(2, $transformer->reverseTransform([ 'Test 1', 'Test 2' ]));
     }
 }

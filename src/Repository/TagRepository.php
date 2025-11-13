@@ -24,6 +24,12 @@ class TagRepository extends ServiceEntityRepository
         parent::__construct($registry, Tag::class);
     }
 
+    public function createMany(Tag ...$tags): void
+    {
+        array_walk($tags, fn (Tag $t) => $this->getEntityManager()->persist($t));
+        $this->getEntityManager()->flush();
+    }
+
     /**
      * @return Collection<int,TagDTO>
      */

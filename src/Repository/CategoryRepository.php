@@ -20,6 +20,12 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function createMany(Category ...$categories): void
+    {
+        array_walk($categories, fn (Category $c) => $this->getEntityManager()->persist($c));
+        $this->getEntityManager()->flush();
+    }
+
     /**
      * @return Collection<int,Category>
      */

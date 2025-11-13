@@ -54,7 +54,12 @@ readonly final class ImportPostHandler
             throw new Exception('Unable to parse frontmatter');
         }
 
-        $post = $this->postRepository->getPost($alias, intval($date->format('Y')), intval($date->format('m')));
+        $post = $this->postRepository->getPost(
+            alias: $alias,
+            year: intval($date->format('Y')),
+            month: intval($date->format('m')),
+            published: null
+        );
 
         if ($post === null) {
             $post = Post::create($postModel);

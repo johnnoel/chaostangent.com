@@ -85,26 +85,26 @@ class PostRepository extends ServiceEntityRepository
         return intval($qb->getQuery()->getSingleScalarResult());
     }
 
-    public function getPost(string $alias, int $year, int $month): ?Post
+    public function getPost(string $alias, int $year, int $month, ?bool $published = true): ?Post
     {
-        $dql = <<<DQL
-            SELECT p FROM App\Entity\Post p
-            WHERE (p.published = :published)
-                AND (p.alias = :alias)
-                AND (DATE_EXTRACT('MONTH', p.date) = :month)
-                AND (DATE_EXTRACT('YEAR', p.date) = :year)
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-
-        /** @var Post|null */
-        return $query->setMaxResults(1)
-            ->setParameter('published', true)
+        $qb = $this->createQueryBuilder('p');
+        $qb->where('p.alias = :alias')
+            ->andWhere("DATE_EXTRACT('MONTH', p.date) = :month")
+            ->andWhere("DATE_EXTRACT('YEAR', p.date) = :year")
+            ->setMaxResults(1)
             ->setParameter('alias', $alias)
             ->setParameter('month', $month)
             ->setParameter('year', $year)
-            ->getOneOrNullResult()
         ;
+
+        if ($published !== null) {
+            $qb->andWhere('p.published = :published')
+                ->setParameter('published', $published)
+            ;
+        }
+
+        /** @var Post|null */
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     /**

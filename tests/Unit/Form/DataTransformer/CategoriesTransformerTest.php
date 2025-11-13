@@ -115,15 +115,31 @@ class CategoriesTransformerTest extends TestCase
             ->willReturn(new Collection())
         ;
 
-        $transformer = new CategoriesTransformer($categoryRepository);
+        $transformer = new CategoriesTransformer($categoryRepository, createIfNotFound: false);
 
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage("No categories found for array (\n  0 => 'Test 1',\n)");
+        $this->expectExceptionMessage("Could not find existing categories for: array (\n  0 => 'Test 1',\n)");
 
         $transformer->reverseTransform([ 'Test 1' ]);
     }
 
-    public function testReverseTransform(): void
+    public function testReverseTransformCreatesCategories(): void
+    {
+        $categoryRepository = $this->createMock(CategoryRepository::class);
+        $categoryRepository->expects($this->once())
+            ->method('findManyByTitle')
+            ->with([ 'Test 1' ])
+            ->willReturn(new Collection())
+        ;
+        $categoryRepository->expects($this->once())
+            ->method('createMany')
+        ;
+
+        $transformer = new CategoriesTransformer($categoryRepository);
+        $this->assertCount(1, $transformer->reverseTransform([ 'Test 1' ]));
+    }
+
+    public function testReverseTransformFindsCategories(): void
     {
         $category = new Category('Test 1', 'test-1', null);
         $categoryRepository = $this->createMock(CategoryRepository::class);
@@ -135,5 +151,22 @@ class CategoriesTransformerTest extends TestCase
 
         $transformer = new CategoriesTransformer($categoryRepository);
         $this->assertSame([ $category ], $transformer->reverseTransform([ 'Test 1' ]));
+    }
+
+    public function testReverseTransform(): void
+    {
+        $category = new Category('Test 1', 'test-1', null);
+        $categoryRepository = $this->createMock(CategoryRepository::class);
+        $categoryRepository->expects($this->once())
+            ->method('findManyByTitle')
+            ->with([ 'Test 1', 'Test 2' ])
+            ->willReturn(new Collection([ $category ]))
+        ;
+        $categoryRepository->expects($this->once())
+            ->method('createMany')
+        ;
+
+        $transformer = new CategoriesTransformer($categoryRepository);
+        $this->assertCount(2, $transformer->reverseTransform([ 'Test 1', 'Test 2' ]));
     }
 }

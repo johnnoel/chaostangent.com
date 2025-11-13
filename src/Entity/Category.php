@@ -40,7 +40,7 @@ class Category
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'categories')]
     private Collection $posts;
 
-    public function __construct(string $title, string $alias, ?Category $parent)
+    public function __construct(string $title, string $alias, ?Category $parent = null)
     {
         $this->id = new Ulid();
         $this->title = $title;

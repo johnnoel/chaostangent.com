@@ -82,11 +82,11 @@ class ImportPostHandlerTest extends WebTestCase
             'no alias' => [ array_diff_key($defaultData, [ 'alias' => '' ]), 'Please enter an alias' ],
             'invalid date' => [
                 array_merge($defaultData, [ 'date' => 'test!"£$%' ]),
-                'Please enter a valid date and time',
+                'Please enter a valid date/time for date',
             ],
             'invalid created' => [
                 array_merge($defaultData, [ 'created' => 'test!"£$%' ]),
-                'Please enter a valid date and time',
+                'Please enter a valid date/time for created',
             ],
             'future created' => [
                 array_merge($defaultData, [ 'created' => '2099-01-01T00:00:00+00:00' ]),
@@ -94,7 +94,7 @@ class ImportPostHandlerTest extends WebTestCase
             ],
             'invalid updated' => [
                 array_merge($defaultData, [ 'updated' => 'test!"£$%' ]),
-                'Please enter a valid date and time',
+                'Please enter a valid date/time for updated',
             ],
             'future updated' => [
                 array_merge($defaultData, [ 'updated' => '2099-01-01T00:00:00+00:00' ]),
