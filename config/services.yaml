@@ -36,7 +36,7 @@ services:
         arguments:
             $key: '%env(APP_SECRET)%'
 
-    App\Image\SourceFactory:
+    App\Image\Action\ActionFactory:
         arguments:
             $resizeAliases: '%resize_aliases%'
 

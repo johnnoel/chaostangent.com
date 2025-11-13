@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace App\Image;
 
-use InvalidArgumentException;
+use App\Image\Action\ActionFactory;
 
 readonly final class SourceFactory
 {
-    /**
-     * @param array<string,array{w?: int, h?: int}> $resizeAliases
-     */
-    public function __construct(private array $resizeAliases)
+    public function __construct(private ActionFactory $actionFactory)
     {
     }
 
@@ -20,26 +17,8 @@ readonly final class SourceFactory
      */
     public function createSource(string $src, array $actions, ?string $caption = null, ?string $link = null): Source
     {
-        $actions = array_map([ $this, 'createAction' ], $actions);
+        $actions = array_map([ $this->actionFactory, 'createAction' ], $actions);
 
         return new Source($src, $actions, $caption, link: $link);
-    }
-
-    public function createAction(string $actionString): Action
-    {
-        if (!str_contains($actionString, ':')) {
-            throw new InvalidArgumentException('Invalid action format');
-        }
-
-        [ $action, $parameters ] = explode(':', $actionString, 2);
-
-        // rewrite parameters into the w x h format
-        if ($action === 'resize' && array_key_exists($parameters, $this->resizeAliases)) {
-            $alias = $this->resizeAliases[$parameters];
-            $parameters = sprintf('%sx%s', $alias['w'] ?? null, $alias['h'] ?? null);
-        }
-
-        // devtodo return specific action classes, i.e. new CropAction, new ResizeAction
-        return new Action($action, $parameters);
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Image;
 
+use App\Image\Action\Action;
+use App\Image\Action\Crop;
+use App\Image\Action\Resize;
 use Illuminate\Contracts\Support\Arrayable;
 use Stringable;
 
@@ -62,24 +65,23 @@ readonly final class Source implements Stringable, Arrayable
         $h = null;
 
         foreach ($this->actions as $action) {
-            if ($action->action === 'crop') {
-                [ 'w' => $w, 'h' => $h ] = $action->getCropParameters();
-            } elseif ($action->action === 'resize') {
-                $resizeParams = $action->getResizeParameters();
-
-                if (array_key_exists('w', $resizeParams) && array_key_exists('h', $resizeParams)) {
-                    $w = $resizeParams['w'];
-                    $h = $resizeParams['h'];
-                } elseif (array_key_exists('w', $resizeParams) && $h !== null) {
-                    $h = intval(round(($h / $w) * $resizeParams['w']));
-                    $w = $resizeParams['w'];
-                } elseif (array_key_exists('w', $resizeParams)) {
-                    $w = $resizeParams['w'];
-                } elseif (array_key_exists('h', $resizeParams) && $w !== null) {
-                    $w = intval(round(($w / $h) * $resizeParams['h']));
-                    $h = $resizeParams['h'];
-                } elseif (array_key_exists('h', $resizeParams)) {
-                    $h = $resizeParams['h'];
+            if ($action instanceof Crop) {
+                $w = $action->width;
+                $h = $action->height;
+            } elseif ($action instanceof Resize) {
+                if ($action->width !== null && $action->height !== null) {
+                    $w = $action->width;
+                    $h = $action->height;
+                } elseif ($action->width !== null && $h !== null) {
+                    $h = intval(round(($h / $w) * $action->width));
+                    $w = $action->width;
+                } elseif ($action->width !== null) {
+                    $w = $action->width;
+                } elseif ($action->height !== null && $w !== null) {
+                    $w = intval(round(($w / $h) * $action->height));
+                    $h = $action->height;
+                } elseif ($action->height !== null) {
+                    $h = $action->height;
                 }
             }
         }

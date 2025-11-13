@@ -4,8 +4,6 @@
 
 # Phase X
 
-* Webpack code splitting
-* General image quality? Contrast and sharpen maybe
 * Import ceetea.uk content
 * Import buttondown.email/johnnoel content
 * Web mentions
@@ -17,6 +15,7 @@
 * Image lightbox / loupe
 * OpenGraph card image
 * Microformats for blog posts
+* Timer / countdown for slideshow autoplay
 * Import posts
     - should regularly reset Doctrine
     - should import posts in alphabetical order
@@ -46,7 +45,8 @@
 
 * Non-square pixels
 * YouTube video rot
-* Serialization with RSS and Atom feeds
+* Serialization with RSS and Atom feeds, JSON-LD
+* Trying to use libvips for sharpening
 * Media management, pre-generating variants rather than dynamically serving
 * Posts that have not aged well:
     - 2014/09/war-what-is-it-good-for/

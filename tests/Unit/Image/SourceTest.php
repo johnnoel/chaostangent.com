@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Image;
 
-use App\Image\Action;
+use App\Image\Action\Action;
+use App\Image\Action\Crop;
+use App\Image\Action\Resize;
 use App\Image\Source;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -29,12 +31,12 @@ class SourceTest extends TestCase
      */
     public static function getTargetSizeProvider(): array
     {
-        $resizeOne = new Action('resize', '123x456');
-        $resizeTwo = new Action('resize', '456x123');
-        $resizeWidthOnly = new Action('resize', '123x');
-        $resizeHeightOnly = new Action('resize', 'x456');
-        $crop = new Action('crop', '1x2+3+4');
-        $bigCrop = new Action('crop', '1280x720+0+0');
+        $resizeOne = new Resize(123, 456);
+        $resizeTwo = new Resize(456, 123);
+        $resizeWidthOnly = new Resize(123, null);
+        $resizeHeightOnly = new Resize(null, 456);
+        $crop = new Crop(1, 2, 3, 4);
+        $bigCrop = new Crop(1280, 720, 0, 0);
 
         return [
             'no actions' => [ [], [] ],
@@ -55,8 +57,8 @@ class SourceTest extends TestCase
     public function testIsSameAs(Source $compare, bool $expected): void
     {
         $source = new Source('Test source', [
-            new Action('crop', '1x2+3+4'),
-            new Action('resize', '123x456'),
+            new Crop(1, 2, 3, 4),
+            new Resize(123, 456),
         ], 'Test caption');
 
         $this->assertSame($expected, $source->isSameAs($compare));
@@ -69,35 +71,35 @@ class SourceTest extends TestCase
     public static function isSameAsProvider(): array
     {
         $same = new Source('Test source', [
-            new Action('crop', '1x2+3+4'),
-            new Action('resize', '123x456'),
+            new Crop(1, 2, 3, 4),
+            new Resize(123, 456),
         ], 'Test caption');
 
         $reorderedActions = new Source('Test source', [
-            new Action('resize', '123x456'),
-            new Action('crop', '1x2+3+4'),
+            new Resize(123, 456),
+            new Crop(1, 2, 3, 4),
         ], 'Test caption');
 
         $noActions = new Source('Test source', [], 'Test caption');
 
         $modifiedAction = new Source('Test source', [
-            new Action('crop', '1x2+3+5'),
-            new Action('resize', '123x456'),
+            new Crop(1, 2, 3, 5),
+            new Resize(123, 456),
         ], 'Test caption');
 
         $differentSource = new Source('Test source 2', [
-            new Action('crop', '1x2+3+4'),
-            new Action('resize', '123x456'),
+            new Crop(1, 2, 3, 4),
+            new Resize(123, 456),
         ], 'Test caption');
 
         $differentCaption = new Source('Test source', [
-            new Action('crop', '1x2+3+4'),
-            new Action('resize', '123x456'),
+            new Crop(1, 2, 3, 4),
+            new Resize(123, 456),
         ], 'Test caption 2');
 
         $nullCaption = new Source('Test source', [
-            new Action('crop', '1x2+3+4'),
-            new Action('resize', '123x456'),
+            new Crop(1, 2, 3, 4),
+            new Resize(123, 456),
         ], null);
 
         return [

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Post\Processor;
 
 use App\Entity\Post;
-use App\Image\Action;
+use App\Image\Action\Crop;
+use App\Image\Action\Resize;
 use App\Image\CropGuesser;
 use App\Image\FileHandler;
 use App\Image\Source;
@@ -89,12 +90,10 @@ readonly final class GuessOldImageCrop implements Processor
         try {
             $crop = $cropGuesser->guessCrop($fullSrcPath, $fullCropPath);
 
-            $ret = new Source($srcPath, [
-                new Action('crop', sprintf('%dx%d+%d+%d', $crop['w'], $crop['h'], $crop['x'], $crop['y'])),
-                new Action('resize', sprintf('%dx%d', $cropSizes[0], $cropSizes[1])),
+            return new Source($srcPath, [
+                new Crop($crop['w'], $crop['h'], $crop['x'], $crop['y']),
+                new Resize($cropSizes[0], $cropSizes[1]),
             ]);
-
-            return $ret;
         } catch (\Exception) {
         }
 

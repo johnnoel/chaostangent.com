@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
-use App\Image\Action;
+use App\Image\Action\Contrast;
+use App\Image\Action\Crop;
+use App\Image\Action\Resize;
+use App\Image\Action\Sharpen;
 use App\Image\FileHandler;
 use App\Message\TransformImage;
 use Intervention\Image\Decoders\FilePathImageDecoder;
@@ -34,12 +37,18 @@ readonly final class TransformImageHandler
         $image = $this->imageManager->read($sourcePath, FilePathImageDecoder::class);
 
         foreach ($source->actions as $action) {
-            switch ($action->action) {
-                case 'crop':
+            switch ($action::class) {
+                case Crop::class:
                     $this->crop($action, $image);
                     break;
-                case 'resize':
+                case Resize::class:
                     $this->resize($action, $image);
+                    break;
+                case Sharpen::class:
+                    $image->sharpen($action->amount);
+                    break;
+                case Contrast::class:
+                    $image->contrast($action->level);
                     break;
             }
         }
@@ -49,27 +58,23 @@ readonly final class TransformImageHandler
         ;
     }
 
-    private function crop(Action $action, ImageInterface $image): void
+    private function crop(Crop $crop, ImageInterface $image): void
     {
-        [ 'w' => $w, 'h' => $h, 'x' => $x, 'y' => $y ] = $action->getCropParameters();
-
-        if ($w === 0 || $h === 0) {
+        if ($crop->width === 0 || $crop->height === 0) {
             return;
         }
 
-        $image->crop($w, $h, $x, $y);
+        $image->crop($crop->width, $crop->height, $crop->x, $crop->y);
     }
 
-    private function resize(Action $action, ImageInterface $image): void
+    private function resize(Resize $resize, ImageInterface $image): void
     {
-        $resizeParams = $action->getResizeParameters();
-
-        if (count($resizeParams) === 2) {
-            $image->resize($resizeParams['w'], $resizeParams['h']);
+        if ($resize->width !== null && $resize->height !== null) {
+            $image->resize($resize->width, $resize->height);
 
             return;
         }
 
-        $image->scale($resizeParams['w'] ?? null, $resizeParams['h'] ?? null);
+        $image->scale($resize->width, $resize->height);
     }
 }

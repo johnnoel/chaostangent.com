@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Image;
 
-use App\Image\Action;
+use App\Image\Action\Crop;
+use App\Image\Action\Resize;
 use App\Image\FileHandler;
 use App\Image\MimeType;
 use App\Image\Source;
@@ -84,17 +85,17 @@ class FileHandlerTest extends TestCase
             'many dir' => [ 'test/1/2/3/', new Source('', []), 'test/1/2/3/-0x0.jpg' ],
             'mix' => [
                 'test/1/2/3/',
-                new Source('test456.webp', [ new Action('resize', '123x456') ]),
+                new Source('test456.webp', [ new Resize(123, 456) ]),
                 'test/1/2/3/test456-123x456.jpg',
             ],
             'width only' => [
                 'test/1/2/3/',
-                new Source('test456.webp', [ new Action('resize', '123x') ]),
+                new Source('test456.webp', [ new Resize(123, null) ]),
                 'test/1/2/3/test456-123x0.jpg',
             ],
             'height only' => [
                 'test/1/2/3/',
-                new Source('test456.webp', [ new Action('resize', 'x456') ]),
+                new Source('test456.webp', [ new Resize(null, 456) ]),
                 'test/1/2/3/test456-0x456.jpg',
             ],
         ];
@@ -116,8 +117,8 @@ class FileHandlerTest extends TestCase
     {
         $empty = new Source('', []);
         $noActions = new Source('test123.jxl', []);
-        $cropAction = new Source('test123.png', [ new Action('crop', '0x0+0+0') ]);
-        $resizeAction = new Source('test123.avif', [ new Action('resize', '123x456') ]);
+        $cropAction = new Source('test123.png', [ new Crop(0, 0, 0, 0) ]);
+        $resizeAction = new Source('test123.avif', [ new Resize(123, 456) ]);
 
         return [
             'empty' => [ $empty, '-0x0.jpg' ],
@@ -138,7 +139,7 @@ class FileHandlerTest extends TestCase
         $variantFile = __DIR__ . '/../../data/file1-100x100.jpg';
         touch($variantFile, $variantModified->getTimestamp());
 
-        $source = new Source('file1', [ new Action('resize', '100x100') ]);
+        $source = new Source('file1', [ new Resize(100, 100) ]);
         $mimeType = MimeType::JPEG;
 
         $fileHandler = new FileHandler(__DIR__ . '/../../data/', '');
@@ -168,7 +169,7 @@ class FileHandlerTest extends TestCase
         $variantFile = __DIR__ . '/../../data/file1-100x100.jpg';
         touch($variantFile, (new DateTimeImmutable('now'))->getTimestamp());
 
-        $source = new Source('file1', [ new Action('resize', '100x100') ]);
+        $source = new Source('file1', [ new Resize(100, 100) ]);
         $mimeType = MimeType::JPEG;
 
         $fileHandler = new FileHandler(__DIR__ . '/../../data/', '');
@@ -182,7 +183,7 @@ class FileHandlerTest extends TestCase
         $sourceFile = __DIR__ . '/../../data/file1';
         touch($sourceFile, (new DateTimeImmutable('now'))->getTimestamp());
 
-        $source = new Source('file1', [ new Action('resize', '100x100') ]);
+        $source = new Source('file1', [ new Resize(100, 100) ]);
         $mimeType = MimeType::JPEG;
 
         $fileHandler = new FileHandler(__DIR__ . '/../../data/', '');
