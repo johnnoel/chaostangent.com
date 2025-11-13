@@ -7,26 +7,35 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\Model\CommentModel;
 use App\Form\Type\CommentType;
+use App\Message\ImportPost;
 use App\Post\Feed;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
+use App\Security\ApiKeyChecker;
 use DateTimeImmutable;
+use Exception;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\HandleTrait;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class PostsController extends AbstractController
 {
+    use HandleTrait;
+
     public function __construct(
         private readonly PostRepository $postRepository,
         private readonly CommentRepository $commentRepository,
         private readonly TagRepository $tagRepository,
-        private readonly SerializerInterface $serializer
+        private readonly SerializerInterface $serializer,
+        MessageBusInterface $messageBus
     ) {
+        $this->messageBus = $messageBus;
     }
 
     #[Route('/{year}/{month}/{alias}/', name: 'post', requirements: [
@@ -63,5 +72,23 @@ class PostsController extends AbstractController
             'prev_post' => $prevPost,
             'next_post' => $nextPost,
         ]);
+    }
+
+    #[Route('/import', name: 'post:import', defaults: [ '_format' => 'json' ], methods: [ 'POST' ])]
+    public function import(ApiKeyChecker $apiKeyChecker, Request $request): Response
+    {
+        // devtodo Move to securitybundle
+        $apiKey = strval($request->headers->get('X-Api-Key'));
+        if (!$apiKeyChecker->isValid($apiKey)) {
+            throw $this->createAccessDeniedException(); // devtodo not sure 403 is correct here
+        }
+
+        try {
+            $this->handle(new ImportPost($request->getContent()));
+        } catch (Exception $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+
+        return new Response(status: Response::HTTP_OK);
     }
 }

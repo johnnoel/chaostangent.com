@@ -103,7 +103,7 @@ class PostRepository extends ServiceEntityRepository
             ->setParameter('alias', $alias)
             ->setParameter('month', $month)
             ->setParameter('year', $year)
-            ->getSingleResult()
+            ->getOneOrNullResult()
         ;
     }
 

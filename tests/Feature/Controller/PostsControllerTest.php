@@ -6,6 +6,7 @@ namespace App\Tests\Feature\Controller;
 
 use App\Controller\PostsController;
 use App\Factory\PostFactory;
+use App\Tests\Feature\MessageHandler\ImportPostHandlerTest;
 use App\Tests\WebTestCase;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -86,6 +87,74 @@ class PostsControllerTest extends WebTestCase
             'incorrect year' => [ '2024/06/test-post-1/' ],
             'incorrect month' => [ '2025/07/test-post-1/' ],
             'unpublished' => [ '2025/06/test-post-2/' ],
+        ];
+    }
+
+    public function testImportNoApiKey(): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/import');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testImportInvalidApiKey(): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/import', server: [
+            'HTTP_X_API_KEY' => 'invalid-api-key',
+        ]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /** @see ImportPostHandlerTest */
+    #[DataProvider('importProvider')]
+    public function testImport(string $requestContent, int $expectedResponseCode, string $expectedResponse): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/import', server: [
+            'HTTP_X_API_KEY' => 'test-api-key', // see .env.test
+        ], content: $requestContent);
+
+        $this->assertResponseStatusCodeSame($expectedResponseCode);
+        $this->assertStringContainsString($expectedResponse, strval($client->getResponse()->getContent()));
+    }
+
+    /**
+     * @return array<string,array<mixed>>
+     */
+    public static function importProvider(): array
+    {
+        $invalid = <<<TWIG
+        {#---
+        title: 'Test'
+        ---#}
+        Content
+        TWIG;
+
+        $valid = <<<TWIG
+        {#---
+        title: 'Test'
+        date: '2025-11-13T13:07:00+00:00'
+        created: '2025-11-13T13:07:00+00:00'
+        updated: '2025-11-13T13:07:00+00:00'
+        alias: 'test-post-1'
+        image:
+            src: one.png
+            actions: []
+        extra: {}
+        tags: []
+        categories: null
+        ---#}
+        Content
+        TWIG;
+
+        return [
+            'nothing' => [ '', 400, 'No frontmatter found' ],
+            'invalid' => [ $invalid, 400, 'Expected argument of type "DateTimeImmutable"' ],
+            'valid' => [ $valid, 200, '' ],
         ];
     }
 }

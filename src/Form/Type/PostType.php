@@ -48,8 +48,10 @@ class PostType extends AbstractType
             'required' => false,
         ])->add('categories', CategoriesType::class, [
             'required' => false,
+            'invalid_message' => 'Please enter valid categories',
         ])->add('tags', TagsType::class, [
             'required' => false,
+            'invalid_message' => 'Please enter valid tags',
         ])->add('content', TextareaType::class, [
             'required' => true,
             'trim' => true,
