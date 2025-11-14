@@ -100,3 +100,8 @@ when@test:
         App\Comment\StaticDecider:
             arguments:
                 $isSpam: false
+
+        Intervention\Image\Interfaces\ImageManagerInterface:
+            factory: [ 'Intervention\Image\ImageManager', 'withDriver' ]
+            arguments:
+                - 'Intervention\Image\Drivers\Gd\Driver'
