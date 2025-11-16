@@ -67,7 +67,7 @@ readonly final class TagsTransformer implements DataTransformerInterface
 
             $slugger = new AsciiSlugger();
             $toCreate = array_map(
-                fn (string $t): Tag => new Tag($t, $slugger->slug($t)->toString()),
+                fn (string $t): Tag => new Tag($t, $slugger->slug($t)->lower()->toString()),
                 $notFound
             );
 

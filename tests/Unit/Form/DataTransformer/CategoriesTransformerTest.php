@@ -136,7 +136,9 @@ class CategoriesTransformerTest extends TestCase
         ;
 
         $transformer = new CategoriesTransformer($categoryRepository);
-        $this->assertCount(1, $transformer->reverseTransform([ 'Test 1' ]));
+        $categories = $transformer->reverseTransform([ 'Test 1' ]);
+        $this->assertCount(1, $categories);
+        $this->assertSame('test-1', $categories[0]->getAlias());
     }
 
     public function testReverseTransformFindsCategories(): void
@@ -167,6 +169,8 @@ class CategoriesTransformerTest extends TestCase
         ;
 
         $transformer = new CategoriesTransformer($categoryRepository);
-        $this->assertCount(2, $transformer->reverseTransform([ 'Test 1', 'Test 2' ]));
+        $categories = $transformer->reverseTransform([ 'Test 1', 'Test 2' ]);
+        $this->assertCount(2, $categories);
+        $this->assertSame('test-2', $categories[1]->getAlias());
     }
 }

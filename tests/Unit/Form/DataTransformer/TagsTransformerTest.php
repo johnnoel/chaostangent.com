@@ -136,7 +136,9 @@ class TagsTransformerTest extends TestCase
         ;
 
         $transformer = new TagsTransformer($tagRepository);
-        $this->assertCount(1, $transformer->reverseTransform([ 'Test 1' ]));
+        $tags = $transformer->reverseTransform([ 'Test 1' ]);
+        $this->assertCount(1, $tags);
+        $this->assertSame('test-1', $tags[0]->getAlias());
     }
 
     public function testReverseTransformFindsTags(): void
@@ -164,6 +166,8 @@ class TagsTransformerTest extends TestCase
         ;
 
         $transformer = new TagsTransformer($tagRepository);
-        $this->assertCount(2, $transformer->reverseTransform([ 'Test 1', 'Test 2' ]));
+        $tags = $transformer->reverseTransform([ 'Test 1', 'Test 2' ]);
+        $this->assertCount(2, $tags);
+        $this->assertSame('test-2', $tags[1]->getAlias());
     }
 }
