@@ -163,6 +163,7 @@ class Comment
     public function markAsSpam(): void
     {
         $this->spam = true;
+        $this->approved = false;
     }
 
     public function markAsUnapproved(): void

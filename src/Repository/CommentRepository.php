@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Repository\Criteria\FilterCommentsCriteria;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NoResultException;
@@ -34,6 +35,42 @@ class CommentRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($comment);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return Collection<int,Comment>
+     */
+    public function filterComments(FilterCommentsCriteria $criteria): Collection
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->orderBy('c.created', 'DESC')
+            ->setMaxResults($criteria->perPage)
+            ->setFirstResult(($criteria->page - 1) * $criteria->perPage)
+        ;
+
+        if ($criteria->post !== null) {
+            $qb->join('c.post', 'p')
+                ->andWhere($qb->expr()->eq('c.post', ':post'))
+                ->setParameter('post', $criteria->post)
+            ;
+        }
+
+        if ($criteria->spam !== null) {
+            $qb->andWhere($qb->expr()->eq('c.spam', ':spam'))
+                ->setParameter('spam', $criteria->spam)
+            ;
+        }
+
+        if ($criteria->approved !== null) {
+            $qb->andWhere($qb->expr()->eq('c.approved', ':approved'))
+                ->setParameter('approved', $criteria->approved)
+            ;
+        }
+
+        /** @var array<Comment> $result */
+        $result = $qb->getQuery()->getResult();
+
+        return new Collection($result);
     }
 
     /**
