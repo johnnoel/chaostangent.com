@@ -106,71 +106,93 @@ class CategoriesTransformerTest extends TestCase
         $this->assertSame([], $transformer->reverseTransform($value)); /** @phpstan-ignore argument.type */
     }
 
+    /**
+     * @param array<string> $values
+     */
+    #[DataProvider('reverseTransformProvider')]
+    public function testReverseTransform(array $values, int $expectedFound, int $expectedCreated): void
+    {
+        $found = new Category('Test Found', 'test-found', null);
+        $subFound = new Category('Test Sub Found', 'test-found/test-sub-found', $found);
+        $alsoFound = new Category('Test Also Found', 'test-also-found', null);
+        $subAlsoFound = new Category('Test Sub Also Found', 'test-also-found/test-sub-also-found', $alsoFound);
+
+        $categoryRepository = $this->createMock(CategoryRepository::class);
+        $categoryRepository->method('findOneBy')
+            ->willReturnMap([
+                [ [ 'alias' => 'test-found' ], $found ],
+                [ [ 'alias' => 'test-not-found' ], null ],
+                [ [ 'alias' => 'test-found/test-sub-found' ], $subFound ],
+                [ [ 'alias' => 'test-found/test-sub-not-found' ], null ],
+                [ [ 'alias' => 'test-not-found/test-sub-not-found' ], null ],
+                [ [ 'alias' => 'test-also-found' ], $alsoFound ],
+                [ [ 'alias' => 'test-also-not-found' ], null ],
+                [ [ 'alias' => 'test-also-found/test-sub-also-found' ], $subAlsoFound ],
+            ])
+        ;
+
+        $categoryRepository->expects($this->exactly($expectedCreated > 0 ? 1 : 0))
+            ->method('createMany')
+        ;
+
+        $transformer = new CategoriesTransformer($categoryRepository, createIfNotFound: true);
+        $categories = $transformer->reverseTransform($values);
+        $this->assertCount(count($values), $categories);
+
+        $actuallyFound = 0;
+        $actuallyCreated = 0;
+        foreach ($categories as $category) {
+            if (in_array($category, [ $found, $alsoFound, $subFound, $subAlsoFound ], true)) {
+                $actuallyFound++;
+            } else {
+                $actuallyCreated++;
+            }
+        }
+
+        $this->assertSame($actuallyFound, $expectedFound);
+        $this->assertSame($actuallyCreated, $expectedCreated);
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    public static function reverseTransformProvider(): array
+    {
+        return [
+            'Top level, found' => [ [ 'Test Found' ], 1, 0 ],
+            'Top level, not found' => [ [ 'Test Not Found' ], 0, 1 ],
+            'Two levels, both found' => [ [ 'Test Found / Test Sub Found' ], 1, 0 ],
+            'Two levels, parent found' => [ [ 'Test Found / Test Sub Not Found' ], 0, 1 ],
+            'Two levels, neither found' => [ [ 'Test Not Found / Test Sub Not Found' ], 0, 1 ],
+            'Multiple top level, all found' => [ [ 'Test Found', 'Test Also Found' ], 2, 0 ],
+            'Multiple top level, one not found' => [ [ 'Test Found', 'Test Not Found' ], 1, 1 ],
+            'Multiple top level, both not found' => [ [ 'Test Not Found', 'Test Also Not Found' ], 0, 2 ],
+            'Multiple two level, all found' => [
+                [ 'Test Found / Test Sub Found', 'Test Also Found / Test Sub Also Found' ], 2, 0,
+            ],
+            'Multiple two level, sub not found' => [
+                [ 'Test Found / Test Sub Not Found', 'Test Also Found / Test Sub Also Not Found' ], 0, 2,
+            ],
+            'Multiple two level, common ancestor' => [
+                [ 'Test Found / Test Sub Not Found', 'Test Found / Test Sub Also Not Found' ], 0, 2,
+            ],
+        ];
+    }
+
     public function testReverseTransformNoCategories(): void
     {
         $categoryRepository = $this->createMock(CategoryRepository::class);
         $categoryRepository->expects($this->once())
-            ->method('findManyByTitle')
-            ->with([ 'Test 1' ])
-            ->willReturn(new Collection())
+            ->method('findOneBy')
+            ->with([ 'alias' => 'test-1' ])
+            ->willReturn(null)
         ;
 
         $transformer = new CategoriesTransformer($categoryRepository, createIfNotFound: false);
 
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage("Could not find existing categories for: array (\n  0 => 'Test 1',\n)");
+        $this->expectExceptionMessage("Could not find existing categories for: Test 1");
 
         $transformer->reverseTransform([ 'Test 1' ]);
-    }
-
-    public function testReverseTransformCreatesCategories(): void
-    {
-        $categoryRepository = $this->createMock(CategoryRepository::class);
-        $categoryRepository->expects($this->once())
-            ->method('findManyByTitle')
-            ->with([ 'Test 1' ])
-            ->willReturn(new Collection())
-        ;
-        $categoryRepository->expects($this->once())
-            ->method('createMany')
-        ;
-
-        $transformer = new CategoriesTransformer($categoryRepository);
-        $categories = $transformer->reverseTransform([ 'Test 1' ]);
-        $this->assertCount(1, $categories);
-        $this->assertSame('test-1', $categories[0]->getAlias());
-    }
-
-    public function testReverseTransformFindsCategories(): void
-    {
-        $category = new Category('Test 1', 'test-1', null);
-        $categoryRepository = $this->createMock(CategoryRepository::class);
-        $categoryRepository->expects($this->once())
-            ->method('findManyByTitle')
-            ->with([ 'Test 1' ])
-            ->willReturn(new Collection([ $category ]))
-        ;
-
-        $transformer = new CategoriesTransformer($categoryRepository);
-        $this->assertSame([ $category ], $transformer->reverseTransform([ 'Test 1' ]));
-    }
-
-    public function testReverseTransform(): void
-    {
-        $category = new Category('Test 1', 'test-1', null);
-        $categoryRepository = $this->createMock(CategoryRepository::class);
-        $categoryRepository->expects($this->once())
-            ->method('findManyByTitle')
-            ->with([ 'Test 1', 'Test 2' ])
-            ->willReturn(new Collection([ $category ]))
-        ;
-        $categoryRepository->expects($this->once())
-            ->method('createMany')
-        ;
-
-        $transformer = new CategoriesTransformer($categoryRepository);
-        $categories = $transformer->reverseTransform([ 'Test 1', 'Test 2' ]);
-        $this->assertCount(2, $categories);
-        $this->assertSame('test-2', $categories[1]->getAlias());
     }
 }

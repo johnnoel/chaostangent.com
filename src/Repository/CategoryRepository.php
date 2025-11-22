@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\Persistence\ManagerRegistry;
 use Illuminate\Support\Collection;
 
@@ -59,26 +58,5 @@ class CategoryRepository extends ServiceEntityRepository
         ))->sort(fn (Category $a, Category $b): int => $a->getTitle() <=> $b->getTitle());
 
         return $topLevelCategories;
-    }
-
-    /**
-     * @param array<string> $titles
-     * @return Collection<int,Category>
-     */
-    public function findManyByTitle(array $titles): Collection
-    {
-        $dql = <<<DQL
-            SELECT c
-            FROM App\Entity\Category c
-            WHERE c.title IN (:titles)
-        DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql);
-        /** @var array<Category> $categories */
-        $categories = $query->setParameter('titles', $titles, ArrayParameterType::STRING)
-            ->getResult()
-        ;
-
-        return new Collection($categories);
     }
 }
