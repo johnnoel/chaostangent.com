@@ -16,6 +16,11 @@
 * OpenGraph card image
 * Microformats for blog posts
 * Timer / countdown for slideshow autoplay
+* Sort out categories
+    - If a category is in a subcategory, does that automatically make it in the parent category?
+    - If so, then alter the posts to only be in the subcategory and tweak the category queries to include subcategories
+        - consider using the ltree type for easier queries
+    - Add a "hierarchy title" e.g. "Anime > 3 Episode Taste Test" for easy output
 * Import posts
     - should regularly reset Doctrine
     - should import posts in alphabetical order

@@ -5,6 +5,8 @@
 
     header {
         grid-column: 1 / 3;
+        display: flex;
+        flex-flow: column nowrap;
 
         @media (--lg) {
             grid-column: 2 / 3;
@@ -15,6 +17,7 @@
             border-bottom: 1px solid var(--brand-lighter-grey);
             padding-bottom: 4px;
             margin: 0 0 20px;
+            order: 2;
 
             @media (--lg) {
                 font-size: 36px;
@@ -35,6 +38,7 @@
             font-size: 18px;
             font-weight: 400;
             color: var(--brand-grey);
+            order: 3;
 
             @media (--lg) {
                 font-size: 22px;
@@ -43,6 +47,20 @@
 
         h1 + h2 {
             margin: -10px 0 12px;
+        }
+
+        .categories {
+            order: 1;
+            font-size: 12px;
+            padding: 0 0 12px;
+
+            a {
+                text-decoration: none;
+
+                &:hover, &:focus {
+                    text-decoration: underline;
+                }
+            }
         }
     }
 

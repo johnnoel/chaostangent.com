@@ -248,7 +248,10 @@ class PostRepository extends ServiceEntityRepository
             $result = $query->setParameter('offset', $i)
                 ->getResult();
 
-            yield from array_map(fn (array $row): PostDTO => new PostDTO($row[0], $row['last_modified']), $result);
+            yield from array_map(
+                fn (array $row): PostDTO => new PostDTO($row[0], lastModified: $row['last_modified']),
+                $result
+            );
         }
     }
 

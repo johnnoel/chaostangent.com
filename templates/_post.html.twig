@@ -5,6 +5,12 @@
     <header>
         <h1><a href="{{ post_link }}" title="Permanent link to {{ p.post.title|e('html_attr') }}" rel="bookmark">{{ p.post.title }}</a></h1>
         {% if p.post.subtitle is not empty %}<h2>{{ p.post.subtitle }}</h2>{% endif %}
+        {% if p.post.categories|length > 0 %}
+            <div class="categories">
+                <span class="_vh">Categorised in: </span>
+                {% for category in p.post.categories %}{% if not loop.first %}, {% endif %}<a href="{{ path('category', { 'alias': category.alias }) }}">{{ category.title }}</a>{% endfor %}
+            </div>
+        {% endif %}
     </header>
 
     <aside>
@@ -16,6 +22,8 @@
 
     <div class="summary content">
         {{ include(template_from_string(p.post.summary is null ? p.post.content : p.post.summary)) }}
-        <p><a href="{{ post_link }}#more-{{ p.post.id }}">Read the rest of this entry</a></p>
+        {% if p.post.summary is not null %}
+            <p><a href="{{ post_link }}#more-{{ p.post.id }}">Read the rest of this post</a></p>
+        {% endif %}
     </div>
 </article>

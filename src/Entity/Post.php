@@ -92,6 +92,7 @@ class Post
     #[ORM\JoinTable(name: 'posts2categories')]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'category_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\OrderBy([ 'title' => 'ASC' ])]
     private Collection $categories;
 
     /** @var Collection<int,Tag> */
