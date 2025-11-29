@@ -34,6 +34,7 @@
 * Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
 * Twitter archive
 * Hitman Blood Money video subtitles
+* JPEG XL support
 * Create a tree view of post -> image / media like
     2025/09/test-post
     - 2025/09/test.jpg (thumbnails, slideshow etc.)
@@ -53,6 +54,8 @@
 * Serialization with RSS and Atom feeds, JSON-LD
 * Trying to use libvips for sharpening
 * Media management, pre-generating variants rather than dynamically serving
+* Limiting received data from a request in Guzzle
+* Webmention and pingback reservations
 * Posts that have not aged well:
     - 2014/09/war-what-is-it-good-for/
     - 2012/06/dead-letter-office-does-modern-anime-suck/
