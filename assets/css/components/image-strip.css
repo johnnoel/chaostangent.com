@@ -26,6 +26,10 @@
         position: relative;
         overflow: hidden;
 
+        &.-noimage {
+            background: linear-gradient(to top, #B93800, var(--brand-light-orange) 70%, var(--brand-beige));
+        }
+
         &:nth-child(9n+2), &:nth-child(9n+5), &:nth-child(9n+7) {
             img {
                 width: 314px;

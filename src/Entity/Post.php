@@ -251,6 +251,15 @@ class Post
         return $this->extra;
     }
 
+    public function hasImage(): bool
+    {
+        if (!is_array($this->image)) {
+            return false;
+        }
+
+        return (array_key_exists('src', $this->image) && $this->image['src'] !== null);
+    }
+
     /**
      * @return Image|null
      */

@@ -10,7 +10,7 @@
         <nav class="image-strip">
             <ul>
                 {% for p in image_strip %}
-                    <li class="post{% if p.post.extra.image|default('') is empty %} -no-image{% endif %}">
+                    <li class="post{% if not p.post.hasImage() %} -noimage{% endif %}">
                         <a href="{{ path('post', p.post.routeParams) }}" title="{{ p.post.fullTitle }}">
                             <div class="titles">
                                 <h5>{{ p.post.title }}</h5>
@@ -19,10 +19,8 @@
                                 {% endif %}
                             </div>
                         </a>
-                        {% if p.post.image is not empty %}
+                        {% if p.post.hasImage() %}
                             {{ picture(p.post.image) }}
-                        {% else %}
-                            <picture><img src="img/placeholder.png" alt=""></picture>
                         {% endif %}
                     </li>
                 {% endfor %}
