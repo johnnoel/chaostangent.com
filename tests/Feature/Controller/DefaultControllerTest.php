@@ -103,34 +103,6 @@ class DefaultControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(404);
     }
 
-    public function testYearRss(): void
-    {
-        $client = static::createClient();
-        $posts = PostFactory::new()->published()->many(2)->create([
-            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-27'),
-        ]);
-
-        $client->request('GET', '/2025/feed/');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseFormatSame('rss');
-        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
-    }
-
-    public function testYearAtom(): void
-    {
-        $client = static::createClient();
-        $posts = PostFactory::new()->published()->many(2)->create([
-            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-27'),
-        ]);
-
-        $client->request('GET', '/2025/feed/atom/');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseFormatSame('atom');
-        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
-    }
-
     public function testYearPaginated(): void
     {
         $client = static::createClient();
@@ -175,34 +147,6 @@ class DefaultControllerTest extends WebTestCase
         $client->request('GET', '/2025/05/');
 
         $this->assertResponseStatusCodeSame(404);
-    }
-
-    public function testMonthRss(): void
-    {
-        $client = static::createClient();
-        $posts = PostFactory::new()->published()->many(2)->create([
-            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-24'),
-        ]);
-
-        $client->request('GET', '/2025/06/feed/');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseFormatSame('rss');
-        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
-    }
-
-    public function testMonthAtom(): void
-    {
-        $client = static::createClient();
-        $posts = PostFactory::new()->published()->many(2)->create([
-            'date' => DateTimeImmutable::createFromFormat('Y-m-d', '2025-06-24'),
-        ]);
-
-        $client->request('GET', '/2025/06/feed/atom/');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseFormatSame('atom');
-        $this->assertStringContainsString($posts[0]->getTitle(), strval($client->getResponse()->getContent()));
     }
 
     public function testMonthPaginated(): void

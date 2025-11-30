@@ -58,12 +58,6 @@ class DefaultController extends AbstractController
     #[Route('/{year}/page/{page}/', name: 'year:paginated', requirements: [
         'year' => '\d{4}', 'page' => '\d+',
     ], methods: [ 'GET' ])]
-    #[Route('/{year}/feed/', name: 'year:rss', requirements: [ 'year' => '\d{4}' ], defaults: [
-        'page' => 1, '_format' => 'rss',
-    ], methods: [ 'GET' ])]
-    #[Route('/{year}/feed/atom/', name: 'year:atom', requirements: [ 'year' => '\d{4}' ], defaults: [
-        'page' => 1, '_format' => 'atom',
-    ], methods: [ 'GET' ])]
     #[Route('/{year}/', name: 'year', requirements: [ 'year' => '\d{4}' ], defaults: [
         'page' => 1,
     ], methods: [ 'GET' ])]
@@ -77,12 +71,6 @@ class DefaultController extends AbstractController
     #[Route('/{year}/{month}/page/{page}/', name: 'month:paginated', requirements: [
         'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])', 'page' => '\d+',
     ], methods: [ 'GET' ])]
-    #[Route('/{year}/{month}/feed/', name: 'month:rss', requirements: [
-        'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])',
-    ], defaults: [ 'page' => 1, '_format' => 'rss' ], methods: [ 'GET' ])]
-    #[Route('/{year}/{month}/feed/atom/', name: 'month:atom', requirements: [
-        'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])',
-    ], defaults: [ 'page' => 1, '_format' => 'atom' ], methods: [ 'GET' ])]
     #[Route('/{year}/{month}/', name: 'month', requirements: [
         'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])',
     ], defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
