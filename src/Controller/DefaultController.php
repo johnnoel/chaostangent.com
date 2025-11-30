@@ -27,6 +27,7 @@ use Symfony\Component\Uid\Ulid;
 class DefaultController extends AbstractController
 {
     public const PER_PAGE = 5;
+    public const PER_PAGE_FEEDS = 20;
 
     public function __construct(
         private readonly PostRepository $postRepository,
@@ -42,7 +43,7 @@ class DefaultController extends AbstractController
     ], methods: [ 'GET' ])]
     public function index(Request $request, int $page = 1): Response
     {
-        $criteria = new FilterPostsCriteria(page: $page, perPage: self::PER_PAGE);
+        $criteria = new FilterPostsCriteria(page: $page, perPage: $this->getPerPage($request));
         $templateParams = [];
 
         if ($page === 1) {
@@ -63,7 +64,7 @@ class DefaultController extends AbstractController
     ], methods: [ 'GET' ])]
     public function year(int $year, Request $request, int $page = 1): Response
     {
-        $criteria = new FilterPostsCriteria(year: $year, page: $page, perPage: self::PER_PAGE);
+        $criteria = new FilterPostsCriteria(year: $year, page: $page, perPage: $this->getPerPage($request));
 
         return $this->posts($criteria, 'year.html.twig', $request, [ 'year' => $year ]);
     }
@@ -76,7 +77,12 @@ class DefaultController extends AbstractController
     ], defaults: [ 'page' => 1 ], methods: [ 'GET' ])]
     public function month(int $year, int $month, Request $request, int $page = 1): Response
     {
-        $criteria = new FilterPostsCriteria(month: $month, year: $year, page: $page, perPage: self::PER_PAGE);
+        $criteria = new FilterPostsCriteria(
+            month: $month,
+            year: $year,
+            page: $page,
+            perPage: $this->getPerPage($request)
+        );
 
         return $this->posts($criteria, 'year-month.html.twig', $request, [
             'year' => $year,
@@ -96,7 +102,7 @@ class DefaultController extends AbstractController
     #[Route('/category/{alias:category}/', name: 'category', requirements: [ 'alias' => '.+' ], methods: [ 'GET' ])]
     public function category(Category $category, Request $request, int $page = 1): Response
     {
-        $criteria = new FilterPostsCriteria(category: $category, page: $page, perPage: self::PER_PAGE);
+        $criteria = new FilterPostsCriteria(category: $category, page: $page, perPage: $this->getPerPage($request));
 
         return $this->posts($criteria, 'category.html.twig', $request, [
             'category' => $category,
@@ -115,7 +121,7 @@ class DefaultController extends AbstractController
     ], methods: [ 'GET' ])]
     public function tag(Tag $tag, Request $request, int $page = 1): Response
     {
-        $criteria = new FilterPostsCriteria(tag: $tag, page: $page, perPage: self::PER_PAGE);
+        $criteria = new FilterPostsCriteria(tag: $tag, page: $page, perPage: $this->getPerPage($request));
 
         return $this->posts($criteria, 'tag.html.twig', $request, [
             'tag' => $tag,
@@ -174,6 +180,15 @@ class DefaultController extends AbstractController
             'tags' => $tags,
             'max_post_count' => $maxPostCount,
         ]);
+    }
+
+    private function getPerPage(Request $request): int
+    {
+        if (in_array($request->getRequestFormat(), [ 'rss', 'atom' ], strict: true)) {
+            return self::PER_PAGE_FEEDS;
+        }
+
+        return self::PER_PAGE;
     }
 
     /**
