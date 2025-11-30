@@ -67,8 +67,8 @@ class ListCommentsCommand extends Command
 
             if ($answer === 's' || $answer === 'a') {
                 $q = new Question('Index');
-                $q->setValidator(function (string $a): int {
-                    if (intval($a) < 1 || intval($a) > 10) {
+                $q->setValidator(function (mixed $a): int {
+                    if (!is_string($a) || intval($a) < 1 || intval($a) > 10) {
                         throw new RuntimeException('Index should be between 1 and 10');
                     }
 

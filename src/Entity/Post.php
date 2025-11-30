@@ -257,7 +257,7 @@ class Post
             return false;
         }
 
-        return (array_key_exists('src', $this->image) && $this->image['src'] !== null);
+        return array_key_exists('src', $this->image) && $this->image['src'] !== null;
     }
 
     /**
