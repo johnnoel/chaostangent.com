@@ -7,6 +7,8 @@ parameters:
         poster: { w: 544 }
         square: { w: 320, h: 320 }
 
+    asset_manifest_path: '%kernel.project_dir%/public/assets/manifest.json'
+
 services:
     _defaults:
         autowire: true
@@ -31,6 +33,10 @@ services:
                 - '@App\Comment\AkismetDecider'
 
     App\Comment\SpamDecider: '@App\Comment\ChainDecider'
+
+    App\Controller\PostsController:
+        arguments:
+            $assetManifestPath: '%asset_manifest_path%'
 
     App\Extension\Twig\MediaExtension:
         arguments:

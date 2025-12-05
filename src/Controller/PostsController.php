@@ -35,7 +35,8 @@ class PostsController extends AbstractController
         private readonly CommentRepository $commentRepository,
         private readonly TagRepository $tagRepository,
         private readonly SerializerInterface $serializer,
-        MessageBusInterface $messageBus
+        private readonly string $assetManifestPath,
+        MessageBusInterface $messageBus,
     ) {
         $this->messageBus = $messageBus;
     }
@@ -59,6 +60,7 @@ class PostsController extends AbstractController
             'public' => true,
             'must_revalidate' => true,
             'last_modified' => $postDto->lastModified,
+            'etag' => $this->calculateETag($postDto->lastModified),
         ]);
 
         if ($response->isNotModified($request)) {
@@ -106,5 +108,11 @@ class PostsController extends AbstractController
         }
 
         return new Response(status: Response::HTTP_OK);
+    }
+
+    private function calculateETag(DateTimeImmutable $postLastModified): string
+    {
+        // need to take into account whether assets have changed otherwise old, possibly missing, ones will be loaded
+        return hash_file('crc32', $this->assetManifestPath) . hash('crc32', $postLastModified->format('U'));
     }
 }

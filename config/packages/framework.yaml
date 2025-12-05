@@ -4,7 +4,7 @@ framework:
     secret: '%env(APP_SECRET)%'
     session: true
     assets:
-        json_manifest_path: '%kernel.project_dir%/public/assets/manifest.json'
+        json_manifest_path: '%asset_manifest_path%'
 
     #fragments: true
 
