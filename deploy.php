@@ -45,4 +45,5 @@ task('deploy:vendors', function (): void {
     // don't need vendors when the code package is pre-installed
 });
 
+after('deploy:cache:clear', 'database:migrate');
 after('deploy:failed', 'deploy:unlock');
