@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="tweets-list">
+        <h1>Tweets</h1>
+        {% if page == 1 %}
+            <p class="description">I closed my Twitter account shortly after its transition to "X" and its descent into a hellsite rapidly accelerated. Before I closed it though I exported all of my data which is reproduced here.</p>
+        {% endif %}
+
+        {% for tweet in tweets %}
+            <article class="tweet">
+                <p>{{ tweet.fullText }}</p>
+                <dl class="metadata">
+                    <dt>Original ID</dt>
+                    <dd>{{ tweet.id }}</dd>
+                    <dt>Created at</dt>
+                    <dd>
+                        <a href="{{ path('tweet', { 'id': tweet.id }) }}">
+                            <time datetime="{{ tweet.createdAt|date('Y-m-d\\TH:i:sP') }}">{{ tweet.createdAt|date('Y-m-d H:i:s') }}</time>
+                        </a>
+                    </dd>
+                </dl>
+            </article>
+        {% endfor %}
+    </div>
+
+    {% include '_pagination.html.twig' with {
+        'route': 'tweets:paginated',
+        'page_1_route': 'tweets',
+        'route_params': [],
+        'page': page,
+        'pages': page_count
+    } %}
+{% endblock body %}

@@ -12,6 +12,7 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class CommentFactory extends PersistentProxyObjectFactory
 {
+    #[\Override]
     public static function class(): string
     {
         return Comment::class;
@@ -34,6 +35,7 @@ final class CommentFactory extends PersistentProxyObjectFactory
     /**
      * @return array<mixed>
      */
+    #[\Override]
     protected function defaults(): array
     {
         return [

@@ -13,6 +13,8 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            $assetManifestPath: '%asset_manifest_path%'
 
     App\:
         resource: '../src/'
@@ -33,10 +35,6 @@ services:
                 - '@App\Comment\AkismetDecider'
 
     App\Comment\SpamDecider: '@App\Comment\ChainDecider'
-
-    App\Controller\PostsController:
-        arguments:
-            $assetManifestPath: '%asset_manifest_path%'
 
     App\Extension\Twig\MediaExtension:
         arguments:

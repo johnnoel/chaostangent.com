@@ -28,6 +28,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class PostsController extends AbstractController
 {
+    use CalculatesETags;
     use HandleTrait;
 
     public function __construct(
@@ -35,9 +36,10 @@ class PostsController extends AbstractController
         private readonly CommentRepository $commentRepository,
         private readonly TagRepository $tagRepository,
         private readonly SerializerInterface $serializer,
-        private readonly string $assetManifestPath,
+        string $assetManifestPath,
         MessageBusInterface $messageBus,
     ) {
+        $this->assetManifestPath = $assetManifestPath;
         $this->messageBus = $messageBus;
     }
 
@@ -108,11 +110,5 @@ class PostsController extends AbstractController
         }
 
         return new Response(status: Response::HTTP_OK);
-    }
-
-    private function calculateETag(DateTimeImmutable $postLastModified): string
-    {
-        // need to take into account whether assets have changed otherwise old, possibly missing, ones will be loaded
-        return hash_file('crc32', $this->assetManifestPath) . hash('crc32', $postLastModified->format('U'));
     }
 }

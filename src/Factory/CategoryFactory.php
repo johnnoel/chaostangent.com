@@ -12,6 +12,7 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 final class CategoryFactory extends PersistentProxyObjectFactory
 {
+    #[\Override]
     public static function class(): string
     {
         return Category::class;
@@ -20,6 +21,7 @@ final class CategoryFactory extends PersistentProxyObjectFactory
     /**
      * @return array<mixed>
      */
+    #[\Override]
     protected function defaults(): array|callable
     {
         return [
