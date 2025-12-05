@@ -2,6 +2,7 @@ import * as L from 'leaflet';
 import { GestureHandling } from 'leaflet-gesture-handling';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-gesture-handling/dist/leaflet-gesture-handling.css';
+import scrollMonitor from 'scrollmonitor';
 
 const markerIcons = [
     L.divIcon({
@@ -27,6 +28,11 @@ const markerIcons = [
 L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling);
 
 export default function(container: HTMLElement): void {
+    const watcher = scrollMonitor.create(container);
+    watcher.enterViewport(() => createMap(container), true);
+}
+
+function createMap(container: HTMLElement): void {
     let points: Point[] = [];
     let routes: RoutePoint[][] = [];
 
