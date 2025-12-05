@@ -4,7 +4,6 @@
 
 # Phase X
 
-* When plotting routes mark start and end, maybe with points in between with the time / altitude
 * Twitter archive
 * Web mentions
 * Redirect anime-1 tag to anime
@@ -16,6 +15,7 @@
 * Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
 * Timer / countdown for slideshow autoplay
 * Last modified and e-tag headers for listing and about pages
+* When plotting routes maybe plot points in between with the time / altitude
 * Sort out categories
     - If a category is in a subcategory, does that automatically make it in the parent category?
     - If so, then alter the posts to only be in the subcategory and tweak the category queries to include subcategories

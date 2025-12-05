@@ -75,7 +75,18 @@ function createMap(container: HTMLElement): void {
     });
 
     routes.forEach(route => {
-        const polyline = L.polyline(route, { color: 'red' }).addTo(map);
+        const polyline = L.polyline(route, { color: '#D54000' }).addTo(map);
+
+        L.marker(route[0], { icon: markerIcons[1] }).bindPopup(
+            '<p>Start: <b>' + route[0].when + '</b><br>Altitude: <b>' + route[0].alt + 'm</b></p>',
+            { className: 'popup' }
+        ).addTo(map);
+
+        L.marker(route[route.length - 1], { icon: markerIcons[0] }).bindPopup(
+            '<p>Finish: <b>' + route[route.length - 1].when + '</b><br>Altitude: <b>' + route[route.length - 1].alt + 'm</b></p>',
+            { className: 'popup' }
+        ).addTo(map);
+
         map.fitBounds(polyline.getBounds());
     });
 }
