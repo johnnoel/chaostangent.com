@@ -11,6 +11,7 @@ use App\Message\GenerateImages;
 use App\Message\ImportPost;
 use App\Post\Feed;
 use App\Repository\CommentRepository;
+use App\Repository\DTO\PostDTO;
 use App\Repository\PostRepository;
 use App\Repository\TagRepository;
 use App\Security\ApiKeyChecker;
@@ -49,11 +50,23 @@ class PostsController extends AbstractController
         'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])',
     ], defaults: [ '_format' => 'atom' ], methods: [ 'GET' ])]
     public function post(
-        #[MapEntity(expr: 'repository.getPost(alias, year, month)')]
-        Post $post,
+        #[MapEntity(class: Post::class, expr: 'repository.getPost(alias, year, month)')]
+        PostDTO $postDto,
         Request $request
     ): Response {
+        $response = (new Response())->setCache([
+            'max_age' => 60 * 60,
+            'public' => true,
+            'must_revalidate' => true,
+            'last_modified' => $postDto->lastModified,
+        ]);
+
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
         $requestFormat = $request->getRequestFormat();
+        $post = $postDto->post;
 
         if (in_array($requestFormat, [ 'rss', 'atom' ], strict: true)) {
             return new Response($this->serializer->serialize(new Feed($post), $requestFormat));
@@ -72,7 +85,7 @@ class PostsController extends AbstractController
             'comment_form' => $commentForm,
             'prev_post' => $prevPost,
             'next_post' => $nextPost,
-        ]);
+        ], $response);
     }
 
     #[Route('/import', name: 'post:import', defaults: [ '_format' => 'json' ], methods: [ 'POST' ])]

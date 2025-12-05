@@ -85,26 +85,49 @@ class PostRepository extends ServiceEntityRepository
         return intval($qb->getQuery()->getSingleScalarResult());
     }
 
-    public function getPost(string $alias, int $year, int $month, ?bool $published = true): ?Post
+    public function getPost(string $alias, int $year, int $month, ?bool $published = true): ?PostDTO
     {
-        $qb = $this->createQueryBuilder('p');
-        $qb->where('p.alias = :alias')
-            ->andWhere("DATE_EXTRACT('MONTH', p.date) = :month")
-            ->andWhere("DATE_EXTRACT('YEAR', p.date) = :year")
-            ->setMaxResults(1)
-            ->setParameter('alias', $alias)
-            ->setParameter('month', $month)
-            ->setParameter('year', $year)
-        ;
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
+        $rsm->addScalarResult('last_modified', 'last_modified', Types::DATETIME_IMMUTABLE);
+        $selectClause = $rsm->generateSelectClause([ 'p' => 'p' ]);
+
+        $params = [
+            'alias' => $alias,
+            'year' => $year,
+            'month' => $month,
+        ];
+
+        $sql = <<<SQL
+            WITH last_modified AS (
+                SELECT p.id, GREATEST(p.date, p.updated, MAX(c.created)) AS last_modified
+                FROM posts p
+                LEFT JOIN comments c ON (c.post_id = p.id) AND (c.approved = true)
+                WHERE (p.published = true)
+                GROUP BY p.id
+            )
+            SELECT $selectClause, last_modified.last_modified
+            FROM posts p
+            JOIN last_modified ON last_modified.id = p.id
+            WHERE (p.alias = :alias)
+                AND (EXTRACT('YEAR' FROM p.date) = :year)
+                AND (EXTRACT('MONTH' FROM p.date) = :month)
+        SQL;
 
         if ($published !== null) {
-            $qb->andWhere('p.published = :published')
-                ->setParameter('published', $published)
-            ;
+            $sql .= ' AND (p.published = :published)';
+            $params['published'] = $published;
         }
 
-        /** @var Post|null */
-        return $qb->getQuery()->getOneOrNullResult();
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        /** @var array{0: Post, last_modified: DateTimeImmutable}|null $result */
+        $result = $query->setParameters($params)->getOneOrNullResult();
+
+        if ($result === null) {
+            return null;
+        }
+
+        return new PostDTO($result[0], $result['last_modified']);
     }
 
     /**

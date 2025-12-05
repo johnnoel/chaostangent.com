@@ -12,6 +12,7 @@ use App\Message\MarkCommentAsSpam;
 use App\Message\MarkCommentAsUnapproved;
 use App\Message\PostComment;
 use App\Repository\CommentRepository;
+use App\Repository\DTO\PostDTO;
 use App\Repository\TagRepository;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,10 +42,11 @@ class CommentsController extends AbstractController
         'year' => '\d{4}', 'month' => '(0[1-9]|1[0-2])',
     ], methods: [ 'POST' ])]
     public function comment(
-        #[MapEntity(expr: 'repository.getPost(alias, year, month)')]
-        Post $post,
+        #[MapEntity(class: Post::class, expr: 'repository.getPost(alias, year, month)')]
+        PostDTO $postDto,
         Request $request
     ): Response {
+        $post = $postDto->post;
         $commentModel = new CommentModel(
             authorIp: strval($request->getClientIp()),
             postUrl: $this->generateUrl('post', $post->getRouteParams(), UrlGeneratorInterface::ABSOLUTE_URL),
