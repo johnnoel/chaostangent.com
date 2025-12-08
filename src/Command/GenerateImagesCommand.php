@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Post;
+use App\Entity\Tweet;
 use App\Extension\Twig\MediaExtension;
 use App\Extension\Twig\TweetsExtension;
 use App\Image\GatheringImageRepository;
+use App\Image\Source;
 use App\Image\SourceFactory;
 use App\Message\ProcessImage;
 use App\Repository\PostRepository;
@@ -76,7 +78,7 @@ class GenerateImagesCommand extends Command
         $force = boolval($input->getOption('force'));
 
         foreach ([ $postSources, $tweetSources ] as $sourceList) {
-            foreach ($sourceList as [$obj, $sources]) {
+            foreach ($sourceList as [ $obj, $sources ]) {
                 $progressBar->setMessage(($obj instanceof Post) ? $obj->getAlias() : $obj->getId());
 
                 foreach ($sources as $source) {
@@ -98,6 +100,9 @@ class GenerateImagesCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return array<array{0: Post, 1: array<Source>}>
+     */
     private function getPostSources(mixed $alias, ProgressBar $progressBar): array
     {
         $postCount = $this->getPostCount($alias);
@@ -135,6 +140,9 @@ class GenerateImagesCommand extends Command
         return $postSources;
     }
 
+    /**
+     * @return array<array{0: Tweet, 1: array<Source>}>
+     */
     private function getTweetSources(ProgressBar $progressBar): array
     {
         $tweetCount = $this->tweetRepository->count();
@@ -145,9 +153,17 @@ class GenerateImagesCommand extends Command
         $progressBar->start($tweetCount);
 
         for ($page = 1; $page <= $pages; $page++) {
-            $tweets = $this->tweetRepository->findBy([], [ 'createdAt' => 'DESC' ], self::PER_PAGE, ($page - 1) * self::PER_PAGE);
+            $tweets = $this->tweetRepository->findBy(
+                criteria: [],
+                orderBy: [ 'createdAt' => 'DESC' ],
+                limit: self::PER_PAGE,
+                offset: ($page - 1) * self::PER_PAGE
+            );
             foreach ($tweets as $tweet) {
-                $template = $this->twig->createTemplate('{{ tweet.fullText|tweet_entities(tweet.original) }}', $tweet->getId());
+                $template = $this->twig->createTemplate(
+                    '{{ tweet.fullText|tweet_entities(tweet.original) }}',
+                    $tweet->getId()
+                );
                 $template->render([ 'tweet' => $tweet ]);
                 $sources = $this->imageRepository->sources;
 

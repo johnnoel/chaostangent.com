@@ -9,6 +9,7 @@ use App\Image\ImageRepository;
 use App\Image\MimeType;
 use App\Image\Source;
 use App\Image\SourceFactory;
+use App\Image\Variant;
 use Symfony\Component\String\ByteString;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
@@ -77,7 +78,10 @@ class MediaExtension extends AbstractExtension
             $variants = $this->imageRepository->getVariants($source);
             $link = $source->link ?? $this->fileHandler->getSourceUrl($source);
 
-            return new readonly class($link, $variants, $source->caption) {
+            return new readonly class ($link, $variants, $source->caption) {
+                /**
+                 * @param array<Variant> $variants
+                 */
                 public function __construct(public string $link, public array $variants, public ?string $caption)
                 {
                 }
@@ -110,7 +114,10 @@ class MediaExtension extends AbstractExtension
             $variants = $this->imageRepository->getVariants($s);
             $link = $s->link ?? $this->fileHandler->getSourceUrl($s);
 
-            return new readonly class($variants, $link, $s->caption) {
+            return new readonly class ($variants, $link, $s->caption) {
+                /**
+                 * @param array<Variant> $variants
+                 */
                 public function __construct(
                     public array $variants,
                     public ?string $link = null,
@@ -182,7 +189,10 @@ class MediaExtension extends AbstractExtension
             ];
         }, $sources);
 
-        $video = new readonly class($s, $poster, $ratio, $subtitles) {
+        $video = new readonly class ($s, $poster, $ratio, $subtitles) {
+            /**
+             * @param array<array{src: string, type: ?string}> $sources
+             */
             public function __construct(
                 public array $sources,
                 public ?string $poster,

@@ -15,17 +15,12 @@ services:
         autoconfigure: true
         bind:
             $assetManifestPath: '%asset_manifest_path%'
-            $imageRepository: '@App\Image\CoreImageRepository'
 
     App\:
         resource: '../src/'
         exclude:
             - '../src/DataFixtures/'
             - '../src/Factory/'
-
-    App\Command\GenerateImagesCommand:
-        arguments:
-            $imageRepository: '@App\Image\GatheringImageRepository'
 
     App\Comment\AkismetClient:
         arguments:
@@ -40,6 +35,14 @@ services:
                 - '@App\Comment\AkismetDecider'
 
     App\Comment\SpamDecider: '@App\Comment\ChainDecider'
+
+    App\Extension\Twig\MediaExtension:
+        arguments:
+            $imageRepository: '@App\Image\CoreImageRepository'
+
+    App\Extension\Twig\TweetsExtension:
+        arguments:
+            $imageRepository: '@App\Image\CoreImageRepository'
 
     App\Form\DataTransformer\SignedDateTransformer:
         arguments:

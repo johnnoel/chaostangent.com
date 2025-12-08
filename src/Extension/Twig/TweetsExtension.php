@@ -45,6 +45,7 @@ final class TweetsExtension extends AbstractExtension
     public function entities(string $content, array $json): string
     {
         if (Arr::has($json, 'tweet.extended_entities.media')) {
+            /** @phpstan-ignore-next-line argument.type */
             $content = $this->media($content, $json['tweet']['id_str'], $json['tweet']['extended_entities']['media']);
         }
 
@@ -52,12 +53,12 @@ final class TweetsExtension extends AbstractExtension
     }
 
     /**
-     * @param array<mixed> $mediaEntities
+     * @param array<array<mixed>> $mediaEntities
      */
     private function media(string $content, string $tweetId, array $mediaEntities): string
     {
         $sources = array_map(function (array $medium) use ($tweetId): Source {
-            $filename = basename(parse_url($medium['media_url'], PHP_URL_PATH));
+            $filename = basename(strval(parse_url($medium['media_url'], PHP_URL_PATH)));
 
             return $this->sourceFactory->createSource(
                 src: sprintf('tweets/%s-%s', $tweetId, $filename),
@@ -66,9 +67,14 @@ final class TweetsExtension extends AbstractExtension
         }, $mediaEntities);
 
         $pictures = implode("\n", array_map([ $this, 'picture' ], $sources));
+        /**
+         * @var string $start
+         * @var string $finish
+         * @phpstan-ignore-next-line offsetAccess.nonArray
+         */
         [ $start, $finish ] = $mediaEntities[0]['indices'];
 
-        return substr_replace($content, $pictures, intval($start), ($finish - $start));
+        return substr_replace($content, $pictures, intval($start), (intval($finish) - intval($start)));
     }
 
     private function picture(Source $source, bool $showCaption = false): string
