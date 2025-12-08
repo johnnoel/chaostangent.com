@@ -474,7 +474,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         max_host_connections?: int, // The maximum number of connections to a single host.
  *         default_options?: array{
  *             headers?: array<string, mixed>,
- *             vars?: list<mixed>,
+ *             vars?: array<string, mixed>,
  *             max_redirects?: int, // The maximum number of redirects to follow.
  *             http_version?: scalar|null, // The default HTTP version, typically 1.1 or 2.0, leave to null for the best version.
  *             resolve?: array<string, scalar|null>,
@@ -497,7 +497,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *                 md5?: mixed,
  *             },
  *             crypto_method?: scalar|null, // The minimum version of TLS to accept; must be one of STREAM_CRYPTO_METHOD_TLSv*_CLIENT constants.
- *             extra?: list<mixed>,
+ *             extra?: array<string, mixed>,
  *             rate_limiter?: scalar|null, // Rate limiter name to use for throttling requests. // Default: null
  *             caching?: bool|array{ // Caching configuration.
  *                 enabled?: bool, // Default: false
@@ -550,7 +550,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *                 md5?: mixed,
  *             },
  *             crypto_method?: scalar|null, // The minimum version of TLS to accept; must be one of STREAM_CRYPTO_METHOD_TLSv*_CLIENT constants.
- *             extra?: list<mixed>,
+ *             extra?: array<string, mixed>,
  *             rate_limiter?: scalar|null, // Rate limiter name to use for throttling requests. // Default: null
  *             caching?: bool|array{ // Caching configuration.
  *                 enabled?: bool, // Default: false
@@ -916,6 +916,12 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         }>,
  *         resolve_target_entities?: array<string, scalar|null>,
  *     },
+ * }
+ * @psalm-type DamaDoctrineTestConfig = array{
+ *     enable_static_connection?: mixed, // Default: true
+ *     enable_static_meta_data_cache?: bool, // Default: true
+ *     enable_static_query_cache?: bool, // Default: true
+ *     connection_keys?: list<mixed>,
  * }
  * @psalm-type ZenstruckFoundryConfig = array{
  *     auto_refresh_proxies?: bool|null, // Deprecated: Since 2.0 auto_refresh_proxies defaults to true and this configuration has no effect. // Whether to auto-refresh proxies by default (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#auto-refresh) // Default: null
@@ -1441,12 +1447,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         },
  *     },
  * }
- * @psalm-type DamaDoctrineTestConfig = array{
- *     enable_static_connection?: mixed, // Default: true
- *     enable_static_meta_data_cache?: bool, // Default: true
- *     enable_static_query_cache?: bool, // Default: true
- *     connection_keys?: list<mixed>,
- * }
  * @psalm-type SentryConfig = array{
  *     dsn?: scalar|null, // If this value is not provided, the SDK will try to read it from the SENTRY_DSN environment variable. If that variable also does not exist, the SDK will not send any events.
  *     register_error_listener?: bool, // Default: true
@@ -1462,6 +1462,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         traces_sampler?: scalar|null,
  *         profiles_sample_rate?: float, // The sampling factor to apply to profiles. A value of 0 will deny sending any profiles, and a value of 1 will send all profiles. Profiles are sampled in relation to traces_sample_rate
  *         enable_logs?: bool,
+ *         enable_metrics?: bool, // Default: true
  *         attach_stacktrace?: bool,
  *         attach_metric_code_locations?: bool,
  *         context_lines?: int,
@@ -1478,6 +1479,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         before_send_check_in?: scalar|null,
  *         before_send_metrics?: scalar|null,
  *         before_send_log?: scalar|null,
+ *         before_send_metric?: scalar|null,
  *         trace_propagation_targets?: mixed,
  *         tags?: array<string, scalar|null>,
  *         error_types?: scalar|null,
@@ -1496,7 +1498,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         http_ssl_verify_peer?: bool,
  *         http_compression?: bool,
  *         capture_silenced_errors?: bool,
- *         max_request_body_size?: "none"|"small"|"medium"|"always",
+ *         max_request_body_size?: "none"|"never"|"small"|"medium"|"always",
  *         class_serializers?: array<string, scalar|null>,
  *     },
  *     messenger?: bool|array{
