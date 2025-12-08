@@ -15,8 +15,12 @@ readonly final class SourceFactory
     /**
      * @param array<string> $actions
      */
-    public function createSource(string $src, array $actions, ?string $caption = null, ?string $link = null): Source
-    {
+    public function createSource(
+        string $src,
+        array $actions,
+        ?string $caption = null,
+        ?string $link = null
+    ): Source {
         $actions = array_map([ $this->actionFactory, 'createAction' ], $actions);
 
         return new Source($src, $actions, $caption, link: $link);

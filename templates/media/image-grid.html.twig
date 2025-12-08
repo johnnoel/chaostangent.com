@@ -1,0 +1,5 @@
+<div class="image-grid -{{ images|length|format_number(style: 'spellout')|replace({ ' ': '' }) }}{% if show_captions %} -captions{% endif %}{% if classes is not empty %} {{ classes }}{% endif %}">
+    {% for image in images %}
+        {% include 'media/picture.html.twig' with { 'link': image.link, 'variants': image.variants, 'caption': image.caption } only %}
+    {% endfor %}
+</div>

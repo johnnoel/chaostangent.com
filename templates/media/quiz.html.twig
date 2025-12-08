@@ -1,0 +1,6 @@
+<script id="js-quiz-data" type="application/json">
+  {{ quiz|json_encode|raw }}
+</script>
+<div id="js-quiz" data-questions="#js-quiz-data">
+    <noscript class="message">You can only take the quiz if you have JavaScript enabled</noscript>
+</div>

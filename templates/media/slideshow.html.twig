@@ -1,0 +1,26 @@
+<div class="image-slideshow">
+    <div class="track">
+        <div class="container">
+            {% for slide in slides %}
+                <div class="slide">
+                    {% include 'media/picture.html.twig' with { 'link': slide.link, 'variants': slide.variants, 'caption': slide.caption } only %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="bullets">
+            {% for slide in slides %}
+            <button class="bullet" data-idx="{{ loop.index0 }}"></button>
+            {% endfor %}
+        </div>
+
+        <button class="toggle -pause">
+            <svg class="play"><use xlink:href="{{ asset('icons.svg') }}#icon-play"></use></svg>
+            <svg class="pause"><use xlink:href="{{ asset('icons.svg') }}#icon-pause"></use></svg>
+        </button>
+        <button class="left"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-back"></use></svg></button>
+        <button class="right"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-forward"></use></svg></button>
+    </div>
+</div>

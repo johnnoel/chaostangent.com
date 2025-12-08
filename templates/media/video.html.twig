@@ -1,0 +1,9 @@
+{% set height = (544 / video.ratio)|round %}
+<video controls preload="auto" width="544" height="{{ height }}"{% if video.poster is not empty %} poster="{{ video.poster }}"{% endif %}>
+    {% for source in video.sources %}
+        <source src="{{ source.src }}"{% if source.type is not empty %} type="{{ source.type }}"{% endif %}>
+    {% endfor %}
+    {% if video.subtitles is not empty %}
+        <track label="English" kind="subtitles" srclang="en" src="/media/{{ video.subtitles }}" default>
+    {% endif %}
+</video>

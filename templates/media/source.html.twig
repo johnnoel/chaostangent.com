@@ -1,0 +1,9 @@
+{% set width = (variant.width > 0) ? 'width="' ~ variant.width ~ '"' : '' %}
+{% set height = (variant.height > 0) ? 'height="' ~ variant.height ~ '"' : '' %}
+{% set dimensions = [ width, height ]|join(' ') %}
+
+{% if variant.mimeType.value == 'image/jpeg' %}
+    <img src="{{ variant.src }}" alt="" loading="lazy" {{ dimensions|raw }}>
+{% else %}
+    <source srcset="{{ variant.src }}" type="{{ variant.mimeType.value }}" {{ dimensions|raw }}>
+{% endif %}

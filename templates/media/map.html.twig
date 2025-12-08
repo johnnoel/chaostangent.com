@@ -1,0 +1,17 @@
+{% if points|length > 0 %}
+<script id="js-map-points-{{ id }}" type="application/json">
+  {{ points|json_encode|raw }}
+</script>
+{% endif %}
+{% if routes|length > 0 %}
+<script id="js-map-routes-{{ id }}" type="application/json">
+  {{ routes|json_encode|raw }}
+</script>
+{% endif %}
+<div
+    class="map-embed js-map"
+    data-points="#js-map-points-{{ id }}"
+    data-routes="#js-map-routes-{{ id }}"
+    data-centre="{% if centre is not empty %}{{ centre|json_encode|raw }}{% else %}[0,0]{% endif %}"
+    data-zoom="{{ zoom ?? 10 }}"
+></div>

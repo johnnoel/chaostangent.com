@@ -1,0 +1,5 @@
+<div class="image-row{% if classes is not empty %} {{ classes }}{% endif %}">
+    {% for image in images %}
+        <img src="{{ image.src }}" alt="{{ image.caption|default('') }}">
+    {% endfor %}
+</div>

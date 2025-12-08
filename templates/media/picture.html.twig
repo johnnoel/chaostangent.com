@@ -1,0 +1,10 @@
+{% set has_link = (link is defined and link is not empty) %}
+{% set has_caption = (caption is defined and caption is not empty) %}
+{% if has_link %}<a href="{{ link }}">{% endif %}
+    <picture>
+        {% for variant in variants %}
+            {% include 'media/source.html.twig' with { 'variant': variant } only %}
+        {% endfor %}
+    </picture>
+    {% if has_caption %}<span>{{ caption }}</span>{% endif %}
+{% if has_link %}</a>{% endif %}
