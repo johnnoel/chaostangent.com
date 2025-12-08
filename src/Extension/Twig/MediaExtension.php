@@ -133,23 +133,6 @@ class MediaExtension extends AbstractExtension
                 </div>
             </div>
         HTML;
-        /*
-                <div class="bullets glide__bullets" data-glide-el="controls[nav]">
-                    $nav
-                </div>
-                <div class="controls glide__arrows" data-glide-el="controls">
-                    <button class="toggle -pause">
-                        <svg class="play"><use xlink:href="$svg#icon-play"></use></svg>
-                        <svg class="pause"><use xlink:href="$svg#icon-pause"></use></svg>
-                    </button>
-                    <button class="left glide__arrow glide__arrow--left" data-glide-dir="<">
-                        <svg><use xlink:href="$svg#icon-back"></use></svg>
-                    </button>
-                    <button class="right glide__arrow glide__arrow--right" data-glide-dir=">">
-                        <svg><use xlink:href="$svg#icon-forward"></use></svg>
-                    </button>
-                </div>
-         */
     }
 
     /**

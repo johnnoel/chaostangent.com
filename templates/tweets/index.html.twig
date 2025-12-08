@@ -9,7 +9,7 @@
 
         {% for tweet in tweets %}
             <article class="tweet">
-                <p>{{ tweet.fullText }}</p>
+                <p>{{ tweet.fullText|tweet_entities(tweet.original) }}</p>
                 <dl class="metadata">
                     <dt>Original ID</dt>
                     <dd>{{ tweet.id }}</dd>
