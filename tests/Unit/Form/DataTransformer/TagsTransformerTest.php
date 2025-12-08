@@ -19,7 +19,7 @@ class TagsTransformerTest extends TestCase
     #[DataProvider('notArrayProvider')]
     public function testTransformNotArray(mixed $value): void
     {
-        $tagRepository = $this->createMock(TagRepository::class);
+        $tagRepository = $this->createStub(TagRepository::class);
         $transformer = new TagsTransformer($tagRepository);
         $this->assertNull($transformer->transform($value)); /** @phpstan-ignore argument.type */
     }
@@ -43,7 +43,7 @@ class TagsTransformerTest extends TestCase
     #[DataProvider('transformNotTagProvider')]
     public function testTransformNotTag(array $values): void
     {
-        $tagRepository = $this->createMock(TagRepository::class);
+        $tagRepository = $this->createStub(TagRepository::class);
         $transformer = new TagsTransformer($tagRepository);
 
         $this->expectException(TransformationFailedException::class);
@@ -74,7 +74,7 @@ class TagsTransformerTest extends TestCase
     #[DataProvider('transformProvider')]
     public function testTransform(array $values, array $expected): void
     {
-        $tagRepository = $this->createMock(TagRepository::class);
+        $tagRepository = $this->createStub(TagRepository::class);
         $transformer = new TagsTransformer($tagRepository);
 
         $this->assertSame($expected, $transformer->transform($values));
@@ -100,7 +100,7 @@ class TagsTransformerTest extends TestCase
     #[DataProvider('notArrayProvider')]
     public function testReverseTransformNotArray(mixed $value): void
     {
-        $tagRepository = $this->createMock(TagRepository::class);
+        $tagRepository = $this->createStub(TagRepository::class);
         $transformer = new TagsTransformer($tagRepository);
 
         $this->assertSame([], $transformer->reverseTransform($value)); /** @phpstan-ignore argument.type */

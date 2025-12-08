@@ -19,7 +19,7 @@ class CategoriesTransformerTest extends TestCase
     #[DataProvider('notArrayProvider')]
     public function testTransformNotArray(mixed $value): void
     {
-        $categoryRepository = $this->createMock(CategoryRepository::class);
+        $categoryRepository = $this->createStub(CategoryRepository::class);
         $transformer = new CategoriesTransformer($categoryRepository);
         $this->assertNull($transformer->transform($value)); /** @phpstan-ignore argument.type */
     }
@@ -43,7 +43,7 @@ class CategoriesTransformerTest extends TestCase
     #[DataProvider('transformNotCategoryProvider')]
     public function testTransformNotCategory(array $values): void
     {
-        $categoryRepository = $this->createMock(CategoryRepository::class);
+        $categoryRepository = $this->createStub(CategoryRepository::class);
         $transformer = new CategoriesTransformer($categoryRepository);
 
         $this->expectException(TransformationFailedException::class);
@@ -74,7 +74,7 @@ class CategoriesTransformerTest extends TestCase
     #[DataProvider('transformProvider')]
     public function testTransform(array $values, array $expected): void
     {
-        $categoryRepository = $this->createMock(CategoryRepository::class);
+        $categoryRepository = $this->createStub(CategoryRepository::class);
         $transformer = new CategoriesTransformer($categoryRepository);
 
         $this->assertSame($expected, $transformer->transform($values));
@@ -100,7 +100,7 @@ class CategoriesTransformerTest extends TestCase
     #[DataProvider('notArrayProvider')]
     public function testReverseTransformNotArray(mixed $value): void
     {
-        $categoryRepository = $this->createMock(CategoryRepository::class);
+        $categoryRepository = $this->createStub(CategoryRepository::class);
         $transformer = new CategoriesTransformer($categoryRepository);
 
         $this->assertSame([], $transformer->reverseTransform($value)); /** @phpstan-ignore argument.type */
