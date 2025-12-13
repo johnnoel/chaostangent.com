@@ -63,4 +63,14 @@ class Tag
     {
         return $this->posts;
     }
+
+    public function setTag(string $tag): void
+    {
+        $this->tag = $tag;
+    }
+
+    public function setAlias(string $alias): void
+    {
+        $this->alias = $alias;
+    }
 }

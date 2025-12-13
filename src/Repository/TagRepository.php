@@ -30,6 +30,12 @@ class TagRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function update(Tag $tag): void
+    {
+        $this->getEntityManager()->persist($tag);
+        $this->getEntityManager()->flush();
+    }
+
     public function delete(Tag $tag): void
     {
         $this->getEntityManager()->remove($tag);
