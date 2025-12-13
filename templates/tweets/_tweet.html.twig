@@ -1,3 +1,12 @@
+<img src="/img/twitter-avatar.jpg" alt="" class="avatar">
+
+<header>
+    <span class="name"><b>John Noel</b> @{{ tweet.username }}</span>
+    <a href="{{ path('tweet', { 'id': tweet.id }) }}" class="createdat">
+        <time datetime="{{ tweet.createdAt|date('Y-m-d\\TH:i:sP') }}">{{ tweet.createdAt|date('Y-m-d H:i:s') }}</time>
+    </a>
+</header>
+
 <p>{{ tweet.fullText }}</p>
 {% if tweet.hasImages() %}
     {% set images = [] %}
@@ -6,13 +15,8 @@
     {% endfor %}
     {{ thumbnails(images) }}
 {% endif %}
+
 <dl class="metadata">
     <dt>Original ID</dt>
     <dd>{{ tweet.id }}</dd>
-    <dt>Created at</dt>
-    <dd>
-        <a href="{{ path('tweet', { 'id': tweet.id }) }}">
-            <time datetime="{{ tweet.createdAt|date('Y-m-d\\TH:i:sP') }}">{{ tweet.createdAt|date('Y-m-d H:i:s') }}</time>
-        </a>
-    </dd>
 </dl>

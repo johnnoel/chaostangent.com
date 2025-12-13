@@ -1,14 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <h1>Tweets</h1>
+
     <div class="tweets-list">
-        <h1>Tweets</h1>
         {% if page == 1 %}
             <p class="description">I closed my Twitter account shortly after its transition to "X" and its descent into a hellsite rapidly accelerated. Before I closed it though I exported all of my data which is reproduced here.</p>
         {% endif %}
 
         {% for tweet in tweets %}
-            <article class="tweet">
+            <article class="single-tweet">
                 {% include 'tweets/_tweet.html.twig' with { 'tweet': tweet } only %}
             </article>
         {% endfor %}

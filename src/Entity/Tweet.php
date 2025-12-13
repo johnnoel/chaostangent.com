@@ -21,6 +21,8 @@ class Tweet
     private DateTimeImmutable $createdAt;
     #[ORM\Column(type: 'text')]
     private string $fullText;
+    #[ORM\Column(type: 'string', length: 16)]
+    private string $username;
     /** @var array<mixed> */
     #[ORM\Column(type: 'jsonb')]
     private array $original;
@@ -28,11 +30,17 @@ class Tweet
     /**
      * @param array<mixed> $original
      */
-    public function __construct(string $id, DateTimeImmutable $createdAt, string $fullText, array $original)
-    {
+    public function __construct(
+        string $id,
+        DateTimeImmutable $createdAt,
+        string $fullText,
+        string $username,
+        array $original
+    ) {
         $this->id = $id;
         $this->createdAt = $createdAt;
         $this->fullText = $fullText;
+        $this->username = $username;
         $this->original = $original;
     }
 
@@ -49,6 +57,11 @@ class Tweet
     public function getFullText(): string
     {
         return $this->fullText;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
     }
 
     /**

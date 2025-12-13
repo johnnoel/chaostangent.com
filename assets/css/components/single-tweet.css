@@ -1,4 +1,24 @@
 .single-tweet {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+
+    > .avatar {
+        grid-column: 1;
+        grid-row: 1 / 4;
+        width: 58px;
+        height: auto;
+        border-radius: 29px;
+        border: 1px solid var(--brand-darker-beige);
+    }
+
+    > header, > p, > .image-grid, > dl {
+        grid-column: 2;
+    }
+
+    > header {
+        padding: 0 0 12px;
+    }
+
     > p {
         font-size: 24px;
         line-height: 1.35;
@@ -8,7 +28,6 @@
     > .metadata {
         display: flex;
         flex-flow: row nowrap;
-        padding: 0 0 24px;
 
         > dt {
             padding: 0 6px 0 0;
@@ -23,6 +42,7 @@
 
     > .original {
         padding: 0 0 48px;
+        grid-column: 1 / 3;
 
         > summary {
             padding: 0 0 6px;
