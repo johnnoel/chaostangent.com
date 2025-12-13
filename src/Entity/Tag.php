@@ -55,4 +55,12 @@ class Tag
     {
         return $this->tag;
     }
+
+    /**
+     * @return Collection<int,Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
 }

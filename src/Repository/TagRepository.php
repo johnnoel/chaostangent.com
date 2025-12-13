@@ -30,6 +30,12 @@ class TagRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function delete(Tag $tag): void
+    {
+        $this->getEntityManager()->remove($tag);
+        $this->getEntityManager()->flush();
+    }
+
     /**
      * @return Collection<int,TagDTO>
      */
