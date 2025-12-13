@@ -28,6 +28,7 @@ final class TweetFactory extends PersistentObjectFactory
             'id' => strval(mt_rand()),
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'fullText' => self::faker()->text(),
+            'username' => substr(self::faker()->userName(), 0, 16),
             'original' => [],
         ];
     }
