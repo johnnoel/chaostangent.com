@@ -8,17 +8,16 @@ use App\Entity\Post;
 use App\Repository\Criteria\FilterPostsCriteria;
 use App\Repository\DTO\PostDTO;
 use App\Repository\DTO\SearchResultDTO;
+use App\Repository\Query\FilterPostsQuery;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Generator;
 use Illuminate\Support\Collection;
-use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 
 /**
@@ -42,26 +41,19 @@ class PostRepository extends ServiceEntityRepository
      */
     public function filterPosts(FilterPostsCriteria $criteria): Collection
     {
-        $qb = $this->createQueryBuilder('p');
-        $qb->select([ 'p', 'COUNT(co.id)' ])
-            ->leftJoin('p.comments', 'co', 'WITH', $qb->expr()->andX(
-                $qb->expr()->eq('co.approved', ':approved'),
-                $qb->expr()->eq('co.spam', ':spam')
-            ))
-            ->where($qb->expr()->eq('p.published', ':published'))
-            ->groupBy('p.id')
-            ->orderBy('p.date', 'DESC')
-            ->addOrderBy('p.id', 'DESC')
-            ->setMaxResults($criteria->perPage)
-            ->setFirstResult(($criteria->page - 1) * $criteria->perPage)
-            ->setParameter('published', true)
-            ->setParameter('approved', true)
-            ->setParameter('spam', false)
-        ;
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
+        $rsm->addScalarResult('comment_count', 1, Types::INTEGER);
+        $selectClause = $rsm->generateSelectClause([ 'p' => 'p' ]);
 
-        $this->applyCriteria($criteria, $qb);
+        $filterPostsQuery = new FilterPostsQuery($criteria);
+        [ $sql, $parameters ] = $filterPostsQuery->posts($selectClause);
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameters($parameters); // @phpstan-ignore argument.type
+
         /** @var array<array{0: Post, 1: int}> $dbResult */
-        $dbResult = $qb->getQuery()->getResult();
+        $dbResult = $query->getResult();
 
         /** @var array<PostDTO> $result */
         $result = array_map(
@@ -74,15 +66,15 @@ class PostRepository extends ServiceEntityRepository
 
     public function countFilteredPosts(FilterPostsCriteria $criteria): int
     {
-        $qb = $this->createQueryBuilder('p');
-        $qb->select('COUNT(p)')
-            ->where($qb->expr()->eq('p.published', ':published'))
-            ->setParameter('published', true)
-        ;
+        $filterPostsQuery = new FilterPostsQuery($criteria);
+        [ $sql, $parameters ] = $filterPostsQuery->count();
 
-        $this->applyCriteria($criteria, $qb);
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addScalarResult('post_count', 0, Types::INTEGER);
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameters($parameters); // @phpstan-ignore argument.type
 
-        return intval($qb->getQuery()->getSingleScalarResult());
+        return intval($query->getSingleScalarResult());
     }
 
     public function getPost(string $alias, int $year, int $month, ?bool $published = true): ?PostDTO
@@ -438,35 +430,6 @@ class PostRepository extends ServiceEntityRepository
         }, $res);
 
         return new Collection($dtos);
-    }
-
-    private function applyCriteria(FilterPostsCriteria $criteria, QueryBuilder $qb): void
-    {
-        if ($criteria->category !== null) {
-            $qb->join('p.categories', 'ca')
-                ->andWhere($qb->expr()->eq('ca', ':category'))
-                ->setParameter('category', $criteria->category->getId(), UlidType::NAME)
-            ;
-        }
-
-        if ($criteria->tag !== null) {
-            $qb->join('p.tags', 't')
-                ->andWhere($qb->expr()->eq('t', ':tag'))
-                ->setParameter('tag', $criteria->tag->getId(), UlidType::NAME)
-            ;
-        }
-
-        if ($criteria->month !== null) {
-            $qb->andWhere($qb->expr()->eq("DATE_EXTRACT('MONTH', p.date)", ':month'))
-                ->setParameter('month', $criteria->month)
-            ;
-        }
-
-        if ($criteria->year !== null) {
-            $qb->andWhere($qb->expr()->eq("DATE_EXTRACT('YEAR', p.date)", ':year'))
-                ->setParameter('year', $criteria->year)
-            ;
-        }
     }
 
     private function getSearchQuery(string $q): string
