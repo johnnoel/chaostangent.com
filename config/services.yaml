@@ -40,10 +40,6 @@ services:
         arguments:
             $imageRepository: '@App\Image\CoreImageRepository'
 
-    App\Extension\Twig\TweetsExtension:
-        arguments:
-            $imageRepository: '@App\Image\CoreImageRepository'
-
     App\Form\DataTransformer\SignedDateTransformer:
         arguments:
             $key: '%env(APP_SECRET)%'

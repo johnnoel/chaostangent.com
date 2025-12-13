@@ -7,7 +7,6 @@ namespace App\Command;
 use App\Entity\Post;
 use App\Entity\Tweet;
 use App\Extension\Twig\MediaExtension;
-use App\Extension\Twig\TweetsExtension;
 use App\Image\GatheringImageRepository;
 use App\Image\Source;
 use App\Image\SourceFactory;
@@ -26,7 +25,7 @@ use Twig\Environment;
 
 #[AsCommand(
     name: 'app:generate-images',
-    description: 'Generate images from posts',
+    description: 'Generate images from posts and tweets',
 )]
 class GenerateImagesCommand extends Command
 {
@@ -37,7 +36,6 @@ class GenerateImagesCommand extends Command
     public function __construct(
         private readonly TweetRepository $tweetRepository,
         private readonly MediaExtension $mediaExtension,
-        private readonly TweetsExtension $tweetsExtension,
         private readonly GatheringImageRepository $imageRepository,
         private readonly SourceFactory $sourceFactory,
         private readonly MessageBusInterface $messageBus,
@@ -65,7 +63,6 @@ class GenerateImagesCommand extends Command
         $alias = $input->getOption('alias');
 
         $this->mediaExtension->setImageRepository($this->imageRepository);
-        $this->tweetsExtension->setImageRepository($this->imageRepository);
 
         $progressBar = $io->createProgressBar();
         $progressBar->setFormat("%message%\n%current%/%max% %bar% %percent:3s%%");
@@ -160,10 +157,7 @@ class GenerateImagesCommand extends Command
                 offset: ($page - 1) * self::PER_PAGE
             );
             foreach ($tweets as $tweet) {
-                $template = $this->twig->createTemplate(
-                    '{{ tweet.fullText|tweet_entities(tweet.original) }}',
-                    $tweet->getId()
-                );
+                $template = $this->twig->load('tweets/_tweet.html.twig');
                 $template->render([ 'tweet' => $tweet ]);
                 $sources = $this->imageRepository->sources;
 

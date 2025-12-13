@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\TweetRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Arr;
 
 #[ORM\Entity(repositoryClass: TweetRepository::class)]
 #[ORM\Table(name: 'tweets')]
@@ -56,5 +57,30 @@ class Tweet
     public function getOriginal(): array
     {
         return $this->original;
+    }
+
+    public function hasImages(): bool
+    {
+        return Arr::has($this->original, 'tweet.extended_entities.media');
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getImages(): array
+    {
+        if (!$this->hasImages()) {
+            return [];
+        }
+
+        /**
+         * @var array<array{media_url: string}> $media
+         * @phpstan-ignore-next-line offsetAccess.nonOffsetAccessible hasImages ensures this
+         */
+        $media = $this->original['tweet']['extended_entities']['media'];
+
+        return array_map(function (array $medium): string {
+            return basename(strval(parse_url($medium['media_url'], PHP_URL_PATH)));
+        }, $media);
     }
 }

@@ -1,0 +1,18 @@
+<p>{{ tweet.fullText }}</p>
+{% if tweet.hasImages() %}
+    {% set images = [] %}
+    {% for image in tweet.images %}
+        {% set images = images|merge([{ 'src': 'tweets/' ~ tweet.id ~ '-' ~ image, 'actions': [ 'resize:thumb', 'sharpen:3' ]}]) %}
+    {% endfor %}
+    {{ thumbnails(images) }}
+{% endif %}
+<dl class="metadata">
+    <dt>Original ID</dt>
+    <dd>{{ tweet.id }}</dd>
+    <dt>Created at</dt>
+    <dd>
+        <a href="{{ path('tweet', { 'id': tweet.id }) }}">
+            <time datetime="{{ tweet.createdAt|date('Y-m-d\\TH:i:sP') }}">{{ tweet.createdAt|date('Y-m-d H:i:s') }}</time>
+        </a>
+    </dd>
+</dl>
