@@ -12,10 +12,10 @@
         "doctrine/doctrine-migrations-bundle": "^3.7.0",
         "doctrine/orm": "^3.5.8",
         "ezyang/htmlpurifier": "^4.19",
-        "illuminate/collections": "^12.41.1",
+        "illuminate/collections": "^12.42.0",
         "intervention/image": "^3.11.5",
         "intervention/image-driver-vips": "^1.0.10",
-        "martin-georgiev/postgresql-for-doctrine": "^3.6.2",
+        "martin-georgiev/postgresql-for-doctrine": "^3.7.0",
         "nelmio/security-bundle": "^3.6.0",
         "phiki/phiki": "^2.0.5",
         "phpdocumentor/reflection-docblock": "^5.6.5",
@@ -46,7 +46,7 @@
         "symfony/validator": "7.4.*",
         "symfony/yaml": "7.4.*",
         "twig/cssinliner-extra": "^3.22",
-        "twig/extra-bundle": "^3.22.1",
+        "twig/extra-bundle": "^3.22.2",
         "twig/inky-extra": "^3.22",
         "twig/intl-extra": "^3.22.1",
         "twig/string-extra": "^3.22.1",
@@ -61,13 +61,13 @@
         "phpstan/phpstan": "^2.1.33",
         "phpstan/phpstan-doctrine": "^2.0.12",
         "phpstan/phpstan-symfony": "^2.0.9",
-        "phpunit/phpunit": "^12.5.2",
+        "phpunit/phpunit": "^12.5.3",
         "slevomat/coding-standard": "^8.25.1",
         "symfony/browser-kit": "7.4.*",
         "symfony/maker-bundle": "^1.65.1",
         "symfony/stopwatch": "7.4.*",
         "symfony/web-profiler-bundle": "7.4.*",
-        "zenstruck/foundry": "^2.8.1"
+        "zenstruck/foundry": "^2.8.2"
     },
     "config": {
         "allow-plugins": {
