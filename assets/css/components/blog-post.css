@@ -210,10 +210,7 @@
                 &::after {
                     content: '';
                     display: inline-block;
-                    width: 24px;
-                    height: 24px;
                     margin: 0 0 0 12px;
-                    vertical-align: baseline;
                     background: url(../icons/link.svg) no-repeat 0 0 / contain;
                 }
             }
@@ -222,17 +219,36 @@
         h2 {
             font-size: 30px;
             margin: 0 0 12px;
+
+            > a:hover::after, a:focus::after {
+                width: 24px;
+                height: 24px;
+                vertical-align: -2px;
+            }
         }
 
         h3 {
             font-size: 26px;
             margin: 0 0 8px;
+
+            > a:hover::after, a:focus::after {
+                width: 21px;
+                height: 22px;
+                vertical-align: -3px;
+            }
         }
 
         h4 {
             font-size: 21px;
             font-weight: normal;
             margin: 0 0 8px;
+
+            > a:hover::after, a:focus::after {
+                width: 18px;
+                height: 18px;
+                vertical-align: -3px;
+                margin: 0 0 0 8px;
+            }
         }
 
         table {
