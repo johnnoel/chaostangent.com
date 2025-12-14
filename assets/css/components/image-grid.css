@@ -1,6 +1,10 @@
 .image-grid {
     padding: 0 0 1em;
 
+    &:has(+ .image-grid) {
+        padding: 0 0 8px;
+    }
+
     > .images {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -12,15 +16,17 @@
         }
     }
 
+    &.-one > .images {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+    }
+
     > .description {
         font-size: 12px;
         color: var(--brand-grey);
     }
 
-    &.-one > .images {
-        display: block;
-        text-align: center;
-    }
 
     &.-right {
         float: right;
@@ -32,7 +38,6 @@
     }
 
     picture {
-        display: block;
         padding: 1px;
         border: 1px solid var(--brand-lighter-grey);
         transition: border-color .15s, background-color .15s;
