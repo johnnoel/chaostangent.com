@@ -199,6 +199,26 @@
             list-style: disc outside;
         }
 
+        h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
+            color: var(--brand-dark-grey);
+            text-decoration: none;
+
+            &:hover, &:focus {
+                text-decoration: underline;
+                color: var(--brand-orange);
+
+                &::after {
+                    content: '';
+                    display: inline-block;
+                    width: 24px;
+                    height: 24px;
+                    margin: 0 0 0 12px;
+                    vertical-align: baseline;
+                    background: url(../icons/link.svg) no-repeat 0 0 / contain;
+                }
+            }
+        }
+
         h2 {
             font-size: 30px;
             margin: 0 0 12px;
