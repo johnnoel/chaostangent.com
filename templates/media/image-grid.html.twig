@@ -1,5 +1,17 @@
-<div class="image-grid -{{ images|length|format_number(style: 'spellout')|replace({ ' ': '' }) }}{% if show_captions %} -captions{% endif %}{% if classes is not empty %} {{ classes }}{% endif %}">
-    {% for image in images %}
-        {% include 'media/picture.html.twig' with { 'link': image.link, 'variants': image.variants, 'caption': image.caption } only %}
-    {% endfor %}
+{% set class_attr = [ 'image-grid', '-' ~ images|length|format_number(style: 'spellout')|replace({ ' ': '' }) ] %}
+{% if show_captions %}
+    {% set class_attr = class_attr|merge([ '-captions' ]) %}
+{% endif %}
+{% if classes is not empty %}
+    {% set class_attr = class_attr|merge([ classes ]) %}
+{% endif %}
+<div class="{{ class_attr|join(' ') }}">
+    <div class="images">
+        {% for image in images %}
+            {% include 'media/picture.html.twig' with { 'link': image.link, 'variants': image.variants, 'caption': image.caption } only %}
+        {% endfor %}
+    </div>
+    {% if description is not empty %}
+        <div class="description">{{ description|raw }}</div>
+    {% endif %}
 </div>

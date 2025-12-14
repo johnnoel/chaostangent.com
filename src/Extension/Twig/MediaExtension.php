@@ -62,7 +62,8 @@ class MediaExtension extends AbstractExtension
         Environment $twig,
         array $sources,
         bool $showCaptions = false,
-        ?string $classes = null
+        ?string $classes = null,
+        ?string $description = null,
     ): string {
         $s = array_map(
             fn (array $s): Source => $this->sourceFactory->createSource(
@@ -92,6 +93,7 @@ class MediaExtension extends AbstractExtension
             'images' => $images,
             'show_captions' => $showCaptions,
             'classes' => $classes,
+            'description' => $description,
         ]);
     }
 
@@ -149,8 +151,12 @@ class MediaExtension extends AbstractExtension
     /**
      * @param array<array{src: string, caption?: string}> $sources
      */
-    public function passthrough(Environment $twig, array $sources, ?string $classes = null): string
-    {
+    public function passthrough(
+        Environment $twig,
+        array $sources,
+        ?string $classes = null,
+        ?string $description = null
+    ): string {
         $images = array_map(function (array $s): array {
             return [
                 'src' => $this->fileHandler->getSourceUrl(new Source($s['src'], [])),
@@ -161,6 +167,7 @@ class MediaExtension extends AbstractExtension
         return $twig->render('media/image-row.html.twig', [
             'images' => $images,
             'classes' => $classes,
+            'description' => $description,
         ]);
     }
 
@@ -172,7 +179,8 @@ class MediaExtension extends AbstractExtension
         array $sources,
         ?string $poster = null,
         float $ratio = 16 / 9,
-        ?string $subtitles = null
+        ?string $subtitles = null,
+        ?string $description = null,
     ): string {
         if ($poster !== null) {
             $posterVariant = $this->imageRepository->getVariants(
@@ -202,7 +210,10 @@ class MediaExtension extends AbstractExtension
             }
         };
 
-        return $twig->render('media/video.html.twig', [ 'video' => $video ]);
+        return $twig->render('media/video.html.twig', [
+            'video' => $video,
+            'description' => $description,
+        ]);
     }
 
     /**

@@ -1,17 +1,26 @@
 .image-row {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center; /* ensures different height images aren't stretched */
-    gap: 4px;
     padding: 0 0 1em;
+
+    > .images {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        align-items: center; /* ensures different height images aren't stretched */
+        gap: 4px;
+
+        > img {
+            padding: 1px;
+            border: 1px solid var(--brand-lighter-grey);
+        }
+    }
+
+    > .description {
+        padding: 6px 0 0;
+        font-size: 12px;
+        color: var(--brand-grey);
+    }
 
     &.-right {
         float: right;
-    }
-
-    > img {
-        padding: 1px;
-        border: 1px solid var(--brand-lighter-grey);
     }
 }

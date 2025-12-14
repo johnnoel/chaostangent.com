@@ -17,6 +17,7 @@
 @import "components/image-slideshow.css" layer(components);
 @import "components/image-row.css" layer(components);
 @import "components/code-block.css" layer(components);
+@import "components/video-player.css" layer(components);
 @import "components/post-meta.css" layer(components);
 @import "components/post-prevnext.css" layer(components);
 @import "components/response-form.css" layer(components);

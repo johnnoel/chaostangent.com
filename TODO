@@ -4,6 +4,17 @@
 
 # Phase X
 
+* Consistent image citation markup
+* <h4> visual size
+* Single image grids (e.g. http://localhost:2501/2023/06/johns-newsletter-of-nonograms-29/)
+* Anime of the decade interactive elements
+* Auto-anchor headings (processor)
+* Web mentions and pingbacks
+* OpenGraph card image
+* Timer / countdown for slideshow autoplay
+* Image lightbox / loupe
+* Microformats for blog posts
+* Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
 * Twitter archive
     - Image grid layout(s)
     - Videos (1431317874451308550)
@@ -15,22 +26,12 @@
     - Search
     - Change links in blog posts
     - Threads?
-* Redirect anime-1 tag to anime
-* Consistent image citation markup
-* Web mentions and pingbacks
+* Sort out categories
+    - Add a "hierarchy title" e.g. "Anime > 3 Episode Taste Test" for easy output
+* Modify pagination to use post and twitter dates rather than offsets
 * Square images on the previous / next post block
-* Image lightbox / loupe
-* OpenGraph card image
-* Microformats for blog posts
-* Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
-* Timer / countdown for slideshow autoplay
 * Last modified and e-tag headers for listing and about pages
 * When plotting routes maybe plot points in between with the time / altitude
-* Sort out categories
-    - If a category is in a subcategory, does that automatically make it in the parent category?
-    - If so, then alter the posts to only be in the subcategory and tweak the category queries to include subcategories
-        - consider using the ltree type for easier queries
-    - Add a "hierarchy title" e.g. "Anime > 3 Episode Taste Test" for easy output
 * Import posts
     - should regularly reset Doctrine
     - should import posts in alphabetical order
@@ -64,6 +65,7 @@
 * Media management, pre-generating variants rather than dynamically serving
 * Limiting received data from a request in Guzzle
 * Webmention and pingback reservations
+* Citations, descriptions, messages, and labels (oh my) - how to mark up image captions? aria-describedby?
 * Posts that have not aged well:
     - 2014/09/war-what-is-it-good-for/
     - 2012/06/dead-letter-office-does-modern-anime-suck/
