@@ -27,3 +27,10 @@ if (jeanneDarcMode !== null) {
         module.default(jeanneDarcMode);
     });
 }
+
+const animeOfTheDecadeFilter = document.getElementById('js-anime-of-the-decade-filter');
+if (animeOfTheDecadeFilter !== null) {
+    import('./anime-of-the-decade-filter' /* webpackChunkName: "anime-of-the-decade-filter" */).then(module => {
+        module.default(animeOfTheDecadeFilter);
+    });
+}

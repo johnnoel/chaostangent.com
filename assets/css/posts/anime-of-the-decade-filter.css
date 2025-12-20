@@ -1,0 +1,31 @@
+.anime-of-the-decade-filter {
+    @media (scripting: none) {
+        display: none;
+    }
+
+    b {
+        display: block;
+    }
+
+    button {
+        display: inline-block;
+        appearance: none;
+        border: none;
+        border-radius: 4px;
+        background: none;
+        cursor: pointer;
+        font-size: inherit;
+        line-height: inherit;
+        padding: 0 6px;
+        color: var(--brand-orange);
+
+        &:hover, &:focus {
+            text-decoration: underline;
+        }
+
+        &.-active {
+            background: var(--brand-orange);
+            color: var(--brand-beige);
+        }
+    }
+}
