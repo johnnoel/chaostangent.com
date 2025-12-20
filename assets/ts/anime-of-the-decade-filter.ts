@@ -1,21 +1,31 @@
 export default function(container: HTMLElement) {
-    const buttons = container.querySelectorAll<HTMLButtonElement>('button');
+    const buttons = Array.from(container.querySelectorAll<HTMLButtonElement>('button'));
 
     if (buttons.length === 0) {
         return;
     }
 
     buttons.forEach(btn => btn.addEventListener('click', () => {
-        const currentlyActive = btn.classList.contains('-active');
-        const selector = btn.dataset.target;
+        btn.classList.toggle('-active');
 
-        if (selector === undefined) {
-            return;
+        const toHide = buttons
+            .filter(btn => !btn.classList.contains('-active'))
+            .map(btn => btn.dataset.target)
+            .join(', ')
+        ;
+
+        const toShow = buttons
+            .filter(btn => btn.classList.contains('-active'))
+            .map(btn => btn.dataset.target)
+            .join(', ')
+        ;
+
+        if (toHide !== '') {
+            document.querySelectorAll<HTMLElement>(toHide).forEach(e => e.style.display = 'none');
         }
 
-        const targets = document.querySelectorAll<HTMLElement>(selector);
-        targets.forEach(t => t.style.display = (currentlyActive) ? 'none' : '');
-
-        btn.classList.toggle('-active');
+        if (toShow !== '') {
+            document.querySelectorAll<HTMLElement>(toShow).forEach(e => e.style.display = '');
+        }
     }));
 };
