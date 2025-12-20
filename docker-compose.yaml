@@ -14,7 +14,7 @@ services:
             - .:/project
 
     pgsql:
-        image: postgres:17
+        image: postgres:18
         environment:
             POSTGRES_DB: chaostangent
             POSTGRES_PASSWORD: chaostangent
@@ -22,7 +22,7 @@ services:
         ports:
             - "2502:5432"
         volumes:
-            - database_data:/var/lib/postgresql/data:rw
+            - database_data:/var/lib/postgresql:rw
             - ./config/docker/pgsql:/docker-entrypoint-initdb.d
 
     mailpit:
