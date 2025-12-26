@@ -4,13 +4,13 @@
 
 # Phase X
 
-* Anime of the decade interactive elements
 * Web mentions and pingbacks
 * OpenGraph card image
 * Timer / countdown for slideshow autoplay
 * Image lightbox / loupe
 * Microformats for blog posts
 * Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
+* Wordpress API support (at least readonly)
 * Twitter archive
     - Image grid layout(s)
     - Videos (1431317874451308550)
@@ -51,6 +51,10 @@
     - 2025/09/video.mp4 (video)
     - 2025/09/only-linked.jpg (link)
 * JPEG XL support
+* Investigate Sec-Fetch-Mode CSRF protection for Symfony Forms
+    - https://blog.miguelgrinberg.com/post/csrf-protection-without-tokens-or-hidden-form-fields
+    - https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-Fetch-Mode
+    - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#fetch-metadata-headers
 
 # Blog post ideas
 
