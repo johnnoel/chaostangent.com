@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 {% set post_link = path('post', post.routeParams) %}
-{% block title %}{{ post.fullTitle }}{% endblock %}
+{% block title %}{{ post.fullTitle }}{% endblock title %}
+
+{% block head %}
+    <link href="{{ absolute_url(path('webmention')) }}" rel="webmention">
+{% endblock %}
 
 {% block opengraph %}
     <meta property="og:type" content="article">

@@ -57,6 +57,10 @@ services:
         arguments:
             $decoratedImageRepository: '@App\Image\CoreImageRepository'
 
+    App\MessageHandler\ProcessIncomingWebmentionHandler:
+        arguments:
+            $allowedHosts: [ '%env(DEFAULT_HOST)%' ]
+
     App\Post\Processor\ExportProcessor:
         arguments:
             $outputDirectory: '%kernel.project_dir%/content'

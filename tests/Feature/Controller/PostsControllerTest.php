@@ -27,6 +27,23 @@ class PostsControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testPostWebmention(): void
+    {
+        $client = static::createClient();
+        $post = PostFactory::new()->published()->create();
+        $url = sprintf('/%s/%s/%s/', $post->getDate()?->format('Y'), $post->getDate()?->format('m'), $post->getAlias());
+
+        $client->request('GET', $url);
+
+        $this->assertResponseHasHeader('Link');
+        $this->assertResponseHeaderSame('Link', '<http://localhost/webmention>; rel="webmention"');
+
+        $this->assertStringContainsString(
+            '<link href="http://localhost/webmention" rel="webmention">',
+            strval($client->getResponse()->getContent())
+        );
+    }
+
     public function testPostRss(): void
     {
         $client = static::createClient();

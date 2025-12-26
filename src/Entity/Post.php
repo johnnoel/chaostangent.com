@@ -86,6 +86,11 @@ class Post
     #[ORM\OrderBy([ 'created' => 'DESC' ])]
     private Collection $comments;
 
+    /** @var Collection<int,Webmention> */
+    #[ORM\OneToMany(targetEntity: Webmention::class, mappedBy: 'post')]
+    #[ORM\OrderBy([ 'created' => 'ASC' ])]
+    private Collection $webmentions;
+
     /** @var Collection<int,Category> */
     #[Serializer\Groups([ 'frontmatter' ])]
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'posts', cascade: [ 'persist' ])]
@@ -138,6 +143,7 @@ class Post
         $this->comments = new ArrayCollection();
         $this->categories = new ArrayCollection($categories);
         $this->tags = new ArrayCollection($tags);
+        $this->webmentions = new ArrayCollection();
     }
 
     public static function create(PostModel $model): self
@@ -344,5 +350,13 @@ class Post
     public function getAuthor(): string
     {
         return 'chaostangent';
+    }
+
+    /**
+     * @return Collection<int,Webmention>
+     */
+    public function getWebmentions(): Collection
+    {
+        return $this->webmentions;
     }
 }

@@ -24,6 +24,8 @@
     <link rel="icon" href="{{ asset('favicon-32x32.png') }}" sizes="32x32" type="image/png">
     <link rel="apple-touch-icon-precomposed" href="{{ asset('favicon-128x128.png') }}">
 
+    {% block head %}{% endblock head %}
+
     {% block opengraph %}
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ app.request.uri }}">
@@ -31,12 +33,12 @@
         <meta property="og:description" content="More squirrels than sense">
         <meta property="og:image" content="{{ absolute_url(asset('favicon-128x128.png')) }}">
         <meta property="twitter:card" content="summary">
-    {% endblock %}
+    {% endblock opengraph %}
 
     {% block feeds %}
         <link rel="alternate" type="application/rss+xml" title="chaostangent RSS 2.0 feed" href="{{ url('home:rss') }}">
         <link rel="alternate" type="application/atom+xml" title="chaostangent Atom feed" href="{{ url('home:atom') }}">
-    {% endblock %}
+    {% endblock feeds %}
 
     {% if isFeatureEnabled('search') %}
         <link rel="search" type="application/opensearchdescription+xml" href="{{ url('opensearch') }}" title="chaostangent.com search">
@@ -44,7 +46,7 @@
     <link rel="stylesheet" href="{{ asset('main.css') }}">
 
     <script src="{{ asset('main.js') }}" async defer></script>
-    {% block jsonld %}{% endblock %}
+    {% block jsonld %}{% endblock jsonld %}
 </head>
 <body>
 <nav class="a11y-nav" role="navigation">

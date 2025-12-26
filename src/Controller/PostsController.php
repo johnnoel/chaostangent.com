@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class PostsController extends AbstractController
@@ -57,7 +58,12 @@ class PostsController extends AbstractController
         PostDTO $postDto,
         Request $request
     ): Response {
-        $response = (new Response())->setCache([
+        $response = (new Response(headers: [
+            'Link' => sprintf(
+                '<%s>; rel="webmention"',
+                $this->generateUrl('webmention', referenceType: UrlGeneratorInterface::ABSOLUTE_URL),
+            ),
+        ]))->setCache([
             'max_age' => 60 * 60,
             'public' => true,
             'must_revalidate' => true,
