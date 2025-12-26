@@ -8,6 +8,8 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
+use DateTimeImmutable;
+use DateTimeZone;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -73,6 +75,9 @@ class ImportComments extends Command
                 continue;
             }
 
+            $created = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', strval($r[1]), new DateTimeZone('UTC'));
+            $created = ($created === false) ? new DateTimeImmutable('now') : $created;
+
             $comment = new Comment(
                 $post,
                 comment: strval($r[7]),
@@ -82,6 +87,7 @@ class ImportComments extends Command
                 approved: true,
                 spam: false,
                 authorUrl: (($r[4] === null || $r[4] === '') ? null : $r[4]),
+                created: $created,
             );
 
             $this->commentRepository->create($comment);

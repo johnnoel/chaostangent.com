@@ -57,7 +57,8 @@ class Comment
         bool $approved,
         bool $spam,
         ?Comment $parent = null,
-        ?string $authorUrl = null
+        ?string $authorUrl = null,
+        DateTimeImmutable $created = new DateTimeImmutable('now'),
     ) {
         $this->id = new Ulid();
         $this->post = $post;
@@ -70,7 +71,7 @@ class Comment
         $this->approved = $approved;
         $this->spam = $spam;
 
-        $this->created = new DateTimeImmutable('now');
+        $this->created = $created;
         $this->children = new ArrayCollection();
     }
 
