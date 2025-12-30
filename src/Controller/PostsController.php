@@ -63,6 +63,7 @@ class PostsController extends AbstractController
                 '<%s>; rel="webmention"',
                 $this->generateUrl('webmention', referenceType: UrlGeneratorInterface::ABSOLUTE_URL),
             ),
+            'X-Pingback' => $this->generateUrl('pingback', referenceType: UrlGeneratorInterface::ABSOLUTE_URL),
         ]))->setCache([
             'max_age' => 60 * 60,
             'public' => true,

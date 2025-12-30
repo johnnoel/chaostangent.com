@@ -10,7 +10,7 @@ framework:
             sync: 'sync://'
 
         routing:
-            App\Message\ProcessIncomingWebmention: async
+            App\Message\ProcessIncomingLinkback: async
 
 when@test:
    framework:

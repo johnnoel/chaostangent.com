@@ -15,6 +15,7 @@
         "illuminate/collections": "^12.42.0",
         "intervention/image": "^3.11.5",
         "intervention/image-driver-vips": "^1.0.10",
+        "laminas/laminas-xmlrpc": "^2.22",
         "martin-georgiev/postgresql-for-doctrine": "^3.7.0",
         "nelmio/security-bundle": "^3.6.0",
         "phiki/phiki": "^2.0.5",

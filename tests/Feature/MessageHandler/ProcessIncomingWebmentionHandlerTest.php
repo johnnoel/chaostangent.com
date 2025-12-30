@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Feature\MessageHandler;
 
 use App\Factory\PostFactory;
-use App\Message\ProcessIncomingWebmention;
-use App\MessageHandler\ProcessIncomingWebmentionHandler;
+use App\Message\ProcessIncomingLinkback;
+use App\MessageHandler\ProcessIncomingLinkbackHandler;
 use App\Repository\PostRepository;
 use App\Repository\WebmentionRepository;
 use App\Tests\WebTestCase;
@@ -27,7 +27,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
         $logger = new TestLogger();
         $handler = $this->getHandler($logger);
 
-        $handler(new ProcessIncomingWebmention(
+        $handler(new ProcessIncomingLinkback(
             'https://source.test/',
             'https://target.test',
             '127.0.0.1',
@@ -44,7 +44,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
         $logger = new TestLogger();
         $handler = $this->getHandler($logger);
 
-        $handler(new ProcessIncomingWebmention(
+        $handler(new ProcessIncomingLinkback(
             'https://source.test/',
             'https://invalid.target.test/',
             '127.0.0.1',
@@ -60,7 +60,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
 
         $logger = new TestLogger();
         $handler = $this->getHandler($logger);
-        $handler(new ProcessIncomingWebmention(
+        $handler(new ProcessIncomingLinkback(
             'https://source.test/',
             'https://target.test/a/b/c/d/e/f/g',
             '127.0.0.1',
@@ -76,7 +76,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
 
         $logger = new TestLogger();
         $handler = $this->getHandler($logger);
-        $handler(new ProcessIncomingWebmention(
+        $handler(new ProcessIncomingLinkback(
             'https://source.test/',
             'https://target.test/about/',
             '127.0.0.1',
@@ -93,7 +93,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
         $httpClient = new MockHttpClient([ new MockResponse('Not found', [ 'http_code' => 404 ]) ]);
         $logger = new TestLogger();
         $handler = $this->getHandler($logger, $httpClient);
-        $handler(new ProcessIncomingWebmention(
+        $handler(new ProcessIncomingLinkback(
             'https://source.test/',
             'https://target.test/2025/12/test-post',
             '127.0.0.1',
@@ -112,7 +112,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
         ]);
         $logger = new TestLogger();
         $handler = $this->getHandler($logger, $httpClient);
-        $handler(new ProcessIncomingWebmention(
+        $handler(new ProcessIncomingLinkback(
             'https://source.test/',
             'https://target.test/2025/12/test-post',
             '127.0.0.1',
@@ -133,7 +133,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
         ]);
         $logger = new TestLogger();
         $handler = $this->getHandler($logger, $httpClient);
-        $handler(new ProcessIncomingWebmention(
+        $handler(new ProcessIncomingLinkback(
             'https://source.test/',
             'https://target.test/2025/12/test-post',
             '127.0.0.1',
@@ -162,7 +162,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
         $this->assertCount(0, $post->getWebmentions());
 
         $handler = $this->getHandler($logger, $httpClient);
-        $handler(new ProcessIncomingWebmention(
+        $handler(new ProcessIncomingLinkback(
             'https://source.test/',
             'https://target.test/2025/12/test-post',
             '127.0.0.1',
@@ -175,7 +175,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
     private function getHandler(
         LoggerInterface $logger = new TestLogger(),
         HttpClientInterface $httpClient = new MockHttpClient(),
-    ): ProcessIncomingWebmentionHandler {
+    ): ProcessIncomingLinkbackHandler {
         /** @var WebmentionRepository $webmentionRepo */
         $webmentionRepo = $this->getContainer()->get(WebmentionRepository::class);
         /** @var PostRepository $postRepository */
@@ -183,7 +183,7 @@ class ProcessIncomingWebmentionHandlerTest extends WebTestCase
         /** @var UrlMatcherInterface $urlMatcher */
         $urlMatcher = $this->getContainer()->get(UrlMatcherInterface::class);
 
-        return new ProcessIncomingWebmentionHandler(
+        return new ProcessIncomingLinkbackHandler(
             $webmentionRepo,
             $postRepository,
             $urlMatcher,

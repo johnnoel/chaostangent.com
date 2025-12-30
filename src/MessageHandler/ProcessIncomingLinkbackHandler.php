@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\MessageHandler;
 
 use App\Entity\Webmention;
-use App\Message\ProcessIncomingWebmention;
+use App\Message\ProcessIncomingLinkback;
 use App\Repository\PostRepository;
 use App\Repository\WebmentionRepository;
 use Psr\Log\LoggerInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsMessageHandler]
-readonly final class ProcessIncomingWebmentionHandler
+readonly final class ProcessIncomingLinkbackHandler
 {
     private const array ALLOWED_ROUTES = [ 'post' ];
 
@@ -32,7 +32,7 @@ readonly final class ProcessIncomingWebmentionHandler
     ) {
     }
 
-    public function __invoke(ProcessIncomingWebmention $message): void
+    public function __invoke(ProcessIncomingLinkback $message): void
     {
         $target = $message->target;
         $source = $message->source;

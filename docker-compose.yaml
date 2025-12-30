@@ -30,5 +30,12 @@ services:
         ports:
             - "2503:8025"
 
+    mysql:
+        image: mysql:8
+        ports:
+            - "2504:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: chaostangent
+
 volumes:
     database_data:

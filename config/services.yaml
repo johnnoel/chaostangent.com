@@ -57,7 +57,7 @@ services:
         arguments:
             $decoratedImageRepository: '@App\Image\CoreImageRepository'
 
-    App\MessageHandler\ProcessIncomingWebmentionHandler:
+    App\MessageHandler\ProcessIncomingLinkbackHandler:
         arguments:
             $allowedHosts: [ '%env(DEFAULT_HOST)%' ]
 
@@ -101,6 +101,11 @@ services:
     App\Extension\Serializer\JsonLd\PostNormaliser:
         arguments:
             $title: chaostangent.com
+
+    Laminas\XmlRpc\Server:
+        calls:
+            - setClass: [ '@App\Pingback\PingbackServer', 'ping' ]
+            - setReturnResponse: [ true ]
 
 when@test:
     services:

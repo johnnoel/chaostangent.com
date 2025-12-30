@@ -39,7 +39,24 @@ class PostsControllerTest extends WebTestCase
         $this->assertResponseHeaderSame('Link', '<http://localhost/webmention>; rel="webmention"');
 
         $this->assertStringContainsString(
-            '<link href="http://localhost/webmention" rel="webmention">',
+            '<link rel="webmention" href="http://localhost/webmention">',
+            strval($client->getResponse()->getContent())
+        );
+    }
+
+    public function testPostPingback(): void
+    {
+        $client = static::createClient();
+        $post = PostFactory::new()->published()->create();
+        $url = sprintf('/%s/%s/%s/', $post->getDate()?->format('Y'), $post->getDate()?->format('m'), $post->getAlias());
+
+        $client->request('GET', $url);
+
+        $this->assertResponseHasHeader('X-Pingback');
+        $this->assertResponseHeaderSame('X-Pingback', 'http://localhost/pingback');
+
+        $this->assertStringContainsString(
+            '<link rel="pingback" href="http://localhost/pingback">',
             strval($client->getResponse()->getContent())
         );
     }
