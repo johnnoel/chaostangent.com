@@ -6,7 +6,6 @@
 
 * OpenGraph card image
 * Image lightbox / loupe
-* Microformats for blog posts
 * Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
 * Wordpress API support (at least readonly)
 * Twitter archive

@@ -1,26 +1,26 @@
-<article id="post-{{ p.post.id }}" class="blog-post" role="region">
+<article id="post-{{ p.post.id }}" class="blog-post h-entry" role="region">
     {% set post_link = path('post', p.post.routeParams) %}
     {% set response_count = 0 %}
 
     <header>
-        <h1><a href="{{ post_link }}" title="Permanent link to {{ p.post.title|e('html_attr') }}" rel="bookmark">{{ p.post.title }}</a></h1>
+        <h1 class="p-name"><a href="{{ post_link }}" title="Permanent link to {{ p.post.title|e('html_attr') }}" rel="bookmark" class="u-url u-uid">{{ p.post.title }}</a></h1>
         {% if p.post.subtitle is not empty %}<h2>{{ p.post.subtitle }}</h2>{% endif %}
         {% if p.post.categories|length > 0 %}
             <div class="categories">
                 <span class="_vh">Categorised in: </span>
-                {% for category in p.post.categories %}{% if not loop.first %}, {% endif %}<a href="{{ path('category', { 'alias': category.alias }) }}">{{ category.title }}</a>{% endfor %}
+                {% for category in p.post.categories %}{% if not loop.first %}, {% endif %}<a href="{{ path('category', { 'alias': category.alias }) }}" class="p-category">{{ category.title }}</a>{% endfor %}
             </div>
         {% endif %}
     </header>
 
     <aside>
-        <time datetime="{{ p.post.date|date('Y-m-d\\TH:i:sP') }}">
+        <time class="dt-published" datetime="{{ p.post.date|date('Y-m-d\\TH:i:sP') }}">
             <span class="day">{{ p.post.date|date('d') }}</span><span class="month">{{ p.post.date|date('M') }}</span><span class="year">{{ p.post.date|date('Y') }}</span><span class="time">{{ p.post.date|date('H:i') }}</span>
         </time>
         {% if p.commentCount > 0 %}<a href="{{ post_link }}#responses" title="Respond to {{ p.post.title|e('html_attr') }}" class="responses">{{ p.commentCount }} response{% if p.commentCount > 1 %}s{% endif %}</a>{% endif %}
     </aside>
 
-    <div class="summary content">
+    <div class="summary content p-summary">
         {{ include(template_from_string(p.post.summary is null ? p.post.content : p.post.summary)) }}
         {% if p.post.summary is not null %}
             <p><a href="{{ post_link }}#more-{{ p.post.id }}">Read the rest of this post</a></p>

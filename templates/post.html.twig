@@ -25,19 +25,19 @@
 {% endblock opengraph %}
 
 {% block body %}
-    <article id="post-{{ post.id }}" class="blog-post" role="article">
+    <article id="post-{{ post.id }}" class="blog-post h-entry" role="article">
         <header>
-            <h1><a href="{{ post_link }}" title="Permanent Link to {{ post.title|e('html_attr') }}" rel="bookmark">{{ post.title }}</a></h1>
+            <h1 class="p-name"><a href="{{ post_link }}" title="Permanent Link to {{ post.title|e('html_attr') }}" rel="bookmark" class="u-url u-uid">{{ post.title }}</a></h1>
             {% if post.subtitle is not empty %}<h2>{{ post.subtitle }}</h2>{% endif %}
         </header>
 
         <aside>
-            <time datetime="{{ post.date|date('Y-m-d\\TH:i:sP') }}">
+            <time class="dt-published" datetime="{{ post.date|date('Y-m-d\\TH:i:sP') }}">
                 <span class="day">{{ post.date|date('d') }}</span><span class="month">{{ post.date|date('M') }}</span><span class="year">{{ post.date|date('Y') }}</span><span class="time">{{ post.date|date('H:i') }}</span>
             </time>
         </aside>
 
-        <div class="full content">
+        <div class="full content e-content">
             {{ include(template_from_string(post.content)) }}
         </div>
 
@@ -47,7 +47,7 @@
                 <ul>
                     {# Must be on one line to prevent odd spacing between the end of the word and the comma suffix #}
                     {%- for category in post.categories -%}
-                        <li><a href="{{ path('category', { 'alias': category.alias }) }}" title="View all posts in {{ category.title|e('html_attr') }}">{{ category.title }}</a></li>
+                        <li><a href="{{ path('category', { 'alias': category.alias }) }}" title="View all posts in {{ category.title|e('html_attr') }}" class="p-category">{{ category.title }}</a></li>
                     {%- endfor -%}
                 </ul>
             </div>
@@ -59,9 +59,9 @@
                         {% for t in tags %}
                             <li>
                                 {% if t.postCount > 1 %}
-                                    <a href="{{ path('tag', { 'alias': t.tag.alias }) }}">{{ t.tag.tag }}</a>
+                                    <a href="{{ path('tag', { 'alias': t.tag.alias }) }}" class="p-category">{{ t.tag.tag }}</a>
                                 {% else %}
-                                    {{ t.tag.tag }}
+                                    <span class="p-category">{{ t.tag.tag }}</span>
                                 {% endif %}
                             </li>
                         {% endfor %}

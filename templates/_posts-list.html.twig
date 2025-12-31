@@ -1,7 +1,7 @@
-<div class="posts-list">
+<div class="posts-list h-feed">
     {% if title is defined and title is not empty %}
         <header class="title">
-            <h1>{{ title }}</h1>
+            <h1 class="p-name">{{ title }}</h1>
 
             {% include '_pagination.html.twig' with {
                 'route': route,
