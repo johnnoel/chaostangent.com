@@ -4,9 +4,7 @@
 
 # Phase X
 
-* Web mentions and pingbacks
 * OpenGraph card image
-* Timer / countdown for slideshow autoplay
 * Image lightbox / loupe
 * Microformats for blog posts
 * Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
@@ -70,3 +68,4 @@
     - 2014/09/war-what-is-it-good-for/
     - 2012/06/dead-letter-office-does-modern-anime-suck/
     - 2010/05/why-everyone-wants-to-know-who-they-are/ - mentioning "traps"
+* Deployment process
