@@ -13,6 +13,7 @@ use App\Image\Variant;
 use Symfony\Component\String\ByteString;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
@@ -24,6 +25,9 @@ use Twig\TwigFunction;
  */
 class MediaExtension extends AbstractExtension
 {
+    /** @var array<array{0?: int, 1?: int, mime?: string}> $imageSizes */
+    private array $imageSizes = [];
+
     public function __construct(
         private ImageRepository $imageRepository,
         private readonly SourceFactory $sourceFactory,
@@ -52,6 +56,16 @@ class MediaExtension extends AbstractExtension
             new TwigFunction('video', [ $this, 'video' ], $options),
             new TwigFunction('quiz', [ $this, 'quiz' ], $options),
             new TwigFunction('map', [ $this, 'map' ], $options),
+        ];
+    }
+
+    /** @inheritdoc */
+    public function getFilters()
+    {
+        return [
+            new TwigFilter('image_type', [ $this, 'imageType' ]),
+            new TwigFilter('image_width', [ $this, 'imageWidth' ]),
+            new TwigFilter('image_height', [ $this, 'imageHeight' ]),
         ];
     }
 
@@ -249,5 +263,36 @@ class MediaExtension extends AbstractExtension
             'centre' => $centre,
             'zoom' => $zoom,
         ]);
+    }
+
+    public function imageType(string $src): string
+    {
+        return $this->getImageSize($src)['mime'] ?? '';
+    }
+
+    public function imageWidth(string $src): int
+    {
+        return $this->getImageSize($src)[0] ?? 0;
+    }
+
+    public function imageHeight(string $src): int
+    {
+        return $this->getImageSize($src)[1] ?? 0;
+    }
+
+    /**
+     * @return array{0?: int, 1?: int, mime?: string}
+     */
+    private function getImageSize(string $src): array
+    {
+        if (!array_key_exists($src, $this->imageSizes)) {
+            $path = $this->fileHandler->getSourcePath(new Source($src, []));
+            $imageSize = (file_exists($path)) ? getimagesize($path) : [];
+            $imageSize = ($imageSize === false) ? [] : $imageSize;
+
+            $this->imageSizes[$src] = $imageSize;
+        }
+
+        return $this->imageSizes[$src];
     }
 }

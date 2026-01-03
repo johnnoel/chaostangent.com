@@ -27,11 +27,16 @@
     {% block head %}{% endblock head %}
 
     {% block opengraph %}
+        <meta property="og:locale" content="en_GB">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ app.request.uri }}">
         <meta property="og:title" content="{{ block('title') }}{% if block('title')|trim is not empty %} : {% endif %}chaostangent">
+        <meta property="og:site_name" content="chaostangent">
         <meta property="og:description" content="More squirrels than sense">
-        <meta property="og:image" content="{{ absolute_url(asset('favicon-128x128.png')) }}">
+        <meta property="og:image" content="{{ absolute_url(asset('img/opengraph.png')) }}">
+        <meta property="og:image:width" content="1920">
+        <meta property="og:image:height" content="1080">
+        <meta property="og:image:type" content="image/png">
         <meta property="twitter:card" content="summary">
     {% endblock opengraph %}
 
