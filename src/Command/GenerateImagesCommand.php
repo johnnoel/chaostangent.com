@@ -69,8 +69,13 @@ class GenerateImagesCommand extends Command
 
         $postSources = (!$input->getOption('tweets-only')) ? $this->getPostSources($alias, $progressBar) : [];
         $tweetSources = (!$input->getOption('posts-only')) ? $this->getTweetSources($progressBar) : [];
+        $sourceCount = array_reduce(
+            array_merge($postSources, $tweetSources),
+            fn (int $c, array $a): int => $c + count($a[1]),
+            0
+        );
 
-        $progressBar->start(count($postSources) + count($tweetSources));
+        $progressBar->start($sourceCount);
         $dryRun = boolval($input->getOption('dry-run'));
         $force = boolval($input->getOption('force'));
 
