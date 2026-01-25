@@ -2,19 +2,28 @@
     font-size: 18px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    padding: 36px 0 18px;
+    padding: 42px 0 24px;
+
+    @media (--lg) {
+        font-size: 22px;
+    }
 
     .next {
         text-align: right;
+        grid-column: 3/4;
     }
 
     .pages {
+        display: none;
         list-style: none;
         margin: 0;
         padding: 0;
-        display: flex;
-        flex-flow: row nowrap;
-        justify-self: center;
+
+        @media (--lg) {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-self: center;
+        }
 
         a {
             padding: 4px;

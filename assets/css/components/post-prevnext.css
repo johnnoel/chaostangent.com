@@ -1,14 +1,13 @@
 .post-prevnext {
     grid-column: span 2;
     border-bottom: 1px solid var(--brand-lighter-grey);
-    padding: 12px 0;
-    margin: 0 0 80px;
+    padding: 24px 0;
+    margin: 0 0 120px;
     display: grid;
     row-gap: 12px;
 
     @media (--lg) {
         grid-template-columns: repeat(2, 50%);
-        column-gap: 12px;
     }
 
     > a {
@@ -17,10 +16,11 @@
         text-decoration: none;
 
         &.next {
-            padding: 0 48px 0 0;
+            padding: 0 60px 0 0;
             text-align: right;
 
             @media (--lg) {
+                padding-left: 9px;
                 grid-column: 2;
             }
 
@@ -31,9 +31,10 @@
         }
 
         &.prev {
-            padding: 0 0 0 48px;
+            padding: 0 0 0 60px;
 
             @media (--lg) {
+                padding-right: 9px;
                 grid-column: 1;
             }
         }
@@ -56,15 +57,15 @@
             border: 1px solid var(--brand-darker-beige);
             background: var(--brand-dark-beige);
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 42px;
+            height: 42px;
             position: absolute;
             top: 0;
             left: 0;
 
             > svg {
-                width: 26px;
-                height: 26px;
+                width: 36px;
+                height: 36px;
             }
         }
 
@@ -81,11 +82,11 @@
         }
 
         > h4 {
-            font-size: 24px;
+            font-size: 30px;
         }
 
         > h5 {
-            font-size: 16px;
+            font-size: 22px;
             font-weight: normal;
             color: var(--brand-grey);
             line-height: 1.3;

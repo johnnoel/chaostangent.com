@@ -1,23 +1,21 @@
 .site-footer {
     max-width: var(--container-width);
     margin: 0 auto 58px;
-    padding: 6px 0 0;
+    padding: 12px 0 0;
     border-top: 1px solid var(--brand-lighter-grey);
-    display: flex;
-    flex-flow: row wrap;
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 16px;
 
     @media (--lg) {
-        flex-wrap: nowrap;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .socialmedia {
-        flex: 1 0 auto;
-        padding: 0 0 12px;
-
         ul {
             display: flex;
             flex-flow: row nowrap;
-            gap: 8px;
+            gap: 12px;
             padding: 0;
             margin: 0;
         }
@@ -28,8 +26,8 @@
         }
 
         svg {
-            width: 18px;
-            height: 18px;
+            width: 21px;
+            height: 21px;
             fill: var(--brand-grey);
             transition: fill .15s ease-in-out;
         }
@@ -39,12 +37,15 @@
         }
     }
 
-    .copyright {
-        flex: 0 0 auto;
+
+    @media (--lg) {
+        .copyright {
+            justify-self: end;
+        }
     }
 
     .logo {
-        font: 700 18px/1 var(--font-title);
+        font: 700 24px/1 var(--font-title);
         letter-spacing: -1.5px;
         text-decoration: none;
         color: var(--brand-orange);

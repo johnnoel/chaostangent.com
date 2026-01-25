@@ -14,16 +14,20 @@
     --font-body: Arial, Helvetica, sans-serif;
     --font-title: Vegur, Arial, Helvetica, sans-serif;
 
-    --container-width: 624px;
+    --container-width: 800px;
 }
 
 @custom-media --lg only screen and (min-width: 640px);
 
 body {
-    font: 14px/1 var(--font-body);
+    font: 16px/1 var(--font-body);
     color: var(--brand-dark-grey);
     background: var(--brand-beige);
     padding: 0 12px;
+
+    @media (--lg) {
+        font-size: 18px;
+    }
 }
 
 h1, h2, h3, h4, h5, h6 {
