@@ -4,6 +4,7 @@
     padding: 24px 0;
     margin: 0 0 120px;
     display: grid;
+    grid-template-columns: 100%;
     row-gap: 12px;
 
     @media (--lg) {

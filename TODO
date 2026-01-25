@@ -2,13 +2,6 @@
 
 2014/11/wrapup/ - storify story
 
-# Enwidening bugs
-
-* Code block widths
-* Mobile pagination line breaks
-* Mobile next / previous post overflow
-* Image caption font size
-
 # Phase X
 
 * Swiping a slideshow breaks the auto-timer

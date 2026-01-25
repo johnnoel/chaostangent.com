@@ -1,16 +1,21 @@
 .posts-pagination {
     font-size: 18px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     padding: 42px 0 24px;
 
     @media (--lg) {
+        grid-template-columns: repeat(3, 1fr);
         font-size: 22px;
     }
 
     .next {
         text-align: right;
-        grid-column: 3/4;
+        grid-column: 2;
+
+        @media (--lg) {
+            grid-column: auto;
+        }
     }
 
     .pages {

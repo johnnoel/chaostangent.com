@@ -1,6 +1,6 @@
 .image-slideshow {
     width: 100%;
-    max-width: 540px;
+    max-width: 800px;
     padding: 0 0 1em;
     margin: 0 auto;
 
@@ -107,6 +107,12 @@
         > .toggle {
             position: relative;
 
+            &:hover, &:focus {
+                &.-play::before {
+                    border-color: var(--brand-orange);
+                }
+            }
+
             &::before {
                 content: '';
                 position: absolute;
@@ -164,7 +170,7 @@
     span {
         display: block;
         text-decoration: none;
-        padding: 4px 4px 8px;
+        padding: 6px 6px 10px;
         color: var(--brand-dark-grey);
     }
 
