@@ -8,6 +8,8 @@ final class GatheringImageRepository implements ImageRepository
 {
     /** @var array<Source> */
     public private(set) array $sources = [];
+    /** @var array<Variant> */
+    public private(set) array $variants = [];
 
     public function __construct(private readonly ImageRepository $decoratedImageRepository)
     {
@@ -21,7 +23,10 @@ final class GatheringImageRepository implements ImageRepository
     ): array {
         $this->sources[] = $source;
 
-        return $this->decoratedImageRepository->getVariants($source, $mimeTypes);
+        $variants = $this->decoratedImageRepository->getVariants($source, $mimeTypes);
+        $this->variants = array_merge($this->variants, $variants);
+
+        return $variants;
     }
 
     public function reset(): void
