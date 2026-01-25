@@ -2,9 +2,9 @@
 parameters:
     fallback_false: false
     resize_aliases:
-        thumb: { w: 268 }
-        lead: { w: 540 }
-        poster: { w: 544 }
+        thumb: { w: 392 }
+        lead: { w: 796 }
+        poster: { w: 800 }
         square: { w: 320, h: 320 }
 
     asset_manifest_path: '%kernel.project_dir%/public/assets/manifest.json'
