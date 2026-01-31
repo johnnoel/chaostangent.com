@@ -27,7 +27,7 @@ class Webmention
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $created;
 
-    #[ORM\ManyToOne(targetEntity: Post::class)]
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'webmentions')]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private Post $post;
 
