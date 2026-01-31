@@ -12,9 +12,12 @@ use Phiki\Transformers\Decorations\PreDecoration;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use Twitter\Text\Autolink;
 
 class AppExtension extends AbstractExtension
 {
+    private ?Autolink $autolink = null;
+
     public function __construct(private readonly FeatureRepository $featureRepository)
     {
     }
@@ -25,6 +28,7 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFilter('gravatar', [ $this, 'gravatar' ]),
             new TwigFilter('code', [ $this, 'codeBlock' ], [ 'is_safe' => [ 'html' ] ]),
+            new TwigFilter('tweet', [ $this, 'tweet' ], [ 'is_safe' => [ 'html' ] ]),
         ];
     }
 
@@ -68,5 +72,14 @@ class AppExtension extends AbstractExtension
             ->withGutter()
             ->toString()
         ;
+    }
+
+    public function tweet(string $tweet): string
+    {
+        if ($this->autolink === null) {
+            $this->autolink = Autolink::create();
+        }
+
+        return $this->autolink->autoLink($tweet);
     }
 }

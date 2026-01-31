@@ -18,6 +18,7 @@
         "laminas/laminas-xmlrpc": "^2.22",
         "martin-georgiev/postgresql-for-doctrine": "^3.7.0",
         "nelmio/security-bundle": "^3.8.0",
+        "nojimage/twitter-text-php": "^3.4",
         "phiki/phiki": "^2.1.0",
         "phpdocumentor/reflection-docblock": "^5.6.6",
         "phpstan/phpdoc-parser": "^2.3.2",

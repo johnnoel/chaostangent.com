@@ -7,7 +7,7 @@
     </a>
 </header>
 
-<p>{{ tweet.fullText }}</p>
+<p>{{ tweet.fullText|tweet }}</p>
 {% if tweet.hasImages() %}
     {% set images = [] %}
     {% for image in tweet.images %}
