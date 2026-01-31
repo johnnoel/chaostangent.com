@@ -8,19 +8,33 @@ export default function(slideshow: HTMLElement) {
     }
 
     const autoplay = Autoplay({ playOnInit: false, delay: 7000 });
-    // @ts-ignore
+    // @ts-ignore "autoplay" is allowed to be added as a plugin
     const embla = EmblaCarousel(track, { loop: true }, [ autoplay ]);
+    const left = slideshow.querySelector<HTMLButtonElement>('.left');
+    const right = slideshow.querySelector<HTMLButtonElement>('.right');
 
-    slideshow.querySelector<HTMLButtonElement>('.left')?.addEventListener('click', () => embla.scrollPrev(), false);
-    slideshow.querySelector<HTMLButtonElement>('.right')?.addEventListener('click', () => embla.scrollNext(), false);
+    // ideally would do autoplay.reset() here however there doesn't seem to be a way to reset the animation on
+    // toggleButton as the animation is running on a psuedo-element so don't seem to be able to do getAnimations()
+    left?.addEventListener('click', () => embla.scrollPrev(), false);
+    right?.addEventListener('click', () => embla.scrollNext(), false);
 
     const toggleButton = slideshow.querySelector<HTMLButtonElement>('.toggle');
     if (toggleButton !== null) {
         toggleButton.addEventListener('click', () => {
-            toggleButton.classList.toggle('-play');
-            toggleButton.classList.toggle('-pause');
             (autoplay.isPlaying()) ? autoplay.stop() : autoplay.play();
         }, false);
+
+        // @ts-ignore "autoplay:play" is a valid event type
+        embla.on('autoplay:play', () => {
+            toggleButton.classList.add('-play');
+            toggleButton.classList.remove('-pause');
+        });
+
+        // @ts-ignore "autoplay:stop" is a valid event type
+        embla.on('autoplay:stop', () => {
+            toggleButton.classList.remove('-play');
+            toggleButton.classList.add('-pause');
+        });
     }
 
     slideshow.querySelectorAll<HTMLButtonElement>('.bullet').forEach(btn => {

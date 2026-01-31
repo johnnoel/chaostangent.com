@@ -4,9 +4,6 @@
 
 # Phase X
 
-* Swiping a slideshow breaks the auto-timer
-* Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
-* Wordpress API support (at least readonly)
 * Twitter archive
     - Image grid layout(s)
     - Videos (1431317874451308550)
@@ -20,6 +17,7 @@
     - Threads?
 * Sort out categories
     - Add a "hierarchy title" e.g. "Anime > 3 Episode Taste Test" for easy output
+* Wordpress API support (at least readonly)
 * Modify pagination to use post and twitter dates rather than offsets
 * Square images on the previous / next post block
 * Last modified and e-tag headers for listing and about pages
@@ -35,6 +33,7 @@
     - email on replies
 * Move absolute URL functionality for feeds into a Twig extension
 * Hitman Blood Money video subtitles
+* Microformats for anime linking e.g. data-anidb-id="", possibly use <data> tags?
 * Create a tree view of post -> image / media like
     2025/09/test-post
     - 2025/09/test.jpg (thumbnails, slideshow etc.)
