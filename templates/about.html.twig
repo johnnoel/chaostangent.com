@@ -5,12 +5,59 @@
 {% block title %}About{% endblock %}
 
 {% block body %}
-    <article>
+    <article class="about-us">
         <h1>About</h1>
+
+        <p>chaostangent.com is the personal blog of <b>John Noel</b>, a {{ '1983-07-07'|age }} year old, UK-based software engineer and technical team lead.</p>
+        <p>Posts will broadly cover <a href="/category/code/">code</a>, <a href="/category/anime/">anime</a>, <a href="/category/videogames/">video-games</a>, and <a href="/category/holidays/">holiday journals</a> but may deviate from those topics should the whim take me. All opinions are my own and are not necessarily reflective of my <a href="https://evoluted.net" target="_blank" rel="nofollow">employer</a> or colleagues.</p>
+
+        <h2>History</h2>
+
+        <p>The blog started in July 2002 on the site <a href="https://www.deadjournal.com/" target="_blank" rel="noopener">DeadJournal</a> - the unaffiliated angsty goth cousin of <a href="https://www.livejournal.com" target="_blank" rel="noopener">LiveJournal</a>.</p>
+        <p>It moved to a self-hosted <a href="https://wordpress.org/documentation/wordpress-version/version-2-0-4/" target="_blank" rel="noopener">WordPress 2.0</a> instance and the domain chaostangent.com in August 2006, hosted by <a href="https://www.dreamhost.com/" target="_blank" rel="noopener">DreamHost</a>.</p>
+        <p>For over a year I blogged about <a href="/2006/07/vehement-euphoria/">work projects</a>, <a href="/category/holidays/cuba-2007/">a trip to Cuba with my best friend</a>, and a brief foray into the then nascent <a href="/category/videogames/hitman-blood-money/">let's plays with Hitman Blood Money</a>. In September 2007 <a href="/2007/09/lucky-star/">the first anime review post</a> appeared and despite the <a href="/2010/07/stockholm-syndrome-and-silent-hill-2/">occasional</a>, <a href="/2010/06/texas-pandaa-down-in-the-hole/">isolated</a> post on other topics, anime defined the content on chaostangent.com until 2017.</p>
+        <p>The blog moved from WordPress to a custom-built <a href="https://symfony.com/" target="_blank" rel="noopener">Symfony</a> application in May 2016 and has been rebuilt several times in the intervening period. The most recent rebuild was in 2025 and uses Symfony 7.4.</p>
+
+        <h3>Other blogs</h3>
+
+        <p>In 2020 after chaostangent.com had lain dormant for several years, I spun up <a href="https://ceetea.uk/">ceetea.uk</a> aimed at creative writing, mainly short stories. Built on the static blog generator <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> and published using <a href="https://docs.github.com/en/pages" target="_blank" rel="noopener">GitHub pages</a>, it was quick to publish to but lacked features. I eventually <a href="/category/short-stories">incorporated the selection of published short-stories</a> into chaostangent.com and closed ceetea.uk in December 2025.</p>
+        <p>With an extended <a href="/category/holidays/japan-2023/">trip to Japan planned in February 2023</a>, I started using <a href="https://buttondown.com/">Buttondown</a> to send email newsletters to friends and family to keep them apprised on my journey. I, unsuccessfully, attempted to continue the newsletter after the trip but eventually ceased posting in June 2023 and <a href="/category/email-newsletters/">incorporated the content</a> into chaostangent.com in December 2025.</p>
+        <p>I joined Twitter in January 2010 and continued posting there until January 2024, shortly after its transition to X. I eventually closed my account in October 2024 and have <a href="/tweets">an in-development archive of my tweets</a> on chaostangent.com.</p>
+
+        <h2>Tech stack</h2>
+
+        <p>chaostangent.com is, by design, built on the most boring tech stack imaginable:</p>
+        <ul>
+            <li><a href="https://www.php.net/" target="_blank" rel="noopener">PHP 8.4</a> via PHP-FPM</li>
+            <li>Symfony 7.4 (<a href="https://github.com/johnnoel/chaostangent.com">code on GitHub</a>)</li>
+            <li><a href="https://www.postgresql.org/" target="_blank" rel="noopener">Postgres</a> 18</li>
+            <li><a href="https://nginx.org/" target="_blank" rel="noopener">Nginx</a> 1.28</li>
+            <li><a href="https://www.hetzner.com/cloud/" target="_blank" rel="noopener">Hetzner VPS</a></li>
+        </ul>
+
+        <p>The frontend uses:</p>
+        <ul>
+            <li>Framework-less modern CSS with <a href="https://postcss.org/" target="_blank" rel="noopener">PostCSS</a></li>
+            <li>Framework-less <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener">TypeScript</a> for progressive enhancement</li>
+            <li><a href="https://webpack.js.org/" target="_blank" rel="noopener">Webpack</a> 5</li>
+            <li><a href="https://browsersl.ist/" target="_blank" rel="noopener">browserslist</a> with <code>baseline widely available</code></li>
+            <li><a href="https://www.embla-carousel.com/" target="_blank" rel="noopener">embla carousel</a> for slideshows</li>
+            <li><a href="https://leafletjs.com/" target="_blank" rel="noopener">leaflet</a> for maps</li>
+            <li><a href="https://preactjs.com/" target="_blank" rel="noopener">preact</a> for <a href="/2012/07/i-dont-have-much-to-say-about-the-new-anime-season/">a joke quiz</a></li>
+        </ul>
+
+        <p>Post URLs have remained unchanged since 2006, including the warty trailing <code>/</code> that irk me every time I see them.</p>
+        <p>Where possible I try to use open standards to deliver content e.g. <a href="https://microformats.org/" target="_blank" rel="noopener">microformats</a>, <a href="/feed/">RSS</a> and <a href="/feed/atom/">Atom</a>, <a href="https://json-ld.org/" target="_blank" rel="noopener">JSON-LD</a>.</p>
+
+        <h2>Elsewhere</h2>
+
+        <p>I don't post often on social media however you can find me on <a href="https://mastodon.social/@ceetea" target="_blank" rel="noopener">Mastodon</a> and <a href="https://bsky.app/profile/johnnoel.uk" target="_blank" rel="noopener">Bluesky</a>. I'm active on <a href="https://chaostangent.tumblr.com" target="_blank" rel="noopener">Tumblr</a> if you want an art punch. I do have a <a href="https://github.com/johnnoel/" target="_blank" rel="nofollow">GitHub</a> presence though I am actively looking for alternative code hosting. If you want to see other projects I've done, <a href="https://johnnoel.uk" target="_blank">johnnoel.uk</a> is the place to go.</p>
+
+        <h2>Facts and figures</h2>
 
         <div class="site-stats">
             <section>
-                <h2>Posts</h2>
+                <h3>Posts</h3>
 
                 <div>
                     <div class="postcount">
@@ -32,7 +79,7 @@
                 <div>
                     {% if popular_posts is not empty %}
                         <div class="stackedbars">
-                            <h3>Most popular <small>(2 &times; comments + kudos)</small></h3>
+                            <h4>Most popular <small>(2 &times; comments + kudos)</small></h4>
                             <ol>
                                 {% set highest_score = (popular_posts[0].commentCount * 2) + popular_posts[0].kudoCount %}
                                 {% for p in popular_posts %}
@@ -52,9 +99,9 @@
                 </div>
 
                 <div>
-                    <h3>Posts per week</h3>
+                    <h4>Posts per week</h4>
                     {% for year, weeks in post_calendar %}
-                        <h4>{{ year }}</h4>
+                        <h5>{{ year }}</h5>
                         <div class="calendar">
                             {% for week, count in weeks %}
                                 {% set opacity = 0.03 %}
@@ -69,7 +116,7 @@
             </section>
 
             <section>
-                <h2>Responses</h2>
+                <h3>Responses</h3>
 
                 <div>
                     <div class="grid">
@@ -78,7 +125,7 @@
                     </div>
 
                     <div class="stackedbars">
-                        <h3>Most participated</h3>
+                        <h4>Most participated</h4>
                         <ol>
                             {% set most_comments = null %}
                             {% for r in most_participated|filter(r => r[0].authorEmail not in author_emails) %}
@@ -97,7 +144,7 @@
 
                 <div>
                     <div class="stackedbars">
-                        <h3>Longest <small>(in characters)</small></h3>
+                        <h4>Longest <small>(in characters)</small></h4>
                         <ol>
                             {% set longest = longest_comments[0].comment_length|default(0) %}
 
@@ -118,9 +165,9 @@
                 </div>
 
                 <div>
-                    <h3>Responses per week</h3>
+                    <h4>Responses per week</h4>
                     {% for year, weeks in comment_calendar %}
-                        <h4>{{ year }}</h4>
+                        <h5>{{ year }}</h5>
                         <div class="calendar">
                             {% for week, count in weeks %}
                                 {% set opacity = 0.03 %}

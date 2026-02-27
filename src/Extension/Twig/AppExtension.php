@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Extension\Twig;
 
 use App\Repository\FeatureRepository;
+use DateTimeImmutable;
 use Phiki\Grammar\Grammar;
 use Phiki\Phiki;
 use Phiki\Theme\Theme;
@@ -14,7 +15,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twitter\Text\Autolink;
 
-class AppExtension extends AbstractExtension
+final class AppExtension extends AbstractExtension
 {
     private ?Autolink $autolink = null;
 
@@ -29,6 +30,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('gravatar', [ $this, 'gravatar' ]),
             new TwigFilter('code', [ $this, 'codeBlock' ], [ 'is_safe' => [ 'html' ] ]),
             new TwigFilter('tweet', [ $this, 'tweet' ], [ 'is_safe' => [ 'html' ] ]),
+            new TwigFilter('age', [ $this, 'age' ]),
         ];
     }
 
@@ -42,7 +44,7 @@ class AppExtension extends AbstractExtension
 
     public function gravatar(
         string $email,
-        string $default = 'indenticon',
+        string $default = 'identicon',
         int $size = 64,
         string $rating = 'r'
     ): string {
@@ -81,5 +83,19 @@ class AppExtension extends AbstractExtension
         }
 
         return $this->autolink->autoLink($tweet);
+    }
+
+    /**
+     * @param string $birthday In Y-m-d format
+     */
+    public function age(string $birthday, DateTimeImmutable $now = new DateTimeImmutable('now')): int
+    {
+        $birthday = DateTimeImmutable::createFromFormat('Y-m-d', $birthday);
+
+        if ($birthday === false) {
+            return 0;
+        }
+
+        return $now->diff($birthday)->y;
     }
 }

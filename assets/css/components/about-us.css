@@ -1,0 +1,50 @@
+.about-us {
+    line-height: 1.5;
+
+    > h1 {
+        margin: 0 0 12px;
+    }
+
+    > h2 {
+        font-size: 30px;
+        margin: 0 0 12px;
+    }
+
+    > h2:has(+ .site-stats) {
+        margin: 48px 0 0;
+    }
+
+    > h3 {
+        font-size: 26px;
+        margin: 0 0 8px;
+    }
+
+    > p {
+        margin: 0 0 1em;
+    }
+
+    > ul, > ol {
+        margin: 0 0 12px 24px;
+        padding: 0;
+
+        ul, ol {
+            margin: 6px 24px;
+        }
+    }
+
+    em, i {
+        font-style: italic;
+    }
+
+    strong, b {
+        font-weight: bold;
+    }
+
+    ol {
+        list-style: decimal outside;
+    }
+
+    ul {
+        list-style: disc outside;
+    }
+}
