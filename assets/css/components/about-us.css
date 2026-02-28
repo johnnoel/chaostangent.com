@@ -1,6 +1,23 @@
 .about-us {
     line-height: 1.5;
 
+    h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
+        color: var(--brand-dark-grey);
+        text-decoration: none;
+
+        &:hover, &:focus {
+            text-decoration: underline;
+            color: var(--brand-orange);
+
+            &::after {
+                content: '';
+                display: inline-block;
+                margin: 0 0 0 12px;
+                background: url(../icons/link.svg) no-repeat 0 0 / contain;
+            }
+        }
+    }
+
     > h1 {
         margin: 0 0 12px;
     }
@@ -8,6 +25,12 @@
     > h2 {
         font-size: 30px;
         margin: 0 0 12px;
+
+        > a:hover::after, > a:focus::after {
+            width: 24px;
+            height: 24px;
+            vertical-align: -2px;
+        }
     }
 
     > h2:has(+ .site-stats) {
@@ -17,6 +40,12 @@
     > h3 {
         font-size: 26px;
         margin: 0 0 8px;
+
+        > a:hover::after, > a:focus::after {
+            width: 21px;
+            height: 22px;
+            vertical-align: -3px;
+        }
     }
 
     > p {
