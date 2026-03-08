@@ -102,6 +102,11 @@
 
         p {
             margin: 0 0 1em;
+
+            > code {
+                font-size: 95%;
+                white-space: nowrap;
+            }
         }
 
         em, i {
