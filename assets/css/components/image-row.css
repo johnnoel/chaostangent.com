@@ -8,7 +8,7 @@
         align-items: center; /* ensures different height images aren't stretched */
         gap: 4px;
 
-        > img {
+        a > img {
             padding: 1px;
             border: 1px solid var(--brand-lighter-grey);
         }
