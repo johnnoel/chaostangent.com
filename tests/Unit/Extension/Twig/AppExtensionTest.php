@@ -64,4 +64,45 @@ class AppExtensionTest extends TestCase
             'empty' => [ '', $now, 0 ],
         ];
     }
+
+    #[DataProvider('searchResultsSummaryProvider')]
+    public function testSearchResultsSummary(string $text, string $query, string $expected): void
+    {
+        $featureRepository = new FeatureRepository([]);
+        $appExtension = new AppExtension($featureRepository);
+
+        $this->assertSame($expected, $appExtension->searchResultsSummary($text, $query));
+    }
+
+    /**
+     * @return array<string,array<mixed>>
+     */
+    public static function searchResultsSummaryProvider(): array
+    {
+        $bigText = str_replace([ "\n" ], [ '' ], <<<BIGTEXT
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse imperdiet scelerisque tempor. Vivamus
+        dignissim euismod dui ut blandit. Fusce vehicula sapien sed nulla molestie, id rhoncus erat hendrerit.
+        Aliquam sem massa, consequat et libero consectetur, viverra tempus lacus. In hac habitasse platea dictumst.
+        Curabitur convallis, enim at eleifend malesuada, risus arcu mollis felis, nec viverra enim ex ut risus.
+        Donec ullamcorper tortor sed est auctor laoreet. Test Sed non urna libero. Nulla aliquam ornare mi, in
+        consectetur dolor volutpat volutpat. Duis sit amet dui arcu. Fusce et mollis augue, eget malesuada nulla.
+        Aliquam lobortis in erat vitae mollis. Curabitur bibendum, dolor scelerisque varius tempus, nibh leo
+        porttitor erat, eget imperdiet leo lorem et magna. Donec ac lectus bibendum risus condimentum mattis ac sed
+        felis. Vivamus neque risus, pellentesque in ante sodales, porta pharetra.
+        BIGTEXT);
+
+        return [
+            'nothing' => [ '', '', '<mark></mark>' ],
+            'not found query' => [ 'lorem ipsum', 'test', 'lorem ipsum' ],
+            'empty not found query' => [ 'lorem ipsum', '', '<mark></mark>lorem ipsum' ],
+            'empty text query' => [ '', 'test', '' ],
+            'query found' => [ 'lorem test ipsum', 'test', 'lorem <mark>test</mark> ipsum' ],
+            'query found case insensitive' => [ 'Lorem Test Ipsum', 'test', 'Lorem <mark>Test</mark> Ipsum' ],
+            // phpcs:disable Generic.Files.LineLength.TooLong
+            'big text query found start' => [ $bigText, 'lorem', '<mark>Lorem</mark> ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse imperdiet scelerisque tempor. Vivamusdignissim euismod dui ut blandit. Fusce vehicula sapien sed nulla molestie, id rhoncus erat hendrerit.Aliquam sem massa, consequat et libero consectetur, v' ],
+            'big text query found end' => [ $bigText, 'Pharetra.', 'magna. Donec ac lectus bibendum risus condimentum mattis ac sedfelis. Vivamus neque risus, pellentesque in ante sodales, porta <mark>pharetra.</mark>' ],
+            'big text query found middle' => [ $bigText, 'test', 'm at eleifend malesuada, risus arcu mollis felis, nec viverra enim ex ut risus.Donec ullamcorper tortor sed est auctor laoreet. <mark>Test</mark> Sed non urna libero. Nulla aliquam ornare mi, inconsectetur dolor volutpat volutpat. Duis sit amet dui arcu. Fusce et mollis au' ],
+            // phpcs:enable
+        ];
+    }
 }

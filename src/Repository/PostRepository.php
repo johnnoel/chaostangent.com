@@ -15,7 +15,6 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Exception;
 use Generator;
 use Illuminate\Support\Collection;
 use Symfony\Component\Uid\Ulid;
@@ -163,35 +162,24 @@ class PostRepository extends ServiceEntityRepository
     /**
      * @return Collection<int,SearchResultDTO>
      */
-    public function searchPosts(string $q, int $page, int $perPage = 10): Collection
+    public function searchPosts(string $searchQuery, int $page, int $perPage = 10): Collection
     {
-        $searchQuery = $this->getSearchQuery($q);
-
         $rsm = new ResultSetMappingBuilder($this->getEntityManager());
         $rsm->addRootEntityFromClassMetadata(Post::class, 'p');
-        $rsm->addScalarResult('headline', 'headline');
-        $rsm->addScalarResult('rank', 'rank', 'float');
+        $rsm->addScalarResult('score', 'score', 'float');
         $selectClause = $rsm->generateSelectClause([ 'p' => 'p' ]);
 
         $sql = <<<SQL
-            SELECT $selectClause,
-                ts_headline(
-                    'english',
-                    p.searchable,
-                    to_tsquery('english', :query),
-                    'StartSel=<mark>, StopSel=</mark>, MaxFragments=2'
-                ) AS headline,
-                ts_rank(to_tsvector('english', p.searchable), to_tsquery('english', :query)) AS rank
+            SELECT $selectClause, p.searchable <@> to_bm25query(:query, 'posts_search_idx') AS score
             FROM posts p
-            WHERE (to_tsvector('english', p.searchable) @@ to_tsquery('english', :query))
-                AND (p.published = true)
-            ORDER BY rank DESC
+            WHERE (p.published = true)
+            ORDER BY score
             LIMIT :limit OFFSET :offset
         SQL;
 
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
 
-        /** @var array<array{0: Post, headline: string, rank: float}> $result */
+        /** @var array<array{0: Post, score: float}> $result */
         $result = $query->setParameter('query', $searchQuery)
             ->setParameter('limit', $perPage)
             ->setParameter('offset', ($page - 1) * $perPage)
@@ -199,23 +187,23 @@ class PostRepository extends ServiceEntityRepository
         ;
 
         return new Collection(array_map(
-            fn (array $r): SearchResultDTO => new SearchResultDTO($r[0], $r['headline'], $r['rank']),
+            fn (array $r): SearchResultDTO => new SearchResultDTO($r[0], $r['score']),
             $result
         ));
     }
 
-    public function countSearchedPosts(string $q): int
+    public function countSearchedPosts(string $searchQuery): int
     {
         $sql = <<<SQL
             SELECT COUNT(p.id) AS post_count
             FROM posts p
-            WHERE (to_tsvector('english', p.searchable) @@ to_tsquery('english', :query))
+            WHERE (p.searchable <@> to_bm25query(:query, 'posts_search_idx') < -0.5)
                 AND (p.published = true)
         SQL;
 
         $result = $this->getEntityManager()->getConnection()->executeQuery(
             $sql,
-            [ 'query' => $this->getSearchQuery($q) ]
+            [ 'query' => $searchQuery ]
         )->fetchNumeric();
 
         return (is_array($result) && count($result) > 0 && is_int($result[0])) ? $result[0] : 0;
@@ -430,15 +418,5 @@ class PostRepository extends ServiceEntityRepository
         }, $res);
 
         return new Collection($dtos);
-    }
-
-    private function getSearchQuery(string $q): string
-    {
-        $tokens = preg_split('#\s+#', $q, flags: PREG_SPLIT_NO_EMPTY);
-        if ($tokens === false) {
-            throw new Exception('Invalid search query: ' . $q);
-        }
-
-        return implode(' & ', $tokens);
     }
 }

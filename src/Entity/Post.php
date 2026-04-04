@@ -359,4 +359,9 @@ class Post
     {
         return $this->webmentions;
     }
+
+    public function getSearchable(): ?string
+    {
+        return $this->searchable;
+    }
 }

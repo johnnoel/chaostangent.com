@@ -15,13 +15,13 @@
         <div class="search-results">
             {% for r in search_results %}
                 <article>
-                    {% if r.post.image is not empty %}
+                    {% if r.post.image.src|default is not empty %}
                         {{ picture(r.post.image) }}
                     {% else %}
                         <div></div>
                     {% endif %}
                     <h2><a href="{{ path('post', r.post.routeParams) }}">{{ r.post.fullTitle }}</a></h2>
-                    <p>&hellip;{{ r.headline|raw }}&hellip; <a href="{{ path('post', r.post.routeParams) }}">Read more</a></p>
+                    <p>&hellip;{{ r.post.searchable|search_results_summary(search_query) }}&hellip; <a href="{{ path('post', r.post.routeParams) }}">Read more</a></p>
                 </article>
             {% endfor %}
         </div>

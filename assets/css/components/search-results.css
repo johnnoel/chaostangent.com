@@ -39,6 +39,7 @@
         > div {
             height: 100px;
             border: 1px solid var(--brand-lighter-grey);
+            background: linear-gradient(to top, #B93800, var(--brand-light-orange) 70%, var(--brand-beige));
         }
 
         mark {

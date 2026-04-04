@@ -69,16 +69,18 @@
                 <li{% if location|default('home') == 'home' %} class="active"{% endif %}><a href="{{ path('home') }}">Home</a></li>
                 <li{% if location|default('home') == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>
                 <li><a href="http://chaostangent.tumblr.com" target="_blank">Tumblr</a></li>
-                <li><a href="{{ path('home:rss') }}" class="rss"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-rss"></use></svg> RSS feed</a></li>
+                {% if isFeatureEnabled('search') %}
+                    <li>
+                        <form method="get" action="{{ path('search') }}" class="search-form">
+                            <label for="search-query">Search query</label>
+                            <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}" id="search-query">
+                            <button type="submit" class="search"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-search"></use></svg> Search</button>
+                        </form>
+                    </li>
+                {% endif %}
+                <li><a href="{{ path('home:rss') }}" class="rss"><svg><title>RSS feed</title><use xlink:href="{{ asset('icons.svg') }}#icon-rss"></use></svg></a></li>
             </ul>
         </nav>
-        {% if isFeatureEnabled('search') %}
-            <form method="get" action="{{ path('search') }}" class="search-form">
-                <label for="search-query">Search query</label>
-                <input type="search" name="q" placeholder="Search..." class="query" value="{{ search_query|default('') }}" id="search-query">
-                <button type="submit" class="search"><svg><use xlink:href="{{ asset('icons.svg') }}#icon-search"></use></svg> Search</button>
-            </form>
-        {% endif %}
     </div>
 </header>
 

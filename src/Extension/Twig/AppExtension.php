@@ -31,6 +31,7 @@ final class AppExtension extends AbstractExtension
             new TwigFilter('code', [ $this, 'codeBlock' ], [ 'is_safe' => [ 'html' ] ]),
             new TwigFilter('tweet', [ $this, 'tweet' ], [ 'is_safe' => [ 'html' ] ]),
             new TwigFilter('age', [ $this, 'age' ]),
+            new TwigFilter('search_results_summary', [ $this, 'searchResultsSummary' ], [ 'is_safe' => [ 'html' ] ]),
         ];
     }
 
@@ -97,5 +98,20 @@ final class AppExtension extends AbstractExtension
         }
 
         return $now->diff($birthday)->y;
+    }
+
+    public function searchResultsSummary(string $plainText, string $query): string
+    {
+        $position = strpos(mb_strtolower($plainText), mb_strtolower($query));
+        if ($position === false) {
+            return substr($plainText, 0, 255);
+        }
+
+        return trim(sprintf(
+            '%s<mark>%s</mark>%s',
+            substr($plainText, max(0, $position - 128), min($position, 128)),
+            substr($plainText, $position, strlen($query)),
+            substr($plainText, $position + strlen($query), 256 - min($position, 128))
+        ));
     }
 }
