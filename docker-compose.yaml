@@ -14,7 +14,8 @@ services:
             - .:/project
 
     pgsql:
-        image: postgres:18
+        build: config/docker/pgsql
+        image: chaostangent-pgsql
         environment:
             POSTGRES_DB: chaostangent
             POSTGRES_PASSWORD: chaostangent
