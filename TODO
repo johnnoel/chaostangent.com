@@ -15,6 +15,10 @@
     - Search
     - Change links in blog posts
     - Threads?
+* Last modified header fixes
+    - Have a file watcher that you can configure to store the last modified dates of different files (globs) and stores them
+    - Have an extended / new filesystem handler for Twig that records what is loaded and the last modified times
+    - Have an event listener after a controller that conglomerates all of that info to give a true last modified time
 * Sort out categories
     - Add a "hierarchy title" e.g. "Anime > 3 Episode Taste Test" for easy output
 * Wordpress API support (at least readonly)

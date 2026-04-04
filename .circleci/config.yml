@@ -55,7 +55,7 @@ jobs:
               environment:
                   APP_ENV: test
                   DATABASE_URL: postgresql://chaostangent:chaostangent@localhost/chaostangent_test?serverVersion=14&charset=utf8
-            - image: cimg/postgres:17.5
+            - image: johnnoel/postgres:18
               environment:
                   POSTGRES_USER: chaostangent
                   POSTGRES_PASSWORD: chaostangent
